@@ -1,1 +1,1 @@
-# step162-2020
+# STEP 2020 Capstone Project
