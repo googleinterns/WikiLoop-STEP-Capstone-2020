@@ -19,13 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/retrieve")
-public class RetrieveEdit extends HttpServlet {
+@WebServlet("/update-status")
+public class UpdateStatusServlet extends HttpServlet {
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      String editComment = request.getParameter('editCommentText');
-    }        
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      Entity edit = Entity.newBuilder(datastore.get(key))
+        
+    }
 }
