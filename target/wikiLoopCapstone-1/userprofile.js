@@ -1,3 +1,7 @@
+// initializes the table
+$(document).ready( function () {
+    $('#my-table').DataTable();
+} );
 
 function getUser() {
   fetch('/user').then(response => response.json()).then((user) => {
@@ -8,21 +12,18 @@ function getUser() {
     const avgToxicityScore = document.getElementById('toxicity-score-box');
     avgToxicityScore.innerText= "Average Toxicity Score: \t" + user.avgToxicityScore;
 
-
-    const editsListElement = document.getElementById('edits-list');
-    
     // Build the list of edits
     user.list_edit_comments.forEach((edit) => {
-      editsListElement.appendChild(createEditElement(edit));
+      createEditElement(edit);
     });
   });
 }
 
-// Creates an <li> element containing an edit.
+// Creates a row containing an edit in the table.
 function createEditElement(edit) {
-  const editElement = document.createElement('li');
-  editElement.className = 'edit';
-  editElement.innerText = edit;
-
-  return editElement;
+  var table = $('#my-table').DataTable();
+ 
+  table.row.add( ["50%", "Tom","www.fakeaticle.com",edit,"July 23, 2020"]).draw();
 }
+
+
