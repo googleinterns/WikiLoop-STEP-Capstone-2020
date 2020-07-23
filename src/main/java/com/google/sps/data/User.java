@@ -8,6 +8,7 @@ import java.util.Collections;
  
  
 /** An individual comment. */
+/* TO DO (DEUS):   *//* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
 public final class User{
 
   public final long id;

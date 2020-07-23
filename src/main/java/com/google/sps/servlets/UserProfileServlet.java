@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles comments data */
+/* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
   String DATASTORE_ENTITY_NAME = "userEntity";
@@ -44,7 +45,6 @@ public class UserProfileServlet extends HttpServlet {
     response.setContentType("application/json");
     
     // Get User's ID
-
     // Get User's instance from Datastore
     User user = retrieveUser();
 
@@ -64,14 +64,9 @@ public class UserProfileServlet extends HttpServlet {
     response.sendRedirect("index.html");
   }
 
-  /** Returns the choice entered by the user, or 5 if the choice was invalid. 
-  private int getUserChoice(HttpServletRequest request) {
-    // Get the input from the form.
-
-    return userChoice;
-  } */
 
   /** Retrieves a user from Datastore */
+  /* TO DO (DEUS):   Get data from Datastore instead of an array list*/
    private User retrieveUser() {
      ArrayList<String> list_edit_comments = new ArrayList<String>();
      list_edit_comments.add("Test Comment #1: Lorem ipsum dolor sit amet, consectetur adipisicing elit.");

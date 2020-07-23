@@ -3,6 +3,7 @@ $(document).ready( function () {
     $('#my-table').DataTable();
 } );
 
+/* TO DO (DEUS):   Use real data once David pushes the code for the EditComment class*/
 function getUser() {
   fetch('/user').then(response => response.json()).then((user) => {
     const userNameSection = document.getElementById('user-name');
