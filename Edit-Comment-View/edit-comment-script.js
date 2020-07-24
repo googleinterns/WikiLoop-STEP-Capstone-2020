@@ -1,5 +1,3 @@
-
-
 function getDetailedEdit() {
     fetch('/retrieve').then(response => response.json()).then((detailedEdit) => {
         const article = document.getElementById('article');
