@@ -1,33 +1,55 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset="UTF-8">
-    <title>Edit Comment View</title>
-    <link rel="stylesheet" href="edit-style.css">
-    <script src="edit-comment-script.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Edit View</title>
+    <link rel="stylesheet" type="text/css" href="edit-style.css">
+    <!-- Add bootstap, jQuery, and datatables -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
   </head>
+
   <body onload="getDetailedEdit()">
-    <div class="edit-info">
-      <h3 id="article">Article Name/Link</h3>
+    <section class="section">
+      <br>
+      <h3>Detailed Edit View</h3><br>
+      <div class="edit-info">
         <table>
           <tbody>
             <tr>
-              <td id="edit-comment"> Comment </td>
-              <td id="date">Date</td>
+              <td id="date">07/23/2020</td>
+            <tr>
+            <tr>
+              <td id="edit-comment">Hey! This is a tester comment. All the data you see on this page is currently hard-coded. The link below will take you to our design doc.</td>
             </tr>
             <tr>
-              <td id="toxicity"> Toxicity Breakdown </td>
+              <td id="article"><a href="https://docs.google.com/document/d/1AzEde5mNQl5LgU5Bb-nY_P1HJU3UvEJ0SlGskR-U99s/edit#heading=h.5irk4csrpu0y">Article</a></td>
             </tr>
           </tbody>
-        </table> 
-    </div>
-    
-    <div class="action-items">
-      <h3>Action Items</h3>
-      <button action="/update-status" type="button">Remove Edit</button>
-      <button action="/update-status" type="button">Warn User</button>
-      <button action="/update-status" type="button">Suggest User Ban</button>
-    </div>
+        </table><br>
+      </div><br>
+      <div class="toxic-info">
+        <div class="toxicity">
+          <h4>Toxicity Score</h4>
+          <h1>
+            <div id="toxicity">78%</div>
+          </h1>
+        </div>
+        <div class="action-items">
+          <h6>Action Items</h6>
+          <button action="/update-status" type="button">Remove Edit</button>
+          <button action="/update-status" type="button">Warn User</button>
+          <button action="/update-status" type="button">Suggest User Ban</button>
+        </div><br>
+      </div>
+    </section>
   </body>
+
 </html>
