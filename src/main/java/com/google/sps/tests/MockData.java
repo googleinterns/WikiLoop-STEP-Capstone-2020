@@ -15,10 +15,23 @@
 package com.google.sps.tests;
 import com.google.sps.data.MockComment;
 import java.util.List;
-import java.util.Date;
 import java.util.Arrays;
 
 /** Class mocking the comment object that will be fed to Discover Page backend */
 public final class MockData {
+  
+  public final List<MockComment> listMockComments;
+
+  public MockData() {
+    this.listMockComments = Arrays.asList(new MockComment(4333,"TheSubmarine", 
+                                        "Economist Rating changes: AZ and NC from lean D to tossup",  
+                                        "14:49 22 July 2020‎",
+                                        "2020 United States presidential election"));
+
+  }
+
+  public List<MockComment> getMockComments() {
+    return listMockComments;
+  }
 
 }
