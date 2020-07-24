@@ -26,3 +26,4 @@ function createEditElement(edit) {
  
   table.row.add( ["50%", "Tom","www.fakeaticle.com",edit,"July 23, 2020"]).draw();
 }
+
