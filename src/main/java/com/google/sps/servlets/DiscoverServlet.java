@@ -64,7 +64,7 @@ import com.google.sps.data.MockComment;
 
 /** Servlet that returns a list of Edit Comment Objects */
 @WebServlet("/comments")
-public class DiscoverSerlvet extends HttpServlet {
+public class DiscoverServlet extends HttpServlet {
   /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -97,7 +97,7 @@ public class DiscoverSerlvet extends HttpServlet {
   private String getToxicityString(String comment) {
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "enter_api_key";
+      String api_key = "";
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
       "?key=" + api_key);
       String postUrl = buildUrl;
