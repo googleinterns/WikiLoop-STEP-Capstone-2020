@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Edit Comment View</title>
+    <link rel="stylesheet" href="edit-style.css">
+    <script src="edit-comment-script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  </head>
+  <body onload="getDetailedEdit()">
+    <div class="edit-info">
+      <h3 id="article">Article Name/Link</h3>
+        <table>
+          <tbody>
+            <tr>
+              <td id="edit-comment"> Comment </td>
+              <td id="date">Date</td>
+            </tr>
+            <tr>
+              <td id="toxicity"> Toxicity Breakdown </td>
+            </tr>
+          </tbody>
+        </table> 
+    </div>
+    
+    <div class="action-items">
+      <h3>Action Items</h3>
+      <button type="button">Remove Edit</button>
+      <button type="button">Warn User</button>
+      <button type="button">Suggest User Ban</button>
+    </div>
+  </body>
+</html>
