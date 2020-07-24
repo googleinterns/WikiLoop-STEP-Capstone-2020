@@ -13,9 +13,27 @@
 // limitations under the License.
 
 package com.google.sps.data;
-import java.util.Date;
 
 /** Class mocking the comment object that will be fed to Discover Page backend */
 public final class MockComment {
+  
+  public final String userName;
+  public final String text;
+  public final String date;
+  public final String parentArticle;
+  public final Integer revisionId;
+
+  public MockComment(Integer revisionId, String userName, String text, String date, String parentArticle) {
+    this.userName = userName;
+    this.text = text;
+    this.date = date;
+    this.parentArticle = parentArticle;
+    this.revisionId = revisionId;
+
+  }
+
+  public String toString() {
+    return revisionId + " " + userName + " " + text + " " + parentArticle + " " + date;
+  }
 
 }
