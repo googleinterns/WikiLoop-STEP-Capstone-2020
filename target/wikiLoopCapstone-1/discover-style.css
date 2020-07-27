@@ -43,3 +43,8 @@
 th.dt-center, td.dt-center {
     text-align: center; 
 }
+
+a:hover {
+ cursor:pointer;
+ text-decoration: none;
+}
