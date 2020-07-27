@@ -1,3 +1,4 @@
+/*
 function getDetailedEdit() {
     fetch('/retrieve').then(response => response.json()).then((detailedEdit) => {
         const article = document.getElementById('article');
@@ -13,6 +14,7 @@ function getDetailedEdit() {
         score.innerText = detailedEdit.toxicity;
     });
 }
+*/
 
 /* psuedo code
 function changeStatus() {
