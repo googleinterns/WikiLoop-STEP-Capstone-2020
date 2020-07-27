@@ -38,7 +38,7 @@ async function getComments() {
     createTableElement([toxicityPercentage, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
-                        "<a target=\"_blank\" href=\"/edit-comment.html\" onClick=\" + viewEditComment(" + editComment.revisionId + ") \"> "+ editComment.comment + "</a>", 
+                        "<a target=\"_blank\" href=\"/edit-comment.html\">"+ editComment.comment + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date]);
   });
