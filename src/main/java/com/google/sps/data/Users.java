@@ -67,9 +67,9 @@ public final class Users {
     this.EDIT_COMMENTS_NICOLE.add(EDIT_COMMENT_NICOLE_2);
     this.EDIT_COMMENTS_NICOLE.add(EDIT_COMMENT_NICOLE_3);
  
-    this.users.add(new User(100, "Tom", "54%", this.EDIT_COMMENTS_TOM));
-    this.users.add(new User(101, "Amelia", "32%", this.EDIT_COMMENTS_AMELIA));
-    this.users.add(new User(102, "Nicole", "77%", this.EDIT_COMMENTS_NICOLE));
+    //this.users.add(new User(100, "Tom", "54%", this.EDIT_COMMENTS_TOM));
+    //this.users.add(new User(101, "Amelia", "32%", this.EDIT_COMMENTS_AMELIA));
+    //this.users.add(new User(102, "Nicole", "77%", this.EDIT_COMMENTS_NICOLE));
 
   }
 }

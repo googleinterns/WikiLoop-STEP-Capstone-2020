@@ -28,6 +28,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
 import com.google.sps.data.Users;
+import com.google.sps.data.EditComment;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -86,21 +87,29 @@ public class UserProfileServlet extends HttpServlet {
     int id =  ids.get(randomIndex);
 
     
-    return (long) id;
+    return (long) 100;
   }
 
 
   /** Retrieves a user from Datastore */
   /* TO DO (DEUS):   Get data from Datastore instead of an array list*/
    private User retrieveUser(long id) {
-     Users users = new Users();
+
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","66.55%", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","83.79%", "September, 6 2019, 21:09","incivility", "pending");
+    listEditComments.add(ec1);
+    listEditComments.add(ec2);
+
+    User user = new User(id, "Tom", "75.17", listEditComments);
+     /*Users users = new Users();
      
      for(int i = 0; i < users.users.size(); i++){
          if (users.users.get(i).id == id){
            return users.users.get(i);
          }
          
-     }/*
+     }
      System.out.println(users.users.get(i).avgToxicityScore);
 
      String userName = "Tom";
@@ -123,6 +132,6 @@ public class UserProfileServlet extends HttpServlet {
       
     User user = new User(id, userName, avgToxicityScore, list_edit_comments); */
 
-    return null;
+    return user;
   }
 }

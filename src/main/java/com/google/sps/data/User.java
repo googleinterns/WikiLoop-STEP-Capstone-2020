@@ -14,10 +14,10 @@ public final class User{
   public final long id;
   public final String userName;
   public final String avgToxicityScore;
-  //public final ArrayList<EditComment> listEditComments;
-  public final ArrayList<String> listEditComments;
+  public final ArrayList<EditComment> listEditComments;
+  //public final ArrayList<String> listEditComments;
 
-  public User(long id, String userName, String avgToxicityScore, ArrayList<String> listEditComments) {
+  public User(long id, String userName, String avgToxicityScore, ArrayList<EditComment> listEditComments) {
     this.id = id;
     this.userName = userName;
     this.avgToxicityScore = avgToxicityScore;
