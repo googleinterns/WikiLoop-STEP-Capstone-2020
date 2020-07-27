@@ -23,11 +23,10 @@ public final class MockData {
   public final List<MockComment> listMockComments;
 
   public MockData() {
-    this.listMockComments = Arrays.asList(new MockComment(4333,"TheSubmarine", 
-                                        "Economist Rating changes: AZ and NC from lean D to tossup",  
-                                        "14:49 22 July 2020‎",
-                                        "2020 United States presidential election"));
-
+    this.listMockComments = Arrays.asList(new MockComment(861223655,"K6ka", 
+                                        "Your explanation on the talk page is completely ludicrous.",  
+                                        "September, 25 2018‎, 23:40",
+                                        "Incivility"));
   }
 
   public List<MockComment> getMockComments() {
