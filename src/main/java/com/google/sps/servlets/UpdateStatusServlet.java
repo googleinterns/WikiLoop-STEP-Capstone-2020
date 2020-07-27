@@ -31,8 +31,8 @@ public class UpdateStatusServlet extends HttpServlet {
       long id;
       String userName = request.getParameter("username");
       String editCommentText = request.getParameter("edit-comment");
-      long date = request.getParameter("date");
-      int toxicity = request.getParameter("toxic-score");
+      String date = request.getParameter("date");
+      String toxicity = request.getParameter("toxic-score");
       String parentArticle = request.getParameter("article");
 
       String status;
@@ -43,7 +43,7 @@ public class UpdateStatusServlet extends HttpServlet {
       editEntity.setProperty("date", date);
       editEntity.setProperty("toxicity", toxicity);
       editEntity.setProperty("parentArticle", parentArticle);
-      editEntity.setProperty("status", status)
+      editEntity.setProperty("status", "INEEDTOCHANGE");
       datastore.put(editEntity);
 
       response.sendRedirect("/edit-comment.html");

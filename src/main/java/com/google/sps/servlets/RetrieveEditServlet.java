@@ -43,7 +43,7 @@ public class RetrieveEditServlet extends HttpServlet {
       */
 
       //key from datastore 
-      Entity editComment = datastore.get(key);
+    //  Entity editComment = datastore.get(key);
       
     }        
 }
