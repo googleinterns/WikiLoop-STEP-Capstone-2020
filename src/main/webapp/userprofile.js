@@ -14,17 +14,20 @@ function getUser() {
     avgToxicityScore.innerText= "Average Toxicity Score: \t" + user.avgToxicityScore;
 
     // Build the list of edits
-    user.list_edit_comments.forEach((edit) => {
-      createEditElement(edit);
+    // first clear the rows
+    //var table = $('#my-table').DataTable();
+    //table.clear().draw();
+    user.listEditComments.forEach((edit) => {
+      createEditElement(edit, user.userName, user.avgToxicityScore);
     });
   });
 }
 
 // Creates a row containing an edit in the table.
-function createEditElement(edit) {
+function createEditElement(edit, userName, avgToxicityScore) {
   var table = $('#my-table').DataTable();
  
-  table.row.add( ["50%", "Tom","www.fakeaticle.com",edit,"July 23, 2020"]).draw();
+  table.row.add( [avgToxicityScore, userName,"www.fakeaticle.com",edit,"July 23, 2020"]).draw();
 }
 
 
