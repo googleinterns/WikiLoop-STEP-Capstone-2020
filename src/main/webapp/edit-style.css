@@ -8,7 +8,6 @@ body {
 }
 
 .edit-info {
-  border: 2px solid grey;
   padding: 20px;
   margin-left: 20%;
   margin-right: 20%;
@@ -17,14 +16,37 @@ body {
 }
 
 .section {
-  margin-top: 50px;
+  margin-top: 2em;
   position: relative;
-	background: grey;
-	overflow: hidden;
-	width: 85%;
-	border: 1px solid black;
-	display: flex;
-	flex-direction: column;
-	text-align: center;
-	align-items: center;
+  background: lightgrey;
+  overflow: hidden;
+  width: 105em;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+a:hover {
+  cursor:pointer;
+  text-decoration: none;
+}
+
+.dashboard-header {
+    width: 100%;
+    background: lightgrey;
+    height: 5em;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.user-loggedin {
+    height: 2.5em;
+    background-color: white;
+    width: 8em;
+    margin-right: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
