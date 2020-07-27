@@ -97,7 +97,7 @@ public class DiscoverServlet extends HttpServlet {
   private String getToxicityString(String comment) {
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "";
+      String api_key = "AIzaSyB5DvcG5_1rIBJNYeHqjNQuuVHUJLl-pf4";
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
       "?key=" + api_key);
       String postUrl = buildUrl;

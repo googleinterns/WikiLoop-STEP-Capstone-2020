@@ -32,31 +32,33 @@
 async function getComments() {
   let response = await fetch('/comments');
   let listEditComments = await response.json();
-  const commentsListElement = document.getElementById("feed-list");
-  commentsListElement.innerHTML = '';
-  console.log(listEditComments);
   listEditComments.forEach(editComment => {
     let toxicityObject = JSON.parse(editComment.toxicityObject);
-    let toxicityPercentage = toxicityObject.attributeScores.TOXICITY.summaryScore.value * 100;
-    commentsListElement.appendChild(createListElement("Toxicity: " + toxicityPercentage + "% User: " + editComment.userName 
-                                 + " Comment: " + editComment.comment + " Parent Artcle: " + editComment.parentArticle + 
-                                 " Revision ID: " + editComment.revisionId + " Date: " + editComment.date));
-    });
+    let toxicityPercentage = Math.round(toxicityObject.attributeScores.TOXICITY.summaryScore.value * 100) + "%";
+    createTableElement([toxicityPercentage, editComment.revisionId, editComment.userName, editComment.comment, editComment.parentArticle, editComment.date]);
+  });
 }
 
-/** 
- * Creates an <li> element containing text. 
+/**
+ * Create new table element for
  */
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerHTML = text;
-  return liElement;
+function createTableElement(text) {
+  var table = $('#my-table').DataTable();
+  table.row.add(text).draw();
 }
 
 /**
  * Loads comments on the page if user is logged in
  */
 window.onload = function() {
-  console.log("testing")
   getComments();
 }
+
+/**
+ * Initializes the table
+ */ 
+$(document).ready( function () {
+    $('#my-table').DataTable();
+} );
+
+
