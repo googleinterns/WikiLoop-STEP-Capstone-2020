@@ -27,11 +27,13 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
+import com.google.sps.data.Users;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,8 +47,9 @@ public class UserProfileServlet extends HttpServlet {
     response.setContentType("application/json");
     
     // Get User's ID
+    long id = getRequestParameters();
     // Get User's instance from Datastore
-    User user = retrieveUser();
+    User user = retrieveUser(id);
 
     // Jasonify the User (Convert the server stats to JSON)
     Gson gson = new Gson();
@@ -64,21 +67,47 @@ public class UserProfileServlet extends HttpServlet {
     response.sendRedirect("index.html");
   }
 
+  /* Get the request values */
+  /* TO DO (DEUS): Connect to the Discover page */
+  private long getRequestParameters () {
+      // Get the id from the request
+      // Use the Authentication API to see who is logged in
+
+      // For now get an id randomly and return it
+     
+
+     ArrayList<Integer> ids = new ArrayList<Integer>();
+     ids.add(100);
+     ids.add(101);
+     ids.add(102);
+
+    int randomIndex = (int) (Math.random() * ids.size());
+
+    int id =  ids.get(randomIndex);
+
+    
+    return (long) id;
+  }
+
 
   /** Retrieves a user from Datastore */
   /* TO DO (DEUS):   Get data from Datastore instead of an array list*/
-   private User retrieveUser() {
-     ArrayList<String> list_edit_comments = new ArrayList<String>();
-     list_edit_comments.add("Test Comment #1: Lorem ipsum dolor sit amet, consectetur adipisicing elit.");
-     list_edit_comments.add("Test Comment #2: Adipisci amet autem commodi, consequatur debitis.");
-     list_edit_comments.add("Test Comment #3: Doloremque esse fuga, iure laudantium magnam.");
-     for(int i = 0; i < list_edit_comments.size(); i++)System.out.println(list_edit_comments.get(i));
+   private User retrieveUser(long id) {
+     Users users = new Users();
+     
+     for(int i = 0; i < users.users.size(); i++){
+         if (users.users.get(i).id == id){
+           return users.users.get(i);
+         }
+         
+     }/*
+     System.out.println(users.users.get(i).avgToxicityScore);
 
      String userName = "Tom";
-     long id = 1234;
+     //long id = 1234;
      String avgToxicityScore = "47.35%";
 
-     User user = new User(id, userName, avgToxicityScore, list_edit_comments);
+     User user = new User(id, userName, avgToxicityScore, list_edit_comments); */
     /*Query query = new Query(DATASTORE_ENTITY_NAME).addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -94,6 +123,6 @@ public class UserProfileServlet extends HttpServlet {
       
     User user = new User(id, userName, avgToxicityScore, list_edit_comments); */
 
-    return user;
+    return null;
   }
 }
