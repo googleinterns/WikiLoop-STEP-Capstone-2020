@@ -79,12 +79,12 @@ public class DiscoverServlet extends HttpServlet {
     ArrayList editComments = new ArrayList<String>();
     for (MockComment comment : listMockComments) {
       String toxicString = getToxicityString(comment.text);
+      System.out.println(toxicString);
       EditComment analyzedComment = new EditComment(comment.revisionId, comment.userName, comment.text, 
                                               toxicString, comment.date, comment.parentArticle, "NEW");
       editComments.add(analyzedComment);
     }
     String json = convertToJsonUsingGson(editComments);
-
     // Send the JSON as the response
     response.setContentType("application/json;");
     response.getWriter().println(json);
