@@ -96,12 +96,13 @@ public class UserProfileServlet extends HttpServlet {
    private User retrieveUser(long id) {
 
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","66.55%", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","83.79%", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","66.55", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","83.79", "September, 6 2019, 21:09","incivility", "pending");
     listEditComments.add(ec1);
     listEditComments.add(ec2);
 
-    User user = new User(id, "Tom", "75.17", listEditComments);
+    User user = new User(id, "Tom", listEditComments);
+    System.out.println("THE AVERAGE IS: "+user.getAvgToxicityScore());
      /*Users users = new Users();
      
      for(int i = 0; i < users.users.size(); i++){
