@@ -1,3 +1,4 @@
+/*
 package com.google.sps;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.MockComment;
 
+
 @RunWith(JUnit4.class)
 public final class EditCommentTest {
 
@@ -30,3 +32,4 @@ public final class EditCommentTest {
         //either test each attribute seperately or all in one
 
 }
+*/
