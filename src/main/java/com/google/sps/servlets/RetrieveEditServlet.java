@@ -1,13 +1,7 @@
 package com.google.sps.servlets;
 
-//datastore
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import java.util.ArrayList;
+import com.google.gson.Gson;
 
 //classes
 import com.google.sps.tests.MockData;
@@ -25,11 +19,15 @@ import java.io.IOException;
 @WebServlet("/retrieve")
 public class RetrieveEditServlet extends HttpServlet {
 
-    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      
-      
+      //retrieve edit information from discover page
+
+      EditComment edit = request.getParameter("edit", edit); //change
+
+      Gson gson = new Gson();
+
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(edit));
     }        
 }

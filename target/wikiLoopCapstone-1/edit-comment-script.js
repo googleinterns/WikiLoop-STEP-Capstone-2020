@@ -1,4 +1,3 @@
-/*
 function getDetailedEdit() {
     fetch('/retrieve').then(response => response.json()).then((detailedEdit) => {
         const article = document.getElementById('article');
@@ -7,14 +6,14 @@ function getDetailedEdit() {
         const date = document.getElementById('date');
         const score = document.getElementById('toxic-score');
 
-        article.innerText = detailedEdit.parentArticle;
+        article.setAttribute("href", detailedEdit.parentArticle);
+        article.innerText = "Article Link";
         username.innerText = detailedEdit.userName;
-        edit.innerText = detailedEdit.editCommentText;
+        edit.innerText = detailedEdit.comment;
         date.innerText = detailedEdit.date;
-        score.innerText = detailedEdit.toxicity;
+        score.innerText = detailedEdit.toxicityObject;
     });
 }
-*/
 
 /* psuedo code
 function changeStatus() {
