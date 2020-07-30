@@ -23,11 +23,7 @@ public class RetrieveEditServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
 
-      //for now use mock data
-      EditComment edit = new EditComment(861223655, "K6ka",
-      "Your explanation on the talk page is completely ludicrous",
-      "74%", "September 25, 2018 23:40", "https://en.wikipedia.org/w/index.php?title=Incivility",
-      "None");
+      EditComment edit = request.getParameter("edit", edit); //change
 
       Gson gson = new Gson();
 
