@@ -43,7 +43,7 @@ public final class EditCommentTest {
       HttpServletRequest request = mock(HttpServletRequest.class);
       HttpServletResponse response = mock(HttpServletResponse.class);
 
-      when(request.getParameter)
+      when(request.getParameter);
     }
 
 
