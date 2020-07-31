@@ -30,11 +30,9 @@ import com.google.sps.data.User;
 import com.google.sps.data.Users;
 import com.google.sps.data.EditComment;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,6 +60,7 @@ public class UserProfileServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
     
     // Redirect back to the HTML page.
     response.sendRedirect("index.html");
