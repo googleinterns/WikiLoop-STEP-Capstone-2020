@@ -50,3 +50,14 @@ a:hover {
     align-items: center;
     justify-content: center;
 }
+
+.discover-button {
+    height: 2.5em;
+    background-color: white;
+    width: 8em;
+    margin-right:55em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
