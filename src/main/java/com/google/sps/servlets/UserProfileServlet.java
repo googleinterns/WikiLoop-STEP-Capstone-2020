@@ -57,7 +57,6 @@ public class UserProfileServlet extends HttpServlet {
     String json = gson.toJson(user);
     
     // Send the JSON as the response
-    System.out.println(json);
     response.getWriter().println(json);
   }
 
@@ -102,7 +101,6 @@ public class UserProfileServlet extends HttpServlet {
     listEditComments.add(ec2);
 
     User user = new User(id, "Tom", listEditComments);
-    System.out.println("THE AVERAGE IS: "+user.getAvgToxicityScore());
      /*Users users = new Users();
      
      for(int i = 0; i < users.users.size(); i++){
