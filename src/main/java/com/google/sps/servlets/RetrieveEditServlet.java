@@ -23,11 +23,11 @@ public class RetrieveEditServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
 
-      EditComment edit = request.getParameter("edit", edit); //change
+      //EditComment edit = request.getParameter("edit", edit); //change
 
       Gson gson = new Gson();
 
       response.setContentType("application/json");
-      response.getWriter().println(gson.toJson(edit));
+      //response.getWriter().println(gson.toJson(edit));
     }        
 }
