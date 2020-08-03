@@ -12,81 +12,88 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps;
 import java.lang.Math;
 import java.lang.Double;
+
 import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.Call;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import java.io.FileReader; 
+
+import org.json.simple.JSONArray; 
+import org.json.simple.JSONObject;  
+import org.json.simple.JSONValue;
+import org.json.simple.parser.*; 
 
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
-import java.util.Date;
-
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
-import java.lang.Double;
 
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.MockComment;
 
-import org.json.simple.JSONArray; 
-import org.json.simple.JSONObject; 
-import org.json.simple.parser.*; 
-import java.io.FileReader;
 
-/** Servlet that returns a list of Edit Comment Objects */
-@WebServlet("/comments")
-public class DiscoverServlet extends HttpServlet {
+/**
+ * Class tests the DiscoverServlet logic using mock data from MockData.java
+ */
+@RunWith(JUnit4.class)
+public class DiscoverServletTest {
   /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  
+  private DiscoverServletTest discover;
+  private final JSONArray expectedJSON = new MockData().getExpectedResponse();
+  private String api_key;
+
+  private void setApiKey() {
+   try { 
+      Object obj = new JSONParser().parse(new FileReader("config.json")); 
+      // typecasting obj to JSONObject 
+      JSONObject jo = (JSONObject) obj;
+      api_key = (String) jo.get("WIKILOOP_API_KEY");
+     } catch (Exception e) {
+      api_key = "";
+     }  
+  }
+
+  public JSONArray doGet() throws IOException {
     List<MockComment> listMockComments = new ArrayList<MockComment>();
     listMockComments = new MockData().getMockComments();
-                
-    Query query = new Query("edit-comments");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
     for (MockComment comment : listMockComments) {
-
       String toxicString = getToxicityString(comment.text);
+
       try { 
         JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
         System.out.println(toxicString); 
@@ -103,9 +110,10 @@ public class DiscoverServlet extends HttpServlet {
       }   
     }
     String json = convertToJsonUsingGson(editComments);
-    // Send the JSON as the response
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
+    JSONParser parser = new JSONParser();
+    JSONArray array = (JSONArray) JSONValue.parse(json);
+    System.out.println(array);
+    return array;
   }
 
   /**
@@ -113,9 +121,9 @@ public class DiscoverServlet extends HttpServlet {
    * to analyze an edit comment text
    */
   private String getToxicityString(String comment) {
+    setApiKey();
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "AIzaSyCLs-HQGTS_Fdpg3rvrbtb-XlOvsEgG3pQ";
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
       "?key=" + api_key);
       String postUrl = buildUrl;
@@ -146,7 +154,7 @@ public class DiscoverServlet extends HttpServlet {
     json += "[\"en\"]";
     json += ", ";
     json += "\"requestedAttributes\": ";
-    json += "{\"TOXICITY\": {}}";
+    json += "{\"TOXICITY\": {}, \"IDENTITY_ATTACK\": {}, \"INSULT\": {}, \"PROFANITY\": {}, \"THREAT\": {}, \"SEXUALLY_EXPLICIT\": {}, \"FLIRTATION\": {}}";
     json += "}";
     return json;
   }
@@ -160,5 +168,14 @@ public class DiscoverServlet extends HttpServlet {
     String json = gson.toJson(comments);
     return json;
   }
-}
 
+ @Before
+  public void setUp() throws IOException {
+    discover = new DiscoverServletTest();
+  }
+
+  @Test
+  public void getsCorrectEditCommentsList() throws IOException {
+    Assert.assertEquals(discover.doGet(), expectedJSON);
+  }
+}

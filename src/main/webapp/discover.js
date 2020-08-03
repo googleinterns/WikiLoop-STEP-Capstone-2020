@@ -33,8 +33,7 @@ async function getComments() {
   let response = await fetch('/comments');
   let listEditComments = await response.json();
   listEditComments.forEach(editComment => {
-    let toxicityObject = JSON.parse(editComment.toxicityObject);
-    let toxicityPercentage = Math.round(toxicityObject.attributeScores.TOXICITY.summaryScore.value * 100) + "%";
+    let toxicityPercentage = Math.round(editComment.toxicityObject * 100) + "%";
     createTableElement([toxicityPercentage, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
