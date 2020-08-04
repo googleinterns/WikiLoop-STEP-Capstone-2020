@@ -21,9 +21,9 @@ public final class MockComment {
   public final String text;
   public final String date;
   public final String parentArticle;
-  public final Integer revisionId;
+  public final String revisionId;
 
-  public MockComment(Integer revisionId, String userName, String text, String date, String parentArticle) {
+  public MockComment(String revisionId, String userName, String text, String date, String parentArticle) {
     this.userName = userName;
     this.text = text;
     this.date = date;

@@ -23,10 +23,10 @@ public final class EditComment {
   private final String date;
   private final String parentArticle;
   private final String status;
-  private final Integer revisionId;
+  private final String revisionId;
   private final String toxicityObject;
 
-  public EditComment(Integer revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {
+  public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {
     this.revisionId = revisionId;
     this.userName = userName;
     this.comment = comment;

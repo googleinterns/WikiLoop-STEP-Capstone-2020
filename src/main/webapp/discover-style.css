@@ -1,43 +1,81 @@
 .dashboard-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    /* align-items: center; */
-    justify-content: center;
-    margin-top: 2em;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  max-width: 1140px;
+}
+
+.nav-brand {
+  display: inline-block;
+  padding-top: .3125rem;
+  padding-bottom: .3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+  color: black
+}
+.nav-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1140px;
 }
 
 .dashboard-feed {
-    width: 105em;
-    height: 20em;
-    background-color: lightgrey;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+}
+
+.navbar-brand {
+  color: black;
+  display: inline-block;
+  padding-top: .3125rem;
+  padding-bottom: .3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
 }
 
 .table-container{
     width: 100em;
+    margin: 2em;
 }
 
 .dashboard-header {
     width: 100%;
-    background: lightgrey;
+    background: #f8f9fa;
     height: 5em;
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
 }
 
 .user-loggedin {
+    font-size: 16px;
+    line-height: 32px;
     height: 2.5em;
-    background-color: white;
     width: 8em;
-    margin-right: 3em;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #007bff
 }
 
 th.dt-center, td.dt-center {
@@ -47,4 +85,11 @@ th.dt-center, td.dt-center {
 a:hover {
  cursor:pointer;
  text-decoration: none;
+ color: #007bff;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
 }
