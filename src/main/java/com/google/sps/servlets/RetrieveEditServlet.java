@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 //get comment based on what is clicked in discover page
+// TO DO: Link with Datastore
 @WebServlet("/retrieve")
 public class RetrieveEditServlet extends HttpServlet {
 
@@ -32,8 +33,10 @@ public class RetrieveEditServlet extends HttpServlet {
       //retrieve edit information from discover page
 
       // Get Edit Comment ID
-      Integer id = request.getParameter("revivionId");
+      //Integer id = request.getParameter("revivionId");
 
+      //mock
+      Integer id = 861223655;
       // Get from Datastore
       EditComment edit = retrieveEdit(id);
 
@@ -68,10 +71,10 @@ public class RetrieveEditServlet extends HttpServlet {
 
       // Iterate through array of EditComments, find one with same ID
       for(EditComment e : list) {
-        if (e.revisionId == id) {
+        if (e.getRevisionId() == id) {
             edit = e;
         }
       }
-      return edit;
+      return edit1;
     }
 }
