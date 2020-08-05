@@ -32,6 +32,7 @@ public class RetrieveEditServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
 
+<<<<<<< HEAD
       // Get Edit Comment ID
       //long revisionId = long(request.getParameter("revivionId"));
 
@@ -56,6 +57,7 @@ public class RetrieveEditServlet extends HttpServlet {
       //mock
       Integer id = 861223655;
       EditComment edit = retrieveEdit(id);
+      //EditComment edit = request.getParameter("edit", edit); //change
 
       Gson gson = new Gson();
 
@@ -93,5 +95,5 @@ public class RetrieveEditServlet extends HttpServlet {
         }
       }
       return edit1;
-    }
+    }   
 }

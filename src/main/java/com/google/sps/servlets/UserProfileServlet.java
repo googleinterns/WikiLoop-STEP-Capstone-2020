@@ -30,11 +30,9 @@ import com.google.sps.data.User;
 import com.google.sps.data.Users;
 import com.google.sps.data.EditComment;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,12 +55,12 @@ public class UserProfileServlet extends HttpServlet {
     String json = gson.toJson(user);
     
     // Send the JSON as the response
-    System.out.println(json);
     response.getWriter().println(json);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
     
     // Redirect back to the HTML page.
     response.sendRedirect("index.html");
@@ -102,7 +100,6 @@ public class UserProfileServlet extends HttpServlet {
     listEditComments.add(ec2);
 
     User user = new User(id, "Tom", listEditComments);
-    System.out.println("THE AVERAGE IS: "+user.getAvgToxicityScore());
      /*Users users = new Users();
      
      for(int i = 0; i < users.users.size(); i++){
