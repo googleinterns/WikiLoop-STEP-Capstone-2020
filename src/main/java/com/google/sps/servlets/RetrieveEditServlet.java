@@ -33,11 +33,28 @@ public class RetrieveEditServlet extends HttpServlet {
       //retrieve edit information from discover page
 
       // Get Edit Comment ID
-      //Integer id = request.getParameter("revivionId");
+      //long revisionId = long(request.getParameter("revivionId"));
+
+      /* Get Edit from Datastore using ID
+      Query query = new Query("EditComment");
+      PreparedQuery pq = datastore.prepare(query);
+
+      ArrayList<EditComment> ec = new ArrayList();
+      for (Entity e : pq.asIterable()) {
+        long id = e.getKey().getId();
+          if (revisionId == id) {
+            String userName = (String) e.getProperty("userName");
+            String comment = (String) e.getProperty("comment");
+            String date = (String) e.getProperty("date");
+            String parentArticle = (String) e.getProperty("parentArticle");
+            String status = (String) e.getProperty("status");
+            String toxicityObject = (String) e.getProperty("toxicityObject");
+          } else { continue };
+      }
+      */
 
       //mock
       Integer id = 861223655;
-      // Get from Datastore
       EditComment edit = retrieveEdit(id);
 
       Gson gson = new Gson();

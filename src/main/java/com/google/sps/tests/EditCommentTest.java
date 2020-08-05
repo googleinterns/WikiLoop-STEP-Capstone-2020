@@ -1,7 +1,7 @@
 /*
 package com.google.sps.tests;
 
-import static org.mockito.Mockito.*;
+import org.mockito.*;
 import com.google.gson.Gson;
 
 import com.google.sps.servlets.RetrieveEditServlet;
