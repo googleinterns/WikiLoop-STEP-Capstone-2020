@@ -40,6 +40,10 @@ public final class EditComment {
     return userName;
   }
 
+  public Integer getRevisionId() {
+      return revisionId;
+  }
+
   public String getDate() {
     return date;
   }

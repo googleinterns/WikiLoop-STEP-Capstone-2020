@@ -75,6 +75,12 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+<<<<<<< HEAD
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datastore</artifactId>
+    </dependency>
+=======
     <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 <dependency>
     <groupId>org.mockito</groupId>
@@ -94,6 +100,7 @@
     <artifactId>commons-lang</artifactId>
     <version>2.2</version>
 </dependency>
+>>>>>>> origin/PRE_MASTER_BRANCH
   </dependencies>
 
   <build>
