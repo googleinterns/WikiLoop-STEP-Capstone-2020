@@ -32,7 +32,6 @@ public class RetrieveEditServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
 
-<<<<<<< HEAD
       // Get Edit Comment ID
       //long revisionId = long(request.getParameter("revivionId"));
 
