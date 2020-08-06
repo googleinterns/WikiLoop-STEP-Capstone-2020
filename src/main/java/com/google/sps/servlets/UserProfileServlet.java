@@ -18,12 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
@@ -36,11 +31,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.lang.reflect.Type; 
+import com.google.gson.reflect.TypeToken;  
+
 /** Servlet that handles comments data */
 /* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
-  String DATASTORE_ENTITY_NAME = "userEntity";
+  String USER_PROFILE_DATASTORE_ENTITY_NAME = "userProfileEntity";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
@@ -92,43 +91,35 @@ public class UserProfileServlet extends HttpServlet {
   /** Retrieves a user from Datastore */
   /* TO DO (DEUS):   Get data from Datastore instead of an array list*/
    private User retrieveUser(long id) {
-
-    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","66.55", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","83.79", "September, 6 2019, 21:09","incivility", "pending");
-    listEditComments.add(ec1);
-    listEditComments.add(ec2);
-
-    User user = new User(id, "Tom", listEditComments);
-     /*Users users = new Users();
-     
-     for(int i = 0; i < users.users.size(); i++){
-         if (users.users.get(i).id == id){
-           return users.users.get(i);
-         }
-         
-     }
-     System.out.println(users.users.get(i).avgToxicityScore);
-
-     String userName = "Tom";
-     //long id = 1234;
-     String avgToxicityScore = "47.35%";
-
-     User user = new User(id, userName, avgToxicityScore, list_edit_comments); */
-    /*Query query = new Query(DATASTORE_ENTITY_NAME).addSort("timestamp", SortDirection.DESCENDING);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = 
+        new Query("UserProfile")
+            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, "Tom"));
     PreparedQuery results = datastore.prepare(query);
 
-    Entity entity = results.asIterable()[0];
+    Entity entity = results.asSingleEntity();
+    if (entity == null){
+        return null;
+    }
+    String name = (String) entity.getProperty("userName");
+    
 
-      long id = entity.getKey().getId();
-      String userName = (String) entity.getProperty("userName");
-      String avgToxicityScore = (String) entity.getProperty("avgToxicityScore");
-      ArrayList<String> list_edit_comments =(ArrayList<String>) entity.getProperty("list_edit_comments");
+    Collection<EmbeddedEntity> listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+    for (EmbeddedEntity embeddedEntity : listEditCommentsEntity) {
 
-      
-    User user = new User(id, userName, avgToxicityScore, list_edit_comments); */
+      String comment = (String) embeddedEntity.getProperty("comment");
+      String date = (String) embeddedEntity.getProperty("date");
+      String parentArticle = (String) embeddedEntity.getProperty("parentArticle");
+      String status = (String) embeddedEntity.getProperty("status");
+      String revisionID = (String) embeddedEntity.getProperty("revisionID");
+      String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
+
+      EditComment ec = new EditComment(revisionID, name, comment, toxicityObject, date, parentArticle, status);
+      listEditComments.add(ec);
+    }
+
+    User user = new User(id, name, listEditComments);
 
     return user;
   }
