@@ -54,7 +54,7 @@ public class RetrieveEditServlet extends HttpServlet {
       */
 
       //mock
-      Integer id = 861223655;
+      String id = "861223655";
       EditComment edit = retrieveEdit(id);
       //EditComment edit = request.getParameter("edit", edit); //change
 
@@ -65,18 +65,18 @@ public class RetrieveEditServlet extends HttpServlet {
     }  
 
     /* TO DO: Use Datastore */
-    private EditComment retrieveEdit(Integer id) {
+    private EditComment retrieveEdit(String id) {
       // Create arraylist with mocked data
       ArrayList<EditComment> list = new ArrayList<EditComment>();
-      EditComment edit1 = new EditComment(861223655, "K6ka",
+      EditComment edit1 = new EditComment("861223655", "K6ka",
       "Your explanation on the talk page is completely ludicrous.",
       "74%", "September 25, 2018 23:40", "https://en.wikipedia.org/w/index.php?title=Incivility",
       "None");
-      EditComment edit2 = new EditComment(758943201, "Tom",
+      EditComment edit2 = new EditComment("758943201", "Tom",
       "Your comment is pretty ignorant.","83.79%", "September, 5 2019, 12:40", 
       "https://en.wikipedia.org/w/index.php?title=Incivility", "None");
 
-      EditComment edit3 = new EditComment(135138032, "Jerry", 
+      EditComment edit3 = new EditComment("135138032", "Jerry", 
       "Your are the worst!","66.55%", "September, 6 2019, 21:09",
       "https://en.wikipedia.org/w/index.php?title=Incivility", "None");
 

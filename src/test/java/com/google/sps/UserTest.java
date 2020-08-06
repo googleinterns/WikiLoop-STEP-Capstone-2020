@@ -22,8 +22,8 @@ public final class UserTest {
   @Test
   public void InitializeListOfEditComments() {
     ArrayList<EditComment> expected = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec1 = new EditComment("82141", "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment("13513", "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
     expected.add(ec1);
     expected.add(ec2);
 
@@ -37,9 +37,9 @@ public final class UserTest {
   @Test
   public void UpdateListOfEditComments() {
     ArrayList<EditComment> expected = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
-    EditComment ec3 = new EditComment(15513, "Tom", "worst!","5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec1 = new EditComment("82141", "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment("13513", "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec3 = new EditComment("15513", "Tom", "worst!","5", "September, 6 2019, 21:09","incivility", "pending");
 
     expected.add(ec1);
     expected.add(ec2);
@@ -57,8 +57,8 @@ public final class UserTest {
   public void CalculateAvgToxicityScoreOnInitialization() {
 
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec1 = new EditComment("82141", "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment("13513", "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
     listEditComments.add(ec1);
     listEditComments.add(ec2);
 
@@ -73,9 +73,9 @@ public final class UserTest {
   public void UpdateAvgToxicityScoreAfterAddedNewEditComment() {
 
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    EditComment ec1 = new EditComment(82141, "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
-    EditComment ec2 = new EditComment(13513, "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
-    EditComment ec3 = new EditComment(15513, "Tom", "worst!","5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec1 = new EditComment("82141", "Tom", "Your comment is pretty ignorant.","79.5", "September, 5 2019, 12:40","incivility", "pending");
+    EditComment ec2 = new EditComment("13513", "Tom", "Your are the worst!","20.5", "September, 6 2019, 21:09","incivility", "pending");
+    EditComment ec3 = new EditComment("15513", "Tom", "worst!","5", "September, 6 2019, 21:09","incivility", "pending");
     listEditComments.add(ec1);
     listEditComments.add(ec2);
 

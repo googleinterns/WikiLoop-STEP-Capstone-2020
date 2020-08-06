@@ -40,7 +40,7 @@ public final class EditComment {
     return userName;
   }
 
-  public Integer getRevisionId() {
+  public String getRevisionId() {
       return revisionId;
   }
 
