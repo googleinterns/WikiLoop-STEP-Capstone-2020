@@ -42,6 +42,8 @@ import com.google.gson.Gson;
 
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
+import com.google.sps.data.Perspective;
+
 
 
 /**
@@ -87,10 +89,11 @@ public class DiscoverServletTest {
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
     for (EditComment mockComment : listMockComments) {
-
+      
       String toxicString = getToxicityString(mockComment.comment);
+      Perspective find  = new Perspective(mockComment.comment, false);
       try { 
-        JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
+        JSONObject toxicityObject = (JSONObject) new JSONParser().parse(toxicString); 
         
         // typecasting obj to JSONObject 
         JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
