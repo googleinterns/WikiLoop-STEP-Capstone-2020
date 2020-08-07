@@ -13,10 +13,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** */
+/**
+ * Class tests the UserProfileServlet logic
+ */
 @RunWith(JUnit4.class)
-public final class UserTest {
-  // Some people that we can use in our tests.
+public final class UserProfileServletTest {
+  // Tolerable error on the average toxicity score.
   private static final double ACCEPTABLE_ERROR = 0.00001;
 
   @Test
@@ -27,7 +29,7 @@ public final class UserTest {
     expected.add(ec1);
     expected.add(ec2);
 
-    User user = new User((long)100, "Tom", expected);
+    User user = new User("100", "Tom", expected);
 
     ArrayList<EditComment> actual = user.getListEditComments();
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
@@ -44,7 +46,7 @@ public final class UserTest {
     expected.add(ec1);
     expected.add(ec2);
 
-    User user = new User((long)100, "Tom", expected);
+    User user = new User("100", "Tom", expected);
     user.addEditComment(ec3);
     expected.add(ec3);
 
@@ -62,7 +64,7 @@ public final class UserTest {
     listEditComments.add(ec1);
     listEditComments.add(ec2);
 
-    User user = new User((long)100, "Tom", listEditComments);
+    User user = new User("100", "Tom", listEditComments);
 
     double actual = Double.parseDouble(user.getAvgToxicityScore());
     double expected = 50.0;
@@ -79,7 +81,7 @@ public final class UserTest {
     listEditComments.add(ec1);
     listEditComments.add(ec2);
 
-    User user = new User((long)100, "Tom", listEditComments);
+    User user = new User("100", "Tom", listEditComments);
     user.addEditComment(ec3);
 
     double actual = Double.parseDouble(user.getAvgToxicityScore());

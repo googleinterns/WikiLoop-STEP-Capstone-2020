@@ -64,7 +64,7 @@ import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.MockComment;
 
-import org.json.simple.JSONArray; 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 import java.io.FileReader;
@@ -76,7 +76,7 @@ public class DiscoverServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<MockComment> listMockComments = new ArrayList<MockComment>();
-    listMockComments = new MockData().getMockComments();
+    listMockComments = new MockData("").getMockComments();
                 
     Query query = new Query("edit-comments");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

@@ -19,8 +19,8 @@ public final class MockData {
   private final List<MockComment> listMockComments;
   private final JSONArray expectedResponse;
 
-  public MockData() {
-    this.listMockComments = this.readMockJson();
+  public MockData(String json) {
+    this.listMockComments = this.readMockJson(json);
     this.expectedResponse = this.readMockTestJson();
   }
   
@@ -30,30 +30,35 @@ public final class MockData {
    * comments for testing
    * @return List<MockComments>
    */
-  private List<MockComment> readMockJson() {
+  private List<MockComment> readMockJson(String json) {
     ArrayList<MockComment> mockComments = new ArrayList<MockComment>();
 
     /* Reads JSON file & converts to edit comment */
     try { 
-      Object obj = new JSONParser().parse(new FileReader("mockData.json")); 
+      Object jsonObj = new JSONParser().parse(json); 
 
       /* Parse mockDataJSON */
-      JSONObject mockDataObject = (JSONObject) obj;
+      JSONObject mockDataObject = (JSONObject) jsonObj;
       JSONObject query = (JSONObject) mockDataObject.get("query");
-      JSONObject pages = (JSONObject) query.get("pages");
-      JSONObject pageId = (JSONObject) pages.get("876262");
-      String article = (String) pageId.get("title");
-      JSONArray revisions = (JSONArray) pageId.get("revisions");
+      JSONArray allrevisions = (JSONArray) query.get("allrevisions");
 
-      /* Iterate & Parse article revisions, create mock comments*/
-      for (Object o: revisions){
-        JSONObject comment = (JSONObject) o;
-        String revisionId = String.valueOf(comment.get("revid"));
-        String user = (String) comment.get("user");
-        String mockComment = (String) comment.get("comment");
-        String date = (String) comment.get("timestamp");
-        mockComments.add(new MockComment(revisionId, user, mockComment, date, article));
+      /*Iterate and Parse each revision, create mock comments */
+      for (Object o : allrevisions) {
+          JSONObject comment = (JSONObject) o;
+          String pageId = String.valueOf(comment.get("pageid"));
+          JSONArray revision = (JSONArray) comment.get("revisions");
+          String article = (String) comment.get("title");
+          for (Object obj : revision) {
+              JSONObject object = (JSONObject) obj;
+              String revisionId = String.valueOf(object.get("revid"));
+              String user = (String) object.get("user");
+              String mockComment = (String) object.get("comment");
+              String date = (String) object.get("timestamp");
+
+              mockComments.add(new MockComment(revisionId, user, mockComment, date, article));
+          }
       }
+
     } catch (Exception e) {
       System.out.println(e);
     }

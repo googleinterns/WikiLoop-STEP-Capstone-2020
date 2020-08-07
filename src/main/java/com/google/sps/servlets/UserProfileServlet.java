@@ -18,38 +18,38 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import com.google.appengine.api.datastore.*;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+
 import com.google.sps.data.User;
 import com.google.sps.data.Users;
 import com.google.sps.data.EditComment;
+
 import com.google.gson.Gson;
+
 import java.io.*;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.lang.reflect.Type; 
-import com.google.gson.reflect.TypeToken;  
-
-/** Servlet that handles comments data */
-/* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
+/** Servlet that returns UserProfile information */
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
-  String USER_PROFILE_DATASTORE_ENTITY_NAME = "userProfileEntity";
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
     
     // Get User's ID
-    long id = getRequestParameters();
+    String id = getRequestParameters();
     // Get User's instance from Datastore
     User user = retrieveUser(id);
 
-    // Jasonify the User (Convert the server stats to JSON)
+    // Jasonify the User (Convert the userprofile to JSON)
     Gson gson = new Gson();
     String json = gson.toJson(user);
     
@@ -59,39 +59,35 @@ public class UserProfileServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    
     // Redirect back to the HTML page.
     response.sendRedirect("index.html");
   }
 
-  /* Get the request values */
-  /* TO DO (DEUS): Connect to the Discover page */
-  private long getRequestParameters () {
-      // Get the id from the request
-      // Use the Authentication API to see who is logged in
+  /**
+   * Return current User ID 
+   */
+  private String getRequestParameters () {
 
-      // For now get an id randomly and return it
-     
-
-     ArrayList<Integer> ids = new ArrayList<Integer>();
-     ids.add(100);
-     ids.add(101);
-     ids.add(102);
+     ArrayList<String> ids = new ArrayList<String>();
+     ids.add("100");
+     ids.add("101");
+     ids.add("102");
 
     int randomIndex = (int) (Math.random() * ids.size());
 
-    int id =  ids.get(randomIndex);
+    String id =  ids.get(randomIndex);
 
     
-    return (long) 100;
+    return id;
   }
 
 
-  /** Retrieves a user from Datastore */
-  /* TO DO (DEUS):   Get data from Datastore instead of an array list*/
-   private User retrieveUser(long id) {
+  /** 
+   * Retrieve a user from Datastore 
+   */
+   private User retrieveUser(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // Filter query by userName
     Query query = 
         new Query("UserProfile")
             .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, "Tom"));
@@ -103,7 +99,7 @@ public class UserProfileServlet extends HttpServlet {
     }
     String name = (String) entity.getProperty("userName");
     
-
+    // Get User's edit comments list
     Collection<EmbeddedEntity> listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
     for (EmbeddedEntity embeddedEntity : listEditCommentsEntity) {

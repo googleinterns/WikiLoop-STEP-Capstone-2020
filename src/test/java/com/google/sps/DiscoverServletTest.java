@@ -54,7 +54,7 @@ import com.google.sps.data.MockComment;
 @RunWith(JUnit4.class)
 public class DiscoverServletTest {
   private DiscoverServletTest discover;
-  private final JSONArray expectedJSON = new MockData().getExpectedResponse();
+  private final JSONArray expectedJSON = new MockData("").getExpectedResponse();
   
   /**
    * Reads the perspective api key in config json and initializes the
@@ -82,7 +82,7 @@ public class DiscoverServletTest {
    */
   public JSONArray doGet() throws IOException {
     List<MockComment> listMockComments = new ArrayList<MockComment>();
-    listMockComments = new MockData().getMockComments();
+    listMockComments = new MockData("").getMockComments();
 
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
