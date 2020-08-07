@@ -19,12 +19,12 @@ import java.util.Date;
 public final class EditComment {
   
   private final String userName;
-  private final String comment;
+  public final String comment;
   private final String date;
   private final String parentArticle;
   private final String status;
   private final String revisionId;
-  private final String toxicityObject;
+  public String toxicityObject;
 
   public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {
     this.revisionId = revisionId;

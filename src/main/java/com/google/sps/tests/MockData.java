@@ -7,7 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 import java.io.FileReader;
-import com.google.sps.data.MockComment;
+import com.google.sps.data.EditComment;
 
 /** 
  * Class for testing data going through to the Discover page. This class is responsible for 
@@ -16,7 +16,7 @@ import com.google.sps.data.MockComment;
  **/
 public final class MockData {
 
-  private final List<MockComment> listMockComments;
+  private final List<EditComment> listMockComments;
   private final JSONArray expectedResponse;
 
   public MockData() {
@@ -30,8 +30,18 @@ public final class MockData {
    * comments for testing
    * @return List<MockComments>
    */
-  private List<MockComment> readMockJson() {
-    ArrayList<MockComment> mockComments = new ArrayList<MockComment>();
+  private List<EditComment> readMockJson() {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+    
+    
+    /*
+    Entity commentEntity = new Entity("Commnent");
+      commentEntity.setProperty("sentimentScore", String.valueOf(score));
+      commentEntity.setProperty("text", comment);
+      commentEntity.setProperty("userEmail", userEmail);
+      commentEntity.setProperty("time", postedTime);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(commentEntity);*/
 
     /* Reads JSON file & converts to edit comment */
     try { 
@@ -46,18 +56,18 @@ public final class MockData {
       JSONArray revisions = (JSONArray) pageId.get("revisions");
 
       /* Iterate & Parse article revisions, create mock comments*/
-      for (Object o: revisions){
+      for (Object o: revisions) {
         JSONObject comment = (JSONObject) o;
         String revisionId = String.valueOf(comment.get("revid"));
         String user = (String) comment.get("user");
         String mockComment = (String) comment.get("comment");
         String date = (String) comment.get("timestamp");
-        mockComments.add(new MockComment(revisionId, user, mockComment, date, article));
+        editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
       }
     } catch (Exception e) {
       System.out.println(e);
     }
-    return mockComments;
+    return editComments;
   }
   
   /**
@@ -78,7 +88,7 @@ public final class MockData {
       return new JSONArray();
     }
 
-  public List<MockComment> getMockComments() {
+  public List<EditComment> getMockComments() {
     return listMockComments;
   }
 

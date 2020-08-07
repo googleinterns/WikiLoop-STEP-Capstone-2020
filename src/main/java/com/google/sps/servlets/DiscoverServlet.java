@@ -62,7 +62,6 @@ import com.google.gson.Gson;
 
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
-import com.google.sps.data.MockComment;
 
 import org.json.simple.JSONArray; 
 import org.json.simple.JSONObject; 
@@ -75,7 +74,7 @@ public class DiscoverServlet extends HttpServlet {
   /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<MockComment> listMockComments = new ArrayList<MockComment>();
+    List<EditComment> listMockComments = new ArrayList<EditComment>();
     listMockComments = new MockData().getMockComments();
                 
     Query query = new Query("edit-comments");
@@ -84,20 +83,19 @@ public class DiscoverServlet extends HttpServlet {
 
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
-    for (MockComment comment : listMockComments) {
+    for (EditComment mockComment : listMockComments) {
 
-      String toxicString = getToxicityString(comment.text);
+      String toxicString = getToxicityString(mockComment.comment);
       try { 
         JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
-        System.out.println(toxicString); 
+        
         // typecasting obj to JSONObject 
         JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
         JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
         JSONObject summaryScore = (JSONObject) toxicity.get("summaryScore");
         String toxicScore = String.valueOf(Math.round((100 * Double.parseDouble(summaryScore.get("value").toString()))));
-        EditComment analyzedComment = new EditComment(comment.revisionId, comment.userName, comment.text, 
-                                              toxicScore, comment.date, comment.parentArticle, "NEW");
-        editComments.add(analyzedComment);
+        mockComment.toxicityObject = toxicScore;
+        editComments.add(mockComment);
       } catch (Exception e) {
         System.out.println(e);
       }   
