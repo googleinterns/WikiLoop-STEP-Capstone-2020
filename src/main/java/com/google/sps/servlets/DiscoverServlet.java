@@ -68,7 +68,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
-import org.json.simple.JSONArray; 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 import java.io.FileReader;
@@ -126,4 +126,3 @@ public class DiscoverServlet extends HttpServlet {
     return json;
   }
 }
-

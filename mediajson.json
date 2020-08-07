@@ -1,0 +1,153 @@
+{
+   "batchcomplete":"",
+   "continue":{
+      "arvcontinue":"20200806183533|971531323",
+      "continue":"-||"
+   },
+   "query":{
+      "allrevisions":[
+         {
+            "pageid":15990445,
+            "revisions":[
+               {
+                  "revid":971531334,
+                  "parentid":970302638,
+                  "user":"Vanamonde93",
+                  "timestamp":"2020-08-06T18:35:36Z",
+                  "comment":"[[:Wikipedia:Articles for deletion/Alex Grant (musician)]] closed as redirect ([[WP:XFDC|XFDcloser]])"
+               }
+            ],
+            "ns":0,
+            "title":"Alex Grant (musician)"
+         },
+         {
+            "pageid":6947574,
+            "revisions":[
+               {
+                  "revid":971531333,
+                  "parentid":971530521,
+                  "user":"108.20.240.27",
+                  "anon":"",
+                  "timestamp":"2020-08-06T18:35:36Z",
+                  "comment":"/* Career */"
+               }
+            ],
+            "ns":0,
+            "title":"Edward Sedgwick"
+         },
+         {
+            "pageid":64685600,
+            "revisions":[
+               {
+                  "revid":971531332,
+                  "parentid":971388001,
+                  "user":"Vanamonde93",
+                  "timestamp":"2020-08-06T18:35:35Z",
+                  "comment":"/* Alex Grant (musician) */ Closed as redirect ([[WP:XFDC|XFDcloser]])"
+               }
+            ],
+            "ns":4,
+            "title":"Wikipedia:Articles for deletion/Alex Grant (musician)"
+         },
+         {
+            "pageid":64560532,
+            "revisions":[
+               {
+                  "revid":971531331,
+                  "parentid":971531101,
+                  "user":"Celestinesucess",
+                  "timestamp":"2020-08-06T18:35:35Z",
+                  "comment":"/* Volta Region - 22 Seats */"
+               }
+            ],
+            "ns":10,
+            "title":"Template:WikiProject Ghana/Parliament of Ghana/4th Parliament of the 4th Republic of Ghana/Contest/entries"
+         },
+         {
+            "pageid":64425081,
+            "revisions":[
+               {
+                  "revid":971531330,
+                  "parentid":971531302,
+                  "user":"MER-C",
+                  "timestamp":"2020-08-06T18:35:35Z",
+                  "comment":"/* Category:Philippine Hot 100 number-one singles */ deleted"
+               }
+            ],
+            "ns":4,
+            "title":"Wikipedia:Categories for discussion/Log/2020 July 28"
+         },
+         {
+            "pageid":25145171,
+            "revisions":[
+               {
+                  "revid":971531329,
+                  "parentid":960714077,
+                  "user":"Le Deluge",
+                  "timestamp":"2020-08-06T18:35:34Z",
+                  "comment":"removed [[Category:Populated places in Qorveh-e Darjazin County]]; added [[Category:Qorveh-e Darjazin County]] using [[WP:HC|HotCat]]"
+               }
+            ],
+            "ns":0,
+            "title":"Qorveh-e Darjazin"
+         },
+         {
+            "pageid":38574950,
+            "revisions":[
+               {
+                  "revid":971531328,
+                  "parentid":961843854,
+                  "user":"CommonsDelinker",
+                  "timestamp":"2020-08-06T18:35:34Z",
+                  "comment":"Replacing Delta-selinene.svg with [[File:(+)-Delta-selinene.svg]] (by [[commons:User:CommonsDelinker|CommonsDelinker]] because: [[:c:COM:FR|File renamed]]: [[:c:COM:FR#FR2|Criterion 2]] (meaningless or ambiguous name))."
+               }
+            ],
+            "ns":0,
+            "title":"Selinene"
+         },
+         {
+            "pageid":19862503,
+            "revisions":[
+               {
+                  "revid":971531327,
+                  "parentid":971052979,
+                  "user":"Elysia (AR)",
+                  "timestamp":"2020-08-06T18:35:34Z",
+                  "comment":"/* Propose merging Postal voting here */ comment"
+               }
+            ],
+            "ns":1,
+            "title":"Talk:Absentee ballot"
+         },
+         {
+            "pageid":23189,
+            "revisions":[
+               {
+                  "revid":971531326,
+                  "parentid":971528186,
+                  "user":"162.222.83.225",
+                  "anon":"",
+                  "timestamp":"2020-08-06T18:35:34Z",
+                  "comment":"/* Research */ Original article link broken, replaced with archive.org."
+               }
+            ],
+            "ns":0,
+            "title":"Shuffling"
+         },
+         {
+            "pageid":64771158,
+            "revisions":[
+               {
+                  "revid":971531325,
+                  "parentid":0,
+                  "user":"Cahk",
+                  "timestamp":"2020-08-06T18:35:34Z",
+                  "comment":"Notification: speedy deletion nomination of [[:User:Crownsfield/sandbox]]. ([[WP:TW|TW]])"
+               }
+            ],
+            "ns":3,
+            "title":"User talk:Crownsfield"
+         }
+      ]
+   }
+}

@@ -25,8 +25,8 @@ public final class MockData {
   private final List<EditComment> listMockComments;
   private final JSONArray expectedResponse;
 
-  public MockData() {
-    this.listMockComments = this.readMockJson();
+  public MockData(String json) {
+    this.listMockComments = this.readMockJson(json);
     this.expectedResponse = this.readMockTestJson();
   }
   
@@ -41,15 +41,12 @@ public final class MockData {
 
     /* Reads JSON file & converts to edit comment */
     try { 
-      Object obj = new JSONParser().parse(new FileReader("mockData.json")); 
+      Object jsonObj = new JSONParser().parse(json); 
 
       /* Parse mockDataJSON */
-      JSONObject mockDataObject = (JSONObject) obj;
+      JSONObject mockDataObject = (JSONObject) jsonObj;
       JSONObject query = (JSONObject) mockDataObject.get("query");
-      JSONObject pages = (JSONObject) query.get("pages");
-      JSONObject pageId = (JSONObject) pages.get("876262");
-      String article = (String) pageId.get("title");
-      JSONArray revisions = (JSONArray) pageId.get("revisions");
+      JSONArray allrevisions = (JSONArray) query.get("allrevisions");
 
       /* Iterate & Parse article revisions, create mock comments*/
       for (Object o: revisions) {
@@ -60,6 +57,7 @@ public final class MockData {
         String date = (String) comment.get("timestamp");
         editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
       }
+
     } catch (Exception e) {
       System.out.println(e);
     }
@@ -92,5 +90,4 @@ public final class MockData {
     return expectedResponse;
   }
   
-
 }

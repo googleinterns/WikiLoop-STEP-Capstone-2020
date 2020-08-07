@@ -1,64 +1,120 @@
-body {
-	overflow-x: hidden;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	text-align: center;
-	align-items: center;
+.user-profile-header {
+    width: 100%;
+    background: #f8f9fa;
+    height: 5em;
+    display: flex;
+    align-items: center;
 }
 
-#content {
-	position: relative;
-	background: grey;
-	overflow: hidden;
-	width: 85%;
-	border: 1px solid black;
-	display: flex;
-	flex-direction: column;
-	text-align: center;
-	align-items: center;
-	justify-content: center;
+.nav-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1140px;
 }
 
-#user-name-container {
-	float: right;
-	margin-left: 80%;
-	margin-bottom: 5%;
+.nav-brand {
+  display: inline-block;
+  padding-top: .3125rem;
+  padding-bottom: .3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+  color: black
 }
 
-#user-information {
-	width: 100%;
+.user-loggedin {
+    font-size: 16px;
+    line-height: 32px;
+    height: 2.5em;
+    width: 8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007bff
 }
 
-#personal-information-box {
-	float: left;
-	overflow: hidden;
-	width: 35%;
-	height: 10%;
-	border: 1px solid black;
-	margin: 5px;
+.user-profile-content {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1140px;
+}
+ 
+.user-information {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  
+}
+.personal-information-box {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-right: 1.5rem;
 }
 
-#toxicity-score-box {
-	float: right;
-	overflow: hidden;
-	width: 35%;
-	height: 10%;
-	border: 1px solid black;
-	margin: 5px;
+.incivility-box {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-left: 1.5rem;
 }
 
-#user-edits {
-	overflow: hidden;
+.user-edits-feed {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
 }
 
-#user-edits ul {
-	list-style: none;
+.table-container{
+    width: 100em;
+    margin: 2em;
 }
 
-#user-edits li {
-	border: 1px solid black;
-	margin: 5px;
-	box-sizing: content-box;
-	width: 100%;
+th.dt-center, td.dt-center {
+    text-align: center; 
+}
+
+a:hover {
+ cursor:pointer;
+ text-decoration: none;
+ color: #007bff;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
 }
