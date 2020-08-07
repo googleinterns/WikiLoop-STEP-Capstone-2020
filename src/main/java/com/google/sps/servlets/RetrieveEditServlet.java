@@ -31,7 +31,7 @@ public class RetrieveEditServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
-      //String id = "url:" + request.getRequestURL() + "query:" + request.getQueryString();
+      String id = getIdFromUrl(request);
 
       EditComment edit = retrieveEdit(id);
 
@@ -40,6 +40,10 @@ public class RetrieveEditServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(edit));
     }  
+
+    private String getIdFromUrl(HttpServletRequest request) {
+        return request.getQueryString();
+    }
 
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
@@ -55,7 +59,7 @@ public class RetrieveEditServlet extends HttpServlet {
       String parentArticle = (String) entity.getProperty("parentArticle");
       String status = (String) entity.getProperty("status");
       String revisionID = (String) entity.getProperty("revisionID");
-      String toxicityObject = (String) entity.getProperty("toxicityObject");
+      String toxicityObject = (Attribute) entity.getProperty("toxicityObject");
 
       EditComment ec = new EditComment(revisionID, name, comment, toxicityObject, date, parentArticle, status);
 
