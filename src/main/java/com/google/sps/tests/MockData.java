@@ -7,7 +7,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 import java.io.FileReader;
-import com.google.sps.data.MockComment;
+import com.google.sps.data.EditComment;
+import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.gson.Gson;
 
 /** 
  * Class for testing data going through to the Discover page. This class is responsible for 
@@ -16,7 +22,7 @@ import com.google.sps.data.MockComment;
  **/
 public final class MockData {
 
-  private final List<MockComment> listMockComments;
+  private final List<EditComment> listMockComments;
   private final JSONArray expectedResponse;
 
   public MockData(String json) {
@@ -32,6 +38,7 @@ public final class MockData {
    */
   private List<MockComment> readMockJson(String json) {
     ArrayList<MockComment> mockComments = new ArrayList<MockComment>();
+
 
     /* Reads JSON file & converts to edit comment */
     try { 
@@ -62,7 +69,7 @@ public final class MockData {
     } catch (Exception e) {
       System.out.println(e);
     }
-    return mockComments;
+    return editComments;
   }
   
   /**
@@ -83,7 +90,7 @@ public final class MockData {
       return new JSONArray();
     }
 
-  public List<MockComment> getMockComments() {
+  public List<EditComment> getMockComments() {
     return listMockComments;
   }
 
