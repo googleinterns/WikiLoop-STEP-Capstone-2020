@@ -43,6 +43,7 @@ import com.google.gson.Gson;
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
 
 
 
@@ -91,7 +92,8 @@ public class DiscoverServletTest {
     for (EditComment mockComment : listMockComments) {
       
       String toxicString = getToxicityString(mockComment.comment);
-      Perspective find  = new Perspective(mockComment.comment, false);
+      Attribute find  = new Perspective(mockComment.comment, true).computedAttribute;
+      System.out.println(find);
       try { 
         JSONObject toxicityObject = (JSONObject) new JSONParser().parse(toxicString); 
         
