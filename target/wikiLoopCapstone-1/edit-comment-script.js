@@ -15,6 +15,14 @@ function getDetailedEdit() {
     });
 }
 
+
+
+window.onload = async function() {
+  //send id to servlet
+  var id = window.location.search;
+  console.log(id);
+}
+
 /* psuedo code
 function changeStatus() {
     if remove is pressed {

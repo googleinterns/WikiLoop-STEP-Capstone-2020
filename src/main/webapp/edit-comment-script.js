@@ -15,14 +15,3 @@ function getDetailedEdit() {
     });
 }
 
-/* psuedo code
-function changeStatus() {
-    if remove is pressed {
-        status = removed;
-    } else if suggest ban is pressed {
-        status = ban;
-    } else if warn is pressed {
-        status = warn;
-    }
-}
-*/

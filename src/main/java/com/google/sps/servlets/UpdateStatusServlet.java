@@ -21,20 +21,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// TO DO: IMplement Datastore
 @WebServlet("/update-status")
 public class UpdateStatusServlet extends HttpServlet {
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    }
-
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      /*
-      long id;
+      /* For Datastore
+      long id = request.getParameter("revisionId");
       String userName = request.getParameter("username");
       String editCommentText = request.getParameter("edit-comment");
       String date = request.getParameter("date");
@@ -53,5 +49,8 @@ public class UpdateStatusServlet extends HttpServlet {
 
       response.sendRedirect("/edit-comment.html");
       */
+
+      String id = "861223655";
+
     }
 }
