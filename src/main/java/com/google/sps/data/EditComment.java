@@ -58,7 +58,7 @@ public final class EditComment {
 
   public String getParentArticle() {
     return parentArticle;
-  }
+  } 
 
   public String getToxicityObject() {
     return toxicityObject;
