@@ -4,12 +4,12 @@ import java.util.Date;
 /** Class containing server statistics. */
 public final class EditComment {
   
-  private final String userName;
+  public final String userName;
   public final String comment;
-  private final String date;
-  private final String parentArticle;
-  private final String status;
-  private final String revisionId;
+  public final String date;
+  public final String parentArticle;
+  public final String status;
+  public final String revisionId;
   public String toxicityObject;
 
   public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {

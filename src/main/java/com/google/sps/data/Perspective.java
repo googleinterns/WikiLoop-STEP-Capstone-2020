@@ -65,11 +65,12 @@ public final class Perspective {
   public Perspective(String comment, boolean experimental) {
     try { 
       this.perspectiveResponse = (JSONObject) new JSONParser().parse(getToxicityString(comment));
+      System.out.println(this.perspectiveResponse);
       setListAttributes(experimental);
       Collections.sort(attributes, Attribute.ORDER_BY_HIGH);
       this.computedAttribute = attributes.get(0);
     } catch (Exception e) {
-      System.out.println(e);
+      System.out.println(e.toString());
     }   
   }
   
@@ -146,6 +147,7 @@ public final class Perspective {
   private String getToxicityString(String comment) {
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+      System.out.println(getApiKey());
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
       "?key=" + getApiKey());
       String postUrl = buildUrl;

@@ -8,6 +8,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.*; 
 import java.io.FileReader;
 import com.google.sps.data.EditComment;
+import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.gson.Gson;
 
 /** 
  * Class for testing data going through to the Discover page. This class is responsible for 
@@ -32,16 +38,6 @@ public final class MockData {
    */
   private List<EditComment> readMockJson() {
     ArrayList<EditComment> editComments = new ArrayList<EditComment>();
-    
-    
-    /*
-    Entity commentEntity = new Entity("Commnent");
-      commentEntity.setProperty("sentimentScore", String.valueOf(score));
-      commentEntity.setProperty("text", comment);
-      commentEntity.setProperty("userEmail", userEmail);
-      commentEntity.setProperty("time", postedTime);
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(commentEntity);*/
 
     /* Reads JSON file & converts to edit comment */
     try { 
