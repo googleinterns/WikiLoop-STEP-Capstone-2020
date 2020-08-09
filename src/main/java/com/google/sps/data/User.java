@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*; 
  
 /* This is single user class */
 public final class User{
@@ -36,7 +39,8 @@ public final class User{
     double average = 0;
     int size = listEditComments.size();
     for (int i = 0; i < size; i++) {
-        average += Double.parseDouble(this.listEditComments.get(i).getToxicityObject());
+        String toxicityObject = this.listEditComments.get(i).getToxicityObject();
+        average += Double.parseDouble(toxicityObject);
     }
 
     this.avgToxicityScore = String.valueOf(average/size);
@@ -60,26 +64,32 @@ public final class User{
 
   public void addEditComment(EditComment newEditComment) {
       int size = this.listEditComments.size();
-      double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
-      tempVar += Double.parseDouble(newEditComment.getToxicityObject());
-      this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
-      this.listEditComments.add(newEditComment);
+      String toxicityObject = newEditComment.getToxicityObject();
+        try {
+          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
+          double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
+          tempVar += Double.parseDouble(computedAttribute.get("score").toString());
+          this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
+          this.listEditComments.add(newEditComment);
+        } catch(Exception e) {
+        System.out.println(e);
+      }
   }
 
   @Override
-  public boolean equals (Object otherObject) {
-      // return true in case of reference equality
-      if (this == otherObject){
-          return true;
-      }
-      if (!(otherObject instanceof User)) return false;
-      User otherUser = (User) otherObject;
-      // Check for id equality
-      if (this.id != otherUser.getId()) return false;
-      // check for name equality
-      if (this.userName != otherUser.getUserName()) return false;
+  public boolean equals(Object object) {
+    if ((object == null) || !(object instanceof User)) {
+        return false;
+    }
 
-      return true;
+    if (this == object) return true;
+
+    return fieldsEquality((User) object);
+  }
+
+  
+  private boolean fieldsEquality(User other) {
+    return (this.id.equals(other.getId())) && (this.userName.equals(other.getUserName()));
   }
 
 }

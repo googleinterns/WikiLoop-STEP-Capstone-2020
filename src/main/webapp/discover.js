@@ -26,10 +26,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Load some comments from the Media API
+ */
+function loadData() {
+  // Build request url
+  var url = "https://en.wikipedia.org/w/api.php"; 
+  var params = {
+	action: "query",
+	format: "json",
+	prop: "revisions",
+	revids: "968857509|970167002|967664593|290490251|290547577|290692859|283242467|283416010|969495573"
+};
+  url = url + "?origin=*";
+  Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
+  fetch(url,{headers:{"User-agent":"WikiLoop DoubleCheck Team"}}).then(response => response.json()).then((json) => {
+      console.log(json);
+    fetch('/load-data', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(json)
+    }).then(response => {
+        console.log("POST REQUEST WENT THROUGH");
+    });
+  });
+}
+
 /** 
  * Get edit comments from server
  */
 async function getComments() {
+  // first load some comments from the Media API
+  loadData();
+
   let response = await fetch('/comments');
   let listEditComments = await response.json();
   listEditComments.forEach(editComment => {
