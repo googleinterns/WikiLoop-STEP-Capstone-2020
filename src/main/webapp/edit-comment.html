@@ -18,7 +18,7 @@
     <script src="http://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
   </head>
 
-  <body onload="getDetailedEdit()">
+  <body>
     <div class="dashboard-header w3-card w3-#f8f9fa">
       <div class="nav-container">
         <div class="nav-brand">
@@ -54,16 +54,19 @@
       </div><br>
       <div class="toxic-info">
         <div class="toxicity">
-          <h4>Toxicity Score</h4>
-          <h1>
-            <span title=" This score is derived from the results of the Perspective API. The API is not 100% accurate and may give fake positives and/or negatives.">
-              <div id="toxic-score"></div>
-            </span>
-          </h1>
+          <span title=" This score is derived from the results of the Perspective API. The API is not 100% accurate and may give fake positives and/or negatives.">
+            <h4>Report</h4>
+          </span>
+          <div>
+              <div id="label"></div>
+              <div id="score"></div>
+              <div id="reason"></div>
+              <div id="experimental"></div>
+          </div>
         </div>
         <div class="action-items">
-          <h6>Action Items</h6>
-          <div></div>
+          <h6><b>Take Action</b></h6>
+          <div class="actions-taken">Jane took the Remove Edit action</div><br>
           <button action="/update-status" type="button">Remove Edit</button>
           <button action="/update-status" type="button">Warn User</button>
           <button action="/update-status" type="button">Suggest User Ban</button>

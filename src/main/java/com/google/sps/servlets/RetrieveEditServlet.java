@@ -14,7 +14,8 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 //classes
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
-//import com.google.sps.data.MockComment;
+import com.google.sps.data.MockComment;
+import com.google.sps.data.Attribute;
 
 //servlet
 import javax.servlet.annotation.WebServlet;
@@ -31,30 +32,8 @@ public class RetrieveEditServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
-
-      // Get Edit Comment ID
-      //long revisionId = long(request.getParameter("revivionId"));
-
-      /* Get Edit from Datastore using ID
-      Query query = new Query("EditComment");
-      PreparedQuery pq = datastore.prepare(query);
-
-      ArrayList<EditComment> ec = new ArrayList();
-      for (Entity e : pq.asIterable()) {
-        long id = e.getKey().getId();
-          if (revisionId == id) {
-            String userName = (String) e.getProperty("userName");
-            String comment = (String) e.getProperty("comment");
-            String date = (String) e.getProperty("date");
-            String parentArticle = (String) e.getProperty("parentArticle");
-            String status = (String) e.getProperty("status");
-            String toxicityObject = (String) e.getProperty("toxicityObject");
-          } else { continue };
-      }
-      */
-
-      //mock
-      String id = "861223655";
+      String id = getIdFromUrl(request);
+      System.out.println("id: " + id);
       EditComment edit = retrieveEdit(id);
 
       Gson gson = new Gson();
@@ -63,35 +42,30 @@ public class RetrieveEditServlet extends HttpServlet {
       response.getWriter().println(gson.toJson(edit));
     }  
 
+    private String getIdFromUrl(HttpServletRequest request) {
+        System.out.println(request.getRequestURL().toString());
+        return request.getParameter("id");
+    }
+
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
-      // Create arraylist with mocked data
-      ArrayList<EditComment> list = new ArrayList<EditComment>();
-      EditComment edit1 = new EditComment("861223655", "K6ka",
-      "Your explanation on the talk page is completely ludicrous.",
-      "74%", "September 25, 2018 23:40", "https://en.wikipedia.org/w/index.php?title=Incivility",
-      "None");
-      EditComment edit2 = new EditComment("758943201", "Tom",
-      "Your comment is pretty ignorant.","83.79%", "September, 5 2019, 12:40", 
-      "https://en.wikipedia.org/w/index.php?title=Incivility", "None");
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-      EditComment edit3 = new EditComment("135138032", "Jerry", 
-      "Your are the worst!","66.55%", "September, 6 2019, 21:09",
-      "https://en.wikipedia.org/w/index.php?title=Incivility", "None");
+      Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+      PreparedQuery pq = datastore.prepare(query);
 
-      list.add(edit1);
-      list.add(edit2);
-      list.add(edit3);
+      Entity entity = pq.asSingleEntity();
+      System.out.println("entity: " + entity);
+      String userName = (String) entity.getProperty("userName");
+      String comment = (String) entity.getProperty("comment");
+      String date = (String) entity.getProperty("date");
+      String parentArticle = (String) entity.getProperty("parentArticle");
+      String status = (String) entity.getProperty("status");
+      String toxicityObject = (String) entity.getProperty("computedAttribute");
+      String revisionId = (String) entity.getProperty("revisionId");
 
-      // Create the edit that will be returned
-      EditComment edit;
+      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
 
-      // Iterate through array of EditComments, find one with same ID
-      for(EditComment e : list) {
-        if (e.getRevisionId() == id) {
-            edit = e;
-        }
-      }
-      return edit1;
-    }
+      return ec;
+    }   
 }
