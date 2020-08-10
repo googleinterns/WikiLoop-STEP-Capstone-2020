@@ -47,6 +47,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -74,18 +75,28 @@ import org.json.simple.parser.*;
                                        
 import java.io.FileReader;
 
-/** Servlet that returns a list of Edit Comment Objects */
+/** This Servlet goes to the datastore and retuns the list of Edit */
 @WebServlet("/comments")
 public class DiscoverServlet extends HttpServlet {
   /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {                
-    Query query = new Query("EditComments");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    String ids = request.getParameter("ids");
+    StringTokenizer st = new StringTokenizer(ids, "-");
+    List<String> idList = new ArrayList<String>();
+    while (st.hasMoreTokens()) {
+     idList.add(st.nextToken());  
+    }
+    System.out.println(idList);
 
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
+    System.out.println("Check " + ids);
+    if (ids.equals("null")) {
+    Query query = new Query("EditComments");
+    PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
@@ -100,6 +111,28 @@ public class DiscoverServlet extends HttpServlet {
       } catch(Exception e) {
         System.out.println(e);
       }
+    }
+    } else {
+      System.out.println("WHY");
+      for (String id : idList) {
+        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+        PreparedQuery pq = datastore.prepare(query);
+        Entity entity = pq.asSingleEntity();
+        System.out.println(entity);
+          String revisionId = (String) entity.getProperty("revisionId");
+          String user = (String) entity.getProperty("userName");
+          String comment = (String) entity.getProperty("comment");
+          String computedAttributeString = (String) entity.getProperty("computedAttribute");
+          String article = (String) entity.getProperty("parentArticle");
+          String date = (String) entity.getProperty("date");
+          String status = (String) entity.getProperty("status");
+          try {
+            JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.get("score").toString(), date, article, status));
+          } catch(Exception e) {
+            System.out.println(e);
+          }
+        }
     }
     String json = convertToJsonUsingGson(editComments);
     // Send the JSON as the response
