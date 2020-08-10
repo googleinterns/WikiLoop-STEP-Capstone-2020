@@ -61,9 +61,8 @@ public class RetrieveEditServlet extends HttpServlet {
       String date = (String) entity.getProperty("date");
       String parentArticle = (String) entity.getProperty("parentArticle");
       String status = (String) entity.getProperty("status");
-      String toxicityObject = "70%";
+      String toxicityObject = (String) entity.getProperty("computedAttribute");
       String revisionId = (String) entity.getProperty("revisionId");
-      //String toxicityObject = (String) entity.getProperty("toxicityObject");
 
       EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
 
