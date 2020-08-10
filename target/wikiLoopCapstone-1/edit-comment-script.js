@@ -9,13 +9,14 @@ function getDetailedEdit() {
         const scoreReason = document.getElementById('reason');
         const scoreIsExperimental = document.getElementById('experimental');
 
-        article.setAttribute("href", detailedEdit.parentArticle);
-        article.innerText = "Article Link";
+        const link = "https://en.wikipedia.org/w/index.php?title=" + detailedEdit.parentArticle;
+        article.setAttribute("href", link);
+        article.innerText = detailedEdit.parentArticle;
         username.innerText = detailedEdit.userName;
         edit.innerText = detailedEdit.comment;
         date.innerText = detailedEdit.date;
-        scoreLabel.innerText = detailedEdit.toxicityObject.label;
         score.innerText = detailedEdit.toxicityObject.score;
+        scoreLabel.innerText = detailedEdit.toxicityObject.label;
         scoreReason.innerText = detailedEdit.toxicityObject.reason;
         scoreIsExperimental.innerText = experimentalMessage(detailedEdit.toxicityObject.scoreIsExperimental);
     });

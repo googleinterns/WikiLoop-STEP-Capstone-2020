@@ -43,27 +43,32 @@ public class RetrieveEditServlet extends HttpServlet {
     }  
 
     private String getIdFromUrl(HttpServletRequest request) {
-        System.out.println(request.getQueryString());
-        return request.getParameter("id");
+        System.out.println(request.getRequestURL().toString());
+        //return request.getParameter("id");
+        return "969495573";
     }
 
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+
+      Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
       PreparedQuery pq = datastore.prepare(query);
 
       Entity entity = pq.asSingleEntity();
+      
+      System.out.println("entity: " + entity);
 
       String userName = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
       String date = (String) entity.getProperty("date");
       String parentArticle = (String) entity.getProperty("parentArticle");
       String status = (String) entity.getProperty("status");
-      String revisionID = (String) entity.getProperty("revisionID");
-      String toxicityObject = (String) entity.getProperty("toxicityObject");
+      String toxicityObject = "70%";
+      String revisionId = (String) entity.getProperty("revisionId");
+      //String toxicityObject = (String) entity.getProperty("toxicityObject");
 
-      EditComment ec = new EditComment(revisionID, userName, comment, toxicityObject, date, parentArticle, status);
+      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
 
       return ec;
     }   
