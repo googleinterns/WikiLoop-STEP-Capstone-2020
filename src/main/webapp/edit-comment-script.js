@@ -1,7 +1,8 @@
 async function getDetailedEdit(id) {
     let response = await fetch("/retrieve?id=" + id);
     let detailedEdit = await response.json();
-    let computedAttribute = await detailedEdit.computedAttribute.json();
+    let computedAttribute = JSON.parse(detailedEdit.toxicityObject);
+    console.log(computedAttribute);
     
     const article = document.getElementById('article');
     const username = document.getElementById('username');
@@ -18,9 +19,9 @@ async function getDetailedEdit(id) {
     username.innerText = detailedEdit.userName;
     edit.innerText = detailedEdit.comment;
     date.innerText = detailedEdit.date;
-    score.innerText = computedAttribute.score + "%";
-    scoreLabel.innerText = computedAttribute.label;
-    scoreReason.innerText = computedAttribute.reason;
+    score.innerText = "Score: " + computedAttribute.score + "%";
+    scoreLabel.innerText = "Label: " + computedAttribute.label;
+    scoreReason.innerText = "Reason: " + computedAttribute.reason;
     scoreIsExperimental.innerText = experimentalMessage(computedAttribute.scoreIsExperimental);
 }
 
