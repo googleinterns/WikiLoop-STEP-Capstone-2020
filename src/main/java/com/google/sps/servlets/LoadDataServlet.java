@@ -66,10 +66,13 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  
+   
+    
     // this boolean variable determines whether we update the Datastore or not
-    boolean updateDatastore = false;
+    boolean updateDatastore = true;
     String json = getEditComments(request);
-
+    System.out.println(json);
     // Get a collection of edit comments without a toxicity attribute using the MockData class
     Collection<EditComment> listMockComments = new ArrayList<EditComment>();
     listMockComments = new MockData(json).getMockComments();
@@ -77,14 +80,23 @@ public class LoadDataServlet extends HttpServlet {
     // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
-
+    List<String> ids = new ArrayList<String>();
+    for (EditComment comment: listEditComments) {
+      ids.add(comment.revisionId);
+    }
+    String urlID = "index.html?ids=";
+    for (String id: ids) {
+      urlID += id + "-";
+    }
     // store the new data in Datastore
     if (updateDatastore){
       loadEditCommentsToDatastore(listEditComments);    
       loadUsersToDatastore(listEditComments); 
     }
     // Redirect back to the HTML page.
-    response.sendRedirect("index.html");
+   response.sendRedirect(urlID);
+   return;
+    
   }
 
   /**
@@ -92,12 +104,13 @@ public class LoadDataServlet extends HttpServlet {
    * @param Collection<EditComment> listEditComments
    */
   private void loadEditCommentsToDatastore(Collection<EditComment> listEditComments) {
-
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
       for (EditComment editComment : listEditComments) {
+        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, editComment.revisionId));
+        PreparedQuery pq = datastore.prepare(query);
+        Entity entity = pq.asSingleEntity();
+        if (entity == null) {
           Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
-
           editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
           editCommentEntity.setProperty("userName", editComment.getUserName());
           editCommentEntity.setProperty("comment", editComment.getComment());
@@ -105,8 +118,8 @@ public class LoadDataServlet extends HttpServlet {
           editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
           editCommentEntity.setProperty("date", editComment.getDate());
           editCommentEntity.setProperty("status", editComment.getStatus());
-
           datastore.put(editCommentEntity);
+        }
       }
   }
 
@@ -118,14 +131,13 @@ public class LoadDataServlet extends HttpServlet {
    */
   private void loadUsersToDatastore(Collection<EditComment> listEditComments) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     for (EditComment editComment : listEditComments) {
       Query query = 
         new Query("UserProfile")
             .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, editComment.getUserName()));
       PreparedQuery results = datastore.prepare(query);
-
       Entity entity = results.asSingleEntity();
+      if (entity == null) {
       Collection<EmbeddedEntity> listEditCommentsEntity = new ArrayList<EmbeddedEntity>();
       if (entity != null){
         listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
@@ -141,6 +153,7 @@ public class LoadDataServlet extends HttpServlet {
       userProfileEntity.setProperty("userName", editComment.getUserName());
       userProfileEntity.setProperty("listEditComments", listEditCommentsEntity);
       datastore.put(userProfileEntity);
+      }
     }
   }
 
@@ -152,7 +165,6 @@ public class LoadDataServlet extends HttpServlet {
    */
   private EmbeddedEntity createEmbeddedEntity(EditComment editComment) {
     EmbeddedEntity editCommentEntity = new EmbeddedEntity();
-
     editCommentEntity.setProperty("userName", editComment.getUserName());
     editCommentEntity.setProperty("comment", editComment.getComment());
     editCommentEntity.setProperty("date", editComment.getDate());
@@ -160,7 +172,6 @@ public class LoadDataServlet extends HttpServlet {
     editCommentEntity.setProperty("status", editComment.getStatus());
     editCommentEntity.setProperty("revisionID", editComment.getRevisionId());
     editCommentEntity.setProperty("toxicityObject", editComment.getToxicityObject());
-
     return editCommentEntity;
   }
 
@@ -181,7 +192,6 @@ public class LoadDataServlet extends HttpServlet {
       comment.toxicityObject = attributeString;
       listEditComments.add(comment);
     }
-
     return listEditComments;
   }
 
@@ -201,7 +211,6 @@ public class LoadDataServlet extends HttpServlet {
         String status = (String) embeddedEntity.getProperty("status");
         String revisionId = (String) embeddedEntity.getProperty("revisionID");
         String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
-
         EditComment tempEditComment = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
 
         if (editComment.equals(tempEditComment)){
