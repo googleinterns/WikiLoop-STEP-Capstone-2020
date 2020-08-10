@@ -44,7 +44,7 @@ public class RetrieveEditServlet extends HttpServlet {
 
     private String getIdFromUrl(HttpServletRequest request) {
         System.out.println(request.getQueryString());
-        return request.getQueryString();
+        return request.getParameter("id");
     }
 
     /* TO DO: Use Datastore */

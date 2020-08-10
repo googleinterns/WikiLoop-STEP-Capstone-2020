@@ -72,7 +72,7 @@ async function getComments() {
                         editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
+                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
                         ]);
   });
 }
