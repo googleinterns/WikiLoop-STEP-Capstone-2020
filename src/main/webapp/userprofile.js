@@ -45,7 +45,7 @@ function getUser() {
     const userNameSection = document.getElementById('user-name-section');
     userNameSection.innerHTML = user.userName;
     const userPersonalInformationSection = document.getElementById('personal-information');
-    userPersonalInformationSection.innerHTML = "email: "+ "tom@gmail.com";
+    userPersonalInformationSection.innerHTML = "User name: "+ user.userName;
     const avgToxicityScore = document.getElementById('incivility');
     avgToxicityScore.innerHTML= "Average Incivility Score: \t" + user.avgToxicityScore.substring(0,Math.min(5,user.avgToxicityScore.length)) + "%";
     // Build the list of edits
