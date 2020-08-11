@@ -67,7 +67,7 @@ function createEditElement(edit, userName, avgToxicityScore) {
                   edit.comment,
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + edit.parentArticle + "\"> "+ edit.parentArticle + "</a>", 
                   edit.date,
-                  "<a target=\"_blank\" href=\"/edit-comment.html?" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
+                  "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
 }
 
 
