@@ -50,7 +50,7 @@ public class UserProfileServlet extends HttpServlet {
     // Get User's instance from Datastore
     List<String> listOfUsers = new ArrayList<String>();
     listOfUsers.add("Giano II");
-    listOfUsers.add("Bastun");
+    //listOfUsers.add("Bastun");
     Collections.shuffle(listOfUsers);
     String userToRetrieve = listOfUsers.get(0);
     User user = retrieveUser(userToRetrieve);
@@ -70,35 +70,60 @@ public class UserProfileServlet extends HttpServlet {
   }
 
   /** 
-   * Retrieve a user from Datastore 
+   * Retrieve a user with a given name from Datastore
+   * @param String userToRetrieve
+   * @return User
    */
   private User retrieveUser(String userToRetrieve) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // Filter query by userName
+    // Filter query by the Key
+    Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + userToRetrieve);
     Query query = 
         new Query("UserProfile")
-            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, userToRetrieve));
+            .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+            
     PreparedQuery results = datastore.prepare(query);
-
     Entity entity = results.asSingleEntity();
     if (entity == null){
         return null;
     }
     String id = String.valueOf(entity.getKey().getId());
     String userName = (String) entity.getProperty("userName");
-    
-    // Get User's edit comments list
-    Collection<EmbeddedEntity> listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
-    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    for (EmbeddedEntity embeddedEntity : listEditCommentsEntity) {
 
-      String comment = (String) embeddedEntity.getProperty("comment");
-      String date = (String) embeddedEntity.getProperty("date");
-      String parentArticle = (String) embeddedEntity.getProperty("parentArticle");
-      String status = (String) embeddedEntity.getProperty("status");
-      String revisionId = (String) embeddedEntity.getProperty("revisionID");
-      String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
-      try {
+    // Get User's edit comments revision ids
+    Collection<String> listEditCommentsRevids = new ArrayList<String>();
+    listEditCommentsRevids = (Collection<String>) entity.getProperty("listEditComments");
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+    listEditComments = retrieveUserEditComments(listEditCommentsRevids);
+    User user = new User(id, userName, listEditComments);
+    return user;
+  }
+
+  /**
+   * Goes through the collection of revision ids and returns a collectino of EditComments retrieved from Datastore,
+   * with the corresponding revision ids
+   * @param Collection<String> listEditCommentsRevids
+   * @return ArrayList<EditComment> of EditComments
+   */
+  private ArrayList<EditComment> retrieveUserEditComments(Collection<String> listEditCommentsRevids) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+    for (String revid : listEditCommentsRevids) {
+        // Filter query by the Key
+        Key key = KeyFactory.createKey("EditComment", revid + "en");
+        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+        PreparedQuery results = datastore.prepare(query);
+        Entity entity = results.asSingleEntity();
+
+        String userName = (String) entity.getProperty("userName");
+        String comment = (String) entity.getProperty("comment");
+        String date = (String) entity.getProperty("date");
+        String parentArticle = (String) entity.getProperty("parentArticle");
+        String status = (String) entity.getProperty("status");
+        String toxicityObject = (String) entity.getProperty("computedAttribute");
+        String revisionId = (String) entity.getProperty("revisionId");
+
+        try {
         JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
         listEditComments.add(new EditComment(revisionId, userName, comment, computedAttribute.get("score").toString(), date, parentArticle, status));
 
@@ -106,8 +131,6 @@ public class UserProfileServlet extends HttpServlet {
         System.out.println(e);
         }
     }
-
-    User user = new User(id, userName, listEditComments);
-    return user;
+    return listEditComments;
   }
 }

@@ -66,13 +66,10 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-  
-   
     
     // this boolean variable determines whether we update the Datastore or not
     boolean updateDatastore = true;
     String json = getEditComments(request);
-    System.out.println(json);
     // Get a collection of edit comments without a toxicity attribute using the MockData class
     Collection<EditComment> listMockComments = new ArrayList<EditComment>();
     listMockComments = new MockData(json).getMockComments();
@@ -80,6 +77,7 @@ public class LoadDataServlet extends HttpServlet {
     // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
+
     List<String> ids = new ArrayList<String>();
     for (EditComment comment: listEditComments) {
       ids.add(comment.revisionId);
@@ -90,89 +88,80 @@ public class LoadDataServlet extends HttpServlet {
     }
     // store the new data in Datastore
     if (updateDatastore){
-      loadEditCommentsToDatastore(listEditComments);    
-      loadUsersToDatastore(listEditComments); 
+      loadToDatastore(listEditComments); 
     }
     // Redirect back to the HTML page.
    response.sendRedirect(urlID);
    return;
-    
   }
 
   /**
-   * Goes through all edit comments passed though in a collection, and stores them to the Datastore
+   * Goes through all edit comments passed though in a collection, and stores both the author and the edit comment.
+   * Calls loadEditCommentToDatastore() and loadUserToDatastore()
    * @param Collection<EditComment> listEditComments
    */
-  private void loadEditCommentsToDatastore(Collection<EditComment> listEditComments) {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      for (EditComment editComment : listEditComments) {
-        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, editComment.revisionId));
-        PreparedQuery pq = datastore.prepare(query);
-        Entity entity = pq.asSingleEntity();
-        if (entity == null) {
-          Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
-          editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
-          editCommentEntity.setProperty("userName", editComment.getUserName());
-          editCommentEntity.setProperty("comment", editComment.getComment());
-          editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
-          editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
-          editCommentEntity.setProperty("date", editComment.getDate());
-          editCommentEntity.setProperty("status", editComment.getStatus());
-          datastore.put(editCommentEntity);
-        }
-      }
-  }
-
-  /**
-   * Goes through all edit comments passed though in a collection, and stores the author in Datastore.
-   * Stores a list of EditComments for each author.
-   * Updates the list if an existing author has a new comment
-   * @param Collection<EditComment> listEditComments
-   */
-  private void loadUsersToDatastore(Collection<EditComment> listEditComments) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private void loadToDatastore(Collection<EditComment> listEditComments) {
     for (EditComment editComment : listEditComments) {
-      Query query = 
-        new Query("UserProfile")
-            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, editComment.getUserName()));
-      PreparedQuery results = datastore.prepare(query);
-      Entity entity = results.asSingleEntity();
-      if (entity == null) {
-      Collection<EmbeddedEntity> listEditCommentsEntity = new ArrayList<EmbeddedEntity>();
-      if (entity != null){
-        listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
-        datastore.delete(entity.getKey());
-      }
-      
-      EmbeddedEntity editCommentEntity = createEmbeddedEntity(editComment);
-      if (!containsEditComment(listEditCommentsEntity, editComment)){
-          listEditCommentsEntity.add(editCommentEntity);
-          }
-
-      Entity userProfileEntity = new Entity("UserProfile", editComment.getUserName());
-      userProfileEntity.setProperty("userName", editComment.getUserName());
-      userProfileEntity.setProperty("listEditComments", listEditCommentsEntity);
-      datastore.put(userProfileEntity);
-      }
+      loadEditCommentToDatastore(editComment);
+      loadUserToDatastore(editComment);      
     }
   }
 
   /**
-   * Sets properties for an EditComment EmbeddedEntity
-   * Returns the EmbeddedEntity to be added to Datastore as a user's property
+   * Stores the edit comments passed though in the Datastore if it does not already exist
    * @param EditComment editComment
-   * @return EmbeddedEntity describing the EditComment
    */
-  private EmbeddedEntity createEmbeddedEntity(EditComment editComment) {
-    EmbeddedEntity editCommentEntity = new EmbeddedEntity();
-    editCommentEntity.setProperty("userName", editComment.getUserName());
-    editCommentEntity.setProperty("comment", editComment.getComment());
-    editCommentEntity.setProperty("date", editComment.getDate());
-    editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
-    editCommentEntity.setProperty("status", editComment.getStatus());
-    editCommentEntity.setProperty("revisionID", editComment.getRevisionId());
-    editCommentEntity.setProperty("toxicityObject", editComment.getToxicityObject());
-    return editCommentEntity;
+  private void loadEditCommentToDatastore(EditComment editComment) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // Filter query by the Key
+    Key key = KeyFactory.createKey("EditComment", editComment.getRevisionId() + "en");
+    Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
+      editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
+      editCommentEntity.setProperty("userName", editComment.getUserName());
+      editCommentEntity.setProperty("comment", editComment.getComment());
+      editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+      editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
+      editCommentEntity.setProperty("date", editComment.getDate());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+      datastore.put(editCommentEntity);
+    }
+  }
+
+  /**
+   * Stores the author of the editComment in Datastore.
+   * Adds the editComment's revision id to the list of revision ids of the author's editComments
+   * @param EditComment editComment
+   */
+  private void loadUserToDatastore(EditComment editComment) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // Filter query by the Key
+    Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
+    Query query = 
+      new Query("UserProfile")
+        .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+            
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+
+    // Get revision ids for the existing comments by the user
+    Collection<String> listEditCommentsRevids = new ArrayList<String>();
+    if (entity != null){
+        listEditCommentsRevids = (Collection<String>) entity.getProperty("listEditComments");
+        datastore.delete(entity.getKey());
+    }
+    if (!listEditCommentsRevids.contains(editComment.getRevisionId())){
+        listEditCommentsRevids.add(editComment.getRevisionId());
+    }
+
+    Entity userProfileEntity = new Entity("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
+
+    userProfileEntity.setProperty("userName", editComment.getUserName());
+    userProfileEntity.setProperty("listEditComments", listEditCommentsRevids);
+    datastore.put(userProfileEntity);
   }
 
   /**
@@ -188,36 +177,10 @@ public class LoadDataServlet extends HttpServlet {
       Attribute attribute = new Perspective(comment.comment, true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);
-      //System.out.println("Comment: " + comment.comment + " " + attributeString);
       comment.toxicityObject = attributeString;
       listEditComments.add(comment);
     }
     return listEditComments;
-  }
-
-  /**
-   * Goes through all EditComment entities passed though a collection, and checks if any of them 
-   * contains an EditComment that equals the second EditComment (second parameter)
-   * @param Collection<EditComment> listEditCommentsEntity
-   * @param EditComment editComment
-   * @return boolean
-   */
-  private boolean containsEditComment(Collection<EmbeddedEntity> listEditCommentsEntity, EditComment editComment){
-      for (EmbeddedEntity embeddedEntity : listEditCommentsEntity){
-        String userName = (String) embeddedEntity.getProperty("userName");
-        String comment = (String) embeddedEntity.getProperty("comment");
-        String date = (String) embeddedEntity.getProperty("date");
-        String parentArticle = (String) embeddedEntity.getProperty("parentArticle");
-        String status = (String) embeddedEntity.getProperty("status");
-        String revisionId = (String) embeddedEntity.getProperty("revisionID");
-        String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
-        EditComment tempEditComment = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
-
-        if (editComment.equals(tempEditComment)){
-            return true;
-        }
-      }
-      return false;
   }
 
   /**
