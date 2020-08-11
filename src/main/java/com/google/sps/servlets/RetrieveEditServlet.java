@@ -14,7 +14,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 //classes
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
-import com.google.sps.data.MockComment;
 import com.google.sps.data.Attribute;
 
 //servlet
