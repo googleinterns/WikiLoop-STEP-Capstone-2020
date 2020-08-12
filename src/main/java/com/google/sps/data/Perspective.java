@@ -1,4 +1,3 @@
-
 package com.google.sps.data;
 import java.util.Date;
 import org.json.simple.JSONArray; 
@@ -59,7 +58,7 @@ public final class Perspective {
    * if experimental is true then we want to consider experimental attributes
    * Requests perspective api to get attribute label and attribute score. 
    * returns the attribute with the highest probability and percentage
-   * @param String comment, boolean Experminental
+   * @param comment, boolean Experminental
    * @return Attribute containing label, score, reason, and if attribute is experimental
    */
   public Perspective(String comment, boolean experimental) {
@@ -77,7 +76,7 @@ public final class Perspective {
   /**
    * Goes through all the labels of the known perspective api attributes to
    * determines if we should add the label
-   * @param boolean experimental, true if we to consider experimental labels, false if not 
+   * @param experimental, true if we to consider experimental labels, false if not 
    */
   private void setListAttributes(boolean experimental) {
     for (String label: labels) {
@@ -93,6 +92,7 @@ public final class Perspective {
    * Takes in a certain label and classification if label is experimental
    * parses the toxicity object to find summary score and creates an
    * Attribute object scoring label, score, label explaination, and if label is experimental
+   * @param experimental, true if we to consider experimental labels, false if not
    * @return Attribute object
    */
   private Attribute setAttribute(String label, boolean experimental) {
@@ -105,7 +105,7 @@ public final class Perspective {
 
   /** 
    * Build JSON header for perspective api post request
-   * @param String comment text that api will analyzed
+   * @param comment text that api will analyzed
    * @return JSON string of header for perspective api call
    */
   private String getApiHeader (String comment) {
@@ -141,7 +141,7 @@ public final class Perspective {
   /**
    * Function calls the perspective api via post request
    * to analyze an edit comment text
-   * @param  String comment text perspective api is analyzing
+   * @param  comment comment text the perspective api is analyzing
    * @return String JSON response from API
    */
   private String getToxicityString(String comment) {
