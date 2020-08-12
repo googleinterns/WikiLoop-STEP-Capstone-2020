@@ -21,10 +21,6 @@
   margin-right: auto;
   overflow-x: hidden;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
 }
 
 a {
