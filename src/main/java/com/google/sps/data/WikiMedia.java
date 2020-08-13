@@ -148,4 +148,136 @@ public final class WikiMedia {
     }
     return "Error";
   }
+
+  /**
+   * Function gets a response from the MediaAPI in a string json format,
+   * parses the string, and returns a list of EditComments
+   * @param  String json response from the WikiMedia API
+   * @return List<EditComment> A list of EditComments 
+   */
+   private List<EditComment> readWikiMediaResponse(String json) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      Object jsonObj = new JSONParser().parse(json); 
+
+      /* Parse mockDataJSON */
+      JSONObject mockDataObject = (JSONObject) jsonObj;
+      JSONObject query = (JSONObject) mockDataObject.get("query");
+
+      for (Object key : query.keySet()) {
+          String queryType = String.valueOf(key);
+          if (queryType.equals("pages")) {
+              editComments.addAll(readByRevisionID((JSONObject) query.get(queryType)));
+          }
+          else if (queryType.equals("allrevisions")) {
+              editComments.addAll(readByAllRevisions((JSONArray) query.get(queryType)));
+          }
+          else if (queryType.equals("recentchanges")) {
+              System.out.println("RECENT CHANGES");
+              editComments.addAll(readByRecentChanges((JSONArray) query.get(queryType)));
+          }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONObject and returns a list of EditComments.
+   * @param  JSONObject pages
+   * @return List<EditComment> A list of EditComments 
+   */
+  private List<EditComment> readByRevisionID(JSONObject pages) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object key : pages.keySet()) {
+          String pageId = String.valueOf(key);
+          JSONObject jsonKey = (JSONObject) pages.get(pageId);
+          String article = (String) jsonKey.get("title");
+          JSONArray revisions = (JSONArray) jsonKey.get("revisions");
+          
+        for (Object o: revisions) {
+          JSONObject comment = (JSONObject) o;
+          String revisionId = String.valueOf(comment.get("revid"));
+          String user = (String) comment.get("user");
+          String mockComment = (String) comment.get("comment");
+          String date = (String) comment.get("timestamp");
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+        }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONArray and returns a list of EditComments.
+   * @param  JSONArray allrevisions
+   * @return List<EditComment> A list of EditComments 
+   */
+  private List<EditComment> readByAllRevisions(JSONArray allrevisions) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : allrevisions) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          JSONArray revisions = (JSONArray) object.get("revisions");
+          
+          for (Object o: revisions) {
+            JSONObject comment = (JSONObject) o;
+            String revisionId = String.valueOf(comment.get("revid"));
+            String user = (String) comment.get("user");
+            String mockComment = (String) comment.get("comment");
+            String date = (String) comment.get("timestamp");
+            if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          }
+       }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONArray and returns a list of EditComments.
+   * @param  JSONArray recentchanges
+   * @return List<EditComment> A list of EditComments 
+   */
+   private List<EditComment> readByRecentChanges(JSONArray recentchanges) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : recentchanges) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          
+          String revisionId = String.valueOf(object.get("revid"));
+          String user = (String) object.get("user");
+          String mockComment = (String) object.get("comment");
+          String date = (String) object.get("timestamp");
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
 }
