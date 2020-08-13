@@ -1,5 +1,5 @@
 //update status servlet
-
+/*
 package com.google.sps.servlets;
 
 //datastore
@@ -46,6 +46,7 @@ public class UpdateStatusServlet extends HttpServlet {
       datastore.update(editEntity);
 
       response.sendRedirect("/edit-comment.html");
-      */
+      
     }
 }
+*/
