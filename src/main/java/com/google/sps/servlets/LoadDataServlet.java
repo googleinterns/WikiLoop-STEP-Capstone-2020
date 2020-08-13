@@ -66,7 +66,8 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+   // first check id number with data
+   
     // this boolean variable determines whether we update the Datastore or not
     boolean updateDatastore = true;
     String json = getEditComments(request);
