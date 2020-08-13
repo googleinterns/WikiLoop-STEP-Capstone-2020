@@ -51,12 +51,11 @@ public final class MockData {
       JSONObject pages = (JSONObject) query.get("pages");
 
       for (Object key : pages.keySet()) {
-          //JSONObject jsonKey = (JSONObject) key;
           String pageId = String.valueOf(key);
           JSONObject jsonKey = (JSONObject) pages.get(pageId);
           String article = (String) jsonKey.get("title");
           JSONArray revisions = (JSONArray) jsonKey.get("revisions");
-          /* Iterate & Parse article revisions, create mock comments*/
+          
         for (Object o: revisions) {
           JSONObject comment = (JSONObject) o;
           String revisionId = String.valueOf(comment.get("revid"));
