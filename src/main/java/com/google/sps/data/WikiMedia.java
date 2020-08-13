@@ -97,10 +97,8 @@ public final class WikiMedia {
    * from specific user
    * @param user The username of the revision summaries to get
    * @param arvlimit The ammout of revisions to get for that user **Only 1 - 5000 Revisions at a time**
-   * @param arvstart Initialize time to find revisions
-   * @param arvend Max time to find revisions
    */
-  public String getByUser(String user, String arvlimit, String arvstart, String arvend) {
+  public String getByUser(String user, String arvlimit) {
     Map<String, String> params = ImmutableMap.<String, String>builder()
                                     .put("action", "query")
                                     .put("format", "json")
@@ -108,8 +106,6 @@ public final class WikiMedia {
                                     .put("list", "allrevisions")
                                     .put("arvuser", user)
                                     .put("arvlimit", arvlimit)
-                                    .put("arvstart", arvstart)
-                                    .put("arvend", arvend)
                                     .build();
     return getWikiMediaResponse(params);
   }
