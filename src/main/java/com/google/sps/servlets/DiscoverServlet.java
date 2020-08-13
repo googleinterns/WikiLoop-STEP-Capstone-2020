@@ -16,6 +16,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.*;
 import java.util.Date;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -63,28 +64,28 @@ public class DiscoverServlet extends HttpServlet {
     
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
-    System.out.println("Check " + ids);
     if (ids.equals("null")) {
-    Query query = new Query("EditComments");
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      String revisionId = (String) entity.getProperty("revisionId");
-      String user = (String) entity.getProperty("userName");
-      String comment = (String) entity.getProperty("comment");
-      String computedAttributeString = (String) entity.getProperty("computedAttribute");
-      String article = (String) entity.getProperty("parentArticle");
-      String date = (String) entity.getProperty("date");
-      String status = (String) entity.getProperty("status");
-      try {
-        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.get("score").toString(), date, article, status));
-      } catch(Exception e) {
-        System.out.println(e);
+      Query query = new Query("EditComment");
+      PreparedQuery results = datastore.prepare(query);
+      for (Entity entity : results.asIterable()) {
+        String revisionId = (String) entity.getProperty("revisionId");
+        String user = (String) entity.getProperty("userName");
+        String comment = (String) entity.getProperty("comment");
+        String computedAttributeString = (String) entity.getProperty("computedAttribute");
+        String article = (String) entity.getProperty("parentArticle");
+        String date = (String) entity.getProperty("date");
+        String status = (String) entity.getProperty("status");
+        try {
+          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+          editComments.add(new EditComment(revisionId, user, comment, computedAttribute.get("score").toString(), date, article, status));
+        } catch(Exception e) {
+          System.out.println(e);
+        }
       }
     }
     } else {
       for (String id : idList) {
-        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
         String revisionId = (String) entity.getProperty("revisionId");
