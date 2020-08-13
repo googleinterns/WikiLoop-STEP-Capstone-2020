@@ -1,96 +1,97 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-package com.google.sps.servlets;
+package com.google.sps;
 import java.lang.Math;
 import java.lang.Double;
+
 import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.Call;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import java.io.FileReader; 
+
+import org.json.simple.JSONArray; 
+import org.json.simple.JSONObject;  
+import org.json.simple.JSONValue;
+import org.json.simple.parser.*; 
 
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-
-import java.util.Date;
-
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
-import java.lang.Double;
 
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.MockComment;
 
-import org.json.simple.JSONArray; 
-import org.json.simple.JSONObject; 
-import org.json.simple.parser.*; 
-import java.io.FileReader;
 
-/** Servlet that returns a list of Edit Comment Objects */
-@WebServlet("/comments")
-public class DiscoverServlet extends HttpServlet {
-  /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+/**
+ * Class tests the DiscoverServlet logic using mock data from MockData.java
+ *
+ **Toxicity Scores can fluctuate, so if a test fails due to a change
+ * in score, just update the score in the test file, mockDataTest.java
+ */
+@RunWith(JUnit4.class)
+public class DiscoverServletTest {
+  private DiscoverServletTest discover;
+  private final JSONArray expectedJSON = new MockData().getExpectedResponse();
+  
+  /**
+   * Reads the perspective api key in config json and initializes the
+   * returns api_key in order to get toxicity score
+   * @return API key string
+   */
+  private String getApiKey() {
+   try { 
+      Object obj = new JSONParser().parse(new FileReader("config.json")); 
+      // typecasting obj to JSONObject 
+      JSONObject jo = (JSONObject) obj;
+      return (String) jo.get("WIKILOOP_API_KEY");
+     } catch (Exception e) {
+      return "";
+     }  
+  }
+
+  /**
+   * Mimics the doGet() function in DiscoverServlet.java function purpose is 
+   * to get comments from mockData, emulating the WikiMedia API response, and
+   * convert the mock comments into edit comment object, making call to perspective
+   * api to get toxicity score. This function returns JSONArray in order to compare
+   * with expected JSONArray result in Mock Data
+   * @return JSONArray of EditComment Objects
+   */
+  public JSONArray doGet() throws IOException {
     List<MockComment> listMockComments = new ArrayList<MockComment>();
     listMockComments = new MockData().getMockComments();
-                
-    Query query = new Query("edit-comments");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
 
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
     for (MockComment comment : listMockComments) {
-
       String toxicString = getToxicityString(comment.text);
+      
+      // Parse response from perspective API
       try { 
         JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
-        System.out.println(toxicString); 
-        // typecasting obj to JSONObject 
         JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
         JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
         JSONObject summaryScore = (JSONObject) toxicity.get("summaryScore");
@@ -102,22 +103,26 @@ public class DiscoverServlet extends HttpServlet {
         System.out.println(e);
       }   
     }
+
+    // Convert List into JSONArray
     String json = convertToJsonUsingGson(editComments);
-    // Send the JSON as the response
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
+    JSONParser parser = new JSONParser();
+    JSONArray array = (JSONArray) JSONValue.parse(json);
+    return array;
   }
 
   /**
    * Function calls the perspective api via post request
    * to analyze an edit comment text
+   * @param  String comment text perspective api is analyzing
+   * @return String JSON response from API
    */
   private String getToxicityString(String comment) {
+    
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "AIzaSyCLs-HQGTS_Fdpg3rvrbtb-XlOvsEgG3pQ";
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
-      "?key=" + api_key);
+      "?key=" + getApiKey());
       String postUrl = buildUrl;
       OkHttpClient client = new OkHttpClient();
       RequestBody body = RequestBody.create(JSON, convertToJson(comment));
@@ -135,7 +140,9 @@ public class DiscoverServlet extends HttpServlet {
   }
   
   /** 
-   * Build json header for perspective api post request
+   * Build JSON header for perspective api post request
+   * @param String comment text that api will analyzed
+   * @return JSON string of header for perspective api call
    */
   private String convertToJson(String comment) {
     String json = "{";
@@ -146,19 +153,38 @@ public class DiscoverServlet extends HttpServlet {
     json += "[\"en\"]";
     json += ", ";
     json += "\"requestedAttributes\": ";
-    json += "{\"TOXICITY\": {}}";
+    json += "{\"TOXICITY\": {}, \"IDENTITY_ATTACK\": {}, \"INSULT\": {}, \"PROFANITY\": {}, \"THREAT\": {}, \"SEXUALLY_EXPLICIT\": {}, \"FLIRTATION\": {}}";
     json += "}";
     return json;
   }
 
   /**
-   * Converts a comments instance into a JSON string using the Gson library. Note: We first added
+   * Converts a list of EditComment Objects into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
+   * @param List EditComment Objects
+   * @return String JSONstring of EditComment Objects
    */
   private String convertToJsonUsingGson(List comments) {
     Gson gson = new Gson();
     String json = gson.toJson(comments);
     return json;
   }
-}
 
+ /**
+  * Initialize the DiscoverServlet Test
+  */
+ @Before
+  public void setUp() throws IOException {
+    discover = new DiscoverServletTest();
+  }
+  
+ /**
+  * Test to check if the doGet logic of Discover Servlet is working
+  * reads mock data in mockData.json and compares the JSONarray output
+  * to mockDataTest.json JSONArray of edit comments
+  */
+  @Test
+  public void getsCorrectEditCommentsList() throws IOException {
+    Assert.assertEquals(discover.doGet(), expectedJSON);
+  }
+}
