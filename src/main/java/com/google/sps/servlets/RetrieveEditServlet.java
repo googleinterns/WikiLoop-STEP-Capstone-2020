@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 
 //datastore
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.*;
 
 //classes
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
-import com.google.sps.data.MockComment;
 import com.google.sps.data.Attribute;
 
 //servlet
@@ -33,6 +27,7 @@ public class RetrieveEditServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
       String id = request.getParameter("id");
+
       EditComment edit = retrieveEdit(id);
 
       Gson gson = new Gson();
@@ -44,12 +39,12 @@ public class RetrieveEditServlet extends HttpServlet {
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      // Filter query by the Key
+      Key key = KeyFactory.createKey("EditComment", id + "en");
+      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+      PreparedQuery results = datastore.prepare(query);
+      Entity entity = results.asSingleEntity();
 
-      Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
-      PreparedQuery pq = datastore.prepare(query);
-
-      Entity entity = pq.asSingleEntity();
-      System.out.println("entity: " + entity);
       String userName = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
       String date = (String) entity.getProperty("date");
