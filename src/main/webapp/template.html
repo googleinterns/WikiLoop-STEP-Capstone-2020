@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
+<html>
+  <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>Discover</title>
+	    <title>Template</title>
 	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
@@ -24,35 +24,21 @@
         <script src="https://code.jquery.com/jquery-3.5.1.js" 
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
         crossorigin="anonymous"></script>
-        <link rel="stylesheet"
-        href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script> 
-          $(function(){
-          $("#template").load("template.html"); 
-          });
-        </script> 
-    </head>
-    <body>
-      <div id="template"></div>
-      <div class="dashboard-content">
-        <div class="dashboard-feed w3-round w3-card "> 
-          <div id="table-container">
-            <div>
-              <form action="#" onsubmit="loadData();return false">
-                Search Revision ID(s)
-              <input type="text" id="revids" name="ids"></input>
-              </form>
-            </div>
-            <table class="table table-fluid " id="my-table">
-              <thead>
-                <tr><th class="dt-center">Incivility %</th><th class="dt-center">Revision ID</th><th class="dt-center">User Name</th><th class="dt-center">Edit Comment</th><th class="dt-center">Article</th><th class="dt-center">Date</th><th class="dt-center">Action</th></tr>
-              </thead>
-              <tbody id="edits-table" style="text-align:center;"></tbody>
-            </table>
-          </div>
+  </head> 
+  <!--USER JS AND FIX TEMPLATE FILE-->
+  <body onload="getUsername()">
+    <div class="dashboard-header w3-card w3-#f8f9fa">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <a href="index.html">WikiLoop IncivilityCheck</a>
+        </div>
+        <div class="user-loggedin ">
+          <a href="userprofile.html"><div id="user-name-section"></div></a>
         </div>
       </div>
-      <script src="discover.js"></script>
-    </body>
+    </div>
+    <div class="footer">
+      <p>This score is derived from the results of the Perspective API. The API is not 100% accurate and may give fake positives and/or negatives.</p>
+    </div>
+  </body>
 </html>
