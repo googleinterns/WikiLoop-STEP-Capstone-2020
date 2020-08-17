@@ -12,9 +12,11 @@ async function getDetailedEdit(id) {
     const scoreLabel = document.getElementById('label');
     const scoreReason = document.getElementById('reason');
     const scoreIsExperimental = document.getElementById('experimental');
+    const revid = document.getElementById('rev-id');
 
     const link = "https://en.wikipedia.org/w/index.php?title=" + detailedEdit.parentArticle;
     article.setAttribute("href", link);
+    article.setAttribute("target", "_blank");
     article.innerText = detailedEdit.parentArticle;
     username.innerText = detailedEdit.userName;
     edit.innerText = detailedEdit.comment;
@@ -23,6 +25,10 @@ async function getDetailedEdit(id) {
     scoreLabel.innerText = "Label: " + computedAttribute.label;
     scoreReason.innerText = "Reason: " + computedAttribute.reason;
     scoreIsExperimental.innerText = experimentalMessage(computedAttribute.experimental);
+    const revidLink = "https://en.wikipedia.org/w/index.php?diff=" + id;
+    revid.setAttribute("href", revidLink);
+    revid.setAttribute("target", "_blank");
+    revid.innerText = " rev." + "567483924";
 }
 
 function experimentalMessage(boolAns) {
