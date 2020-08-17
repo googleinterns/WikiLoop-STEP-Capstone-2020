@@ -33,26 +33,81 @@
         <div class="nav-container">
           <div class="nav-brand">
            <a href="/"> 
-             WikiLoop IncivilityCheck
+             WikiLoop CivilityCheck
            </a>
           </div>
+            <a href="/" class="material-icons"> 
+              view_list
+            </a>
           <div class="user-loggedin ">
             <a href="userprofile.html">Giano II</a>
           </div>
         </div>
       </div>
       <div class="dashboard-content">
-        <div class="dashboard-slide-feed w3-round w3-card "> 
-          <h5 class="dashboard-card-title">
-            <a id="dashboard-card-title-id">
+        <div class="discover-slide-feed w3-round w3-card "> 
+          <h2 class="dashboard-card-title">
+            <a id="discover-card-title-id">
               Incivility
             </a>
-          </h5>
+          </h2>
           <div class="dashboard-subtitle">
-
+            <div class="discover-subtitle-score-container">
+              <div class="discover-score-title">
+                Incivility:
+              </div>
+              <div id="discover-subtitle-score">
+                
+              </div>
+            </div>
+            <div class="slider-subheader"> 
+              Revision ID:
+              <div id="discover-subtitle-revision">
+              </div>
+            </div>
+            <div class="slider-subheader"> 
+              Date:
+              <div id="discover-subtitle-date">
+              </div>
+            </div>
+            <div class="slider-subheader"> 
+              By User:
+              <div id="discover-subtitle-user">
+              </div>
+            </div>
+          </div>
+          <h2>
+            Edit Comment
+          </h2>
+          <div class="dashboard-subtitle">
+            <div id="discover-edit-comment-text">
+            </div>
+          </div>
+          <h2>
+            Incivility Label
+          </h2>
+          <div class="dashboard-subtitle">
+            <div id="discover-edit-comment-reason">
+            </div>
+          </div>
+          <div class="dashboard-subtitle-action w3-bar">
+            <button class="w3-button w3-white w3-border w3-border-green w3-hover-green">
+              Looks good (g)
+            </button>
+            <button class="w3-button w3-white w3-border w3-border-grey w3-hover-grey">
+              Not sure (p)
+            </button>
+            <button target="_blank" class="w3-button w3-white w3-border w3-border-red  w3-hover-red">
+              Should report (v)
+            </button>
+          </div>
+          <br></br>
+          <div class="dashboard-subtitle">
+            <div id="slider-notice">
+            </div>
           </div>
         <div>
       </div>
-      <script src="discover.js"></script>
+      <script src="slider.js"></script>
     </body>
 </html>
