@@ -17,11 +17,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   max-width: 1140px;
 }
 
 .user-loggedin {
+  margin-left: auto;
   font-size: 16px;
   line-height: 32px;
   height: 2.5em;
@@ -193,4 +193,9 @@ th.dt-center, td.dt-center {
   text-align: center;
   justify-content: center;
   align-items: center;
+  
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%
 }
