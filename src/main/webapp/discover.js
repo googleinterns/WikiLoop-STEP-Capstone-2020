@@ -56,7 +56,7 @@ function loadData() {
  * Get edit comments from server
  */
 async function getComments(ids) {
-  let response = await fetch('/comments?ids='+ids); 
+  let response = await fetch('/comments?id='+ids); 
   let listEditComments = await response.json();
   console.log(listEditComments);
   listEditComments.forEach(editComment => {
@@ -67,7 +67,7 @@ async function getComments(ids) {
                         editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
+                        "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
                         ]);
   });
 }
@@ -76,7 +76,7 @@ async function getComments(ids) {
  * Get edit comments from server
  */
 async function getOneComments(ids) {
-  let response = await fetch('/comments?ids='+ids); 
+  let response = await fetch('/comments?id='+ids); 
   let listEditComments = await response.json();
   console.log(listEditComments);
   let editComment = listEditComments[0];

@@ -77,12 +77,12 @@ public class DiscoverServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("EditComments");
     PreparedQuery results = datastore.prepare(query);              
-    String ids = request.getParameter("ids");
+    String ids = request.getParameter("id");
     
     ArrayList editComments = new ArrayList<EditComment>();
 
     // Check if any ids were passed through, if not return all edit comments in datastore
-    if (ids.equals("") || ids.equals("null")) {
+    if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
     } else {
       List<String> idList = createListIds(ids);

@@ -192,3 +192,9 @@ th.dt-center, td.dt-center {
   overflow-x: hidden;
   position: relative;
 }
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%
+}
