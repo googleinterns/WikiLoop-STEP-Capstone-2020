@@ -54,7 +54,6 @@
 
 /* ALL PAGES */
 a {
-  color: #007bff;
   text-decoration: none;
   background-color: transparent;
 }
@@ -100,8 +99,8 @@ th.dt-center, td.dt-center {
 .navbar-brand {
   color: black;
   display: inline-block;
-  padding-top: .3125rem;
-  padding-bottom: .3125rem;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
   margin-right: 1rem;
   font-size: 1.25rem;
   line-height: inherit;
@@ -173,26 +172,28 @@ th.dt-center, td.dt-center {
   margin-left: auto;
   margin-right: auto;
   border-radius: 25px;
-  background: white;
+  background: #f8f9fa;  
 }
 
-.section {
+.feed {
   padding: 1.5em;
   max-width: 1140px;
-  background-color: #f8f9fa;
-  justify-content: center;
-  align-items: center;
+  background-color: white;
   display: flex;
   flex-direction: column;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
-  text-align: center;
   margin-left: auto;
   margin-right: auto;
   overflow-x: hidden;
   position: relative;
 }
 
+.edit-box {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  
 .sticky {
   position: fixed;
   top: 0;

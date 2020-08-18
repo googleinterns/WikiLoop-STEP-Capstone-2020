@@ -16,64 +16,59 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script> 
-      $(function(){
-      $("#template").load("template.html"); 
+    <script>
+      $(function() {
+        $("#template").load("template.html");
       });
-    </script> 
+
+    </script>
   </head>
+
   <body>
-    <div class="dashboard-header w3-card w3-#f8f9fa">
-      <div class="nav-container">
-        <div class="nav-brand">
-          <a href="/">
-            WikiLoop IncivilityCheck
-          </a>
-        </div>
-        <div class="user-loggedin ">
-         Giano II
-        </div>
-      </div>
-    </div>
-    <section class="section w3-round w3-card">
-      <br>
-      <h3><b>Detailed Edit View</b></h3><br>
-      <div class="edit-info">
-        <table>
-          <tbody>
-            <tr>
-              <td id="date"></td>
-            </tr>
-            <tr>
-              <td><b id="username"></b></td>
-            </tr>
-            <tr>
-              <td id="edit-comment"></td>
-            </tr>
-            <tr>
-              <td><em><a id="article"></a></em></td>
-            </tr>
-          </tbody>
-        </table><br>
-      </div><br>
-      <div class="toxic-info">
-        <div class="toxicity">
-          <h4>Report</h4>
-          <div>
+    <div id=template></div>
+    <section class="feed w3-round w3-card">
+      <h3><b>[[<a style="color: #057eff" id="article"></a>]]</b><sup><a style="color: #057eff" id="rev-id"></a></sup></h3><br>
+      <div class="edit-box">
+        <br>
+        <div class="edit-info">
+          <table>
+            <tbody>
+              <tr>
+                <td id="date"></td>
+              </tr>
+              <tr>
+                <td><b id="username"></b></td>
+              </tr>
+              <tr>
+                <td id="edit-comment"></td>
+              </tr>
+            </tbody>
+          </table><br>
+        </div><br>
+        <div class="toxic-info">
+          <div class="toxicity">
+            <h4>Report</h4>
+            <div>
               <div id="label"></div>
               <div id="score"></div>
               <div id="reason"></div>
               <div id="experimental"></div>
+            </div>
           </div>
+          <div class="action">
+            <h6><b>Take Action</b></h6>
+            <div class="w3-center">
+             <form action="update" class="w3-bar">
+                <input value="Looks good" type="button" class="w3-bar-item w3-button w3-hover-green w3-border w3-border-green" />
+                <input value="Not sure" type="button" class="w3-bar-item w3-button w3-border" />
+                <input value="Should report" type="button" class="w3-bar-item w3-button w3-hover-red w3-border w3-border-red" />
+                <input type="submit" value="Submit" class="w3-bar-item w3-button w3-hover-grey w3-border w3-border-grey" />
+              </form>
+            </div>
+          </div><br>
         </div>
-        <div class="action-items">
-          <h6><b>Take Action</b></h6>
-          <div class="actions-taken">Jane took the Remove Edit action</div><br>
-          <button action="/update-status" type="button">Looks good</button>
-          <button action="/update-status" type="button">Not sure</button>
-          <button action="/update-status" type="button">Should report</button>
-        </div><br>
       </div>
-    </div>
+    </section>
   </body>
+
 </html>
