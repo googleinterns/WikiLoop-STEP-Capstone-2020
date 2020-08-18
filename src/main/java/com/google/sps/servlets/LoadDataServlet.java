@@ -115,12 +115,12 @@ public class LoadDataServlet extends HttpServlet {
   private void loadEditCommentToDatastore(EditComment editComment) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by the Key
-    Key key = KeyFactory.createKey("EditComment", editComment.getRevisionId() + "en");
-    Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+    Key key = KeyFactory.createKey("EditComments", editComment.getRevisionId() + "en");
+    Query query = new Query("EditComments").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
-      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
+      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
       editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
       editCommentEntity.setProperty("userName", editComment.getUserName());
       editCommentEntity.setProperty("comment", editComment.getComment());
