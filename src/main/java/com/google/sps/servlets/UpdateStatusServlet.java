@@ -65,7 +65,7 @@ public class UpdateStatusServlet extends HttpServlet {
       statusEntity.setProperty("action", action);
       datastore.put(statusEntity);
 
-      response.sendRedirect("/actions.html");
+      response.sendRedirect("/edit-comment.html");
       
     }
 

@@ -1,10 +1,10 @@
-<!--DOCTYTYPE html-->
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <title>User Profile Page</title>
-	    <link rel="stylesheet" type="text/css" href="userprofile.css">
+	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
@@ -21,26 +21,20 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
         crossorigin="anonymous"></script>
-        <script src="http://code.jquery.com/jquery-3.5.1.js" 
+        <script src="https://code.jquery.com/jquery-3.5.1.js" 
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
         crossorigin="anonymous"></script>
         <link rel="stylesheet"
         href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script> 
+          $(function(){
+          $("#template").load("template.html"); 
+          });
+        </script> 
     </head>
     <body onload="getUser()">
-
-        <div class="user-profile-header w3-card w3-#f8f9fa">
-            <div class="nav-container">
-                <div class="nav-brand">
-                    <a href="index.html">WikiLoop IncivilityCheck</a>
-                </div>
-                <div class="user-loggedin">
-                    <a href="userprofile.html"><div id="user-name-section"></div></a>
-                </div>
-            </div>
-        </div>
-        
+        <div id="template"></div>
         <div class="user-profile-content">
         	<div class="user-information">
             	<class class="personal-information-box w3-round w3-card ">

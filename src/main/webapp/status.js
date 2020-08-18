@@ -1,7 +1,9 @@
 function getActions() {
-  fetch('/update-status') .then(response => response.json()).then((actions) => { 
+  fetch('/actions') .then(response => response.json()).then((actions) => { 
     const actionList = document.getElementById('container');
     actions.forEach((status) => {
+        console.log(status);
+        console.log(actions);
         actionList.appendChild(createActionElem(status));
 
     })

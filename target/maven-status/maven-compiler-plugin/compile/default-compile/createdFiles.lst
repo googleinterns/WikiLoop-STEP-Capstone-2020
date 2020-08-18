@@ -1,6 +1,9 @@
+com/google/sps/data/WikiMedia.class
 com/google/sps/servlets/RetrieveEditServlet.class
 com/google/sps/data/Attribute$1.class
 com/google/sps/data/User.class
 com/google/sps/data/Attribute.class
+com/google/sps/servlets/DiscoverServletTest.class
 com/google/sps/servlets/DiscoverServlet.class
+com/google/sps/data/Status.class
 com/google/sps/data/Perspective.class
