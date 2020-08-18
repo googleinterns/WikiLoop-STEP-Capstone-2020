@@ -64,7 +64,6 @@ public final class Perspective {
   public Perspective(String comment, boolean experimental) {
     try { 
       this.perspectiveResponse = (JSONObject) new JSONParser().parse(getToxicityString(comment));
-      //System.out.println(this.perspectiveResponse);
       setListAttributes(experimental);
       Collections.sort(attributes, Attribute.ORDER_BY_HIGH);
       this.computedAttribute = attributes.get(0);
@@ -91,7 +90,7 @@ public final class Perspective {
   /**
    * Takes in a certain label and classification if label is experimental
    * parses the toxicity object to find summary score and creates an
-   * Attribute object scoring label, score, label explaination, and if label is experimental
+   * Attribute object scoring label, score, label explaination, if label is experimental, with mandatory toxicity score and toxic explanation
    * @param experimental, true if we to consider experimental labels, false if not
    * @return Attribute object
    */
@@ -99,8 +98,11 @@ public final class Perspective {
     JSONObject attributeScores = (JSONObject) perspectiveResponse.get("attributeScores");
     JSONObject labelAttribute = (JSONObject) attributeScores.get(label);
     JSONObject summaryScore = (JSONObject) labelAttribute.get("summaryScore");
+    JSONObject toxicityAttribute = (JSONObject) attributeScores.get("TOXICITY");
+    JSONObject summaryToxicScore = (JSONObject) toxicityAttribute.get("summaryScore");
     String score = String.valueOf(Math.round((100 * Double.parseDouble(summaryScore.get("value").toString()))));
-    return new Attribute(label, score, reason.get(label), checkExpLabels.contains(label));
+    String toxicScore = String.valueOf(Math.round((100 * Double.parseDouble(summaryToxicScore.get("value").toString()))));
+    return new Attribute(label, score, reason.get(label), checkExpLabels.contains(label), toxicScore, reason.get("TOXICITY"));
   }
 
   /** 

@@ -14,6 +14,8 @@ import java.util.Comparator;
  * Refer to this doc to learn more https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md
  */
 public class Attribute {
+  public String toxicityScore;
+  public String toxicityLabel;
   public String label;
   public String score;
   public String reason;
@@ -28,7 +30,9 @@ public class Attribute {
    * @param reason Description about the label
    * @param experimental Is the label expiermental or not https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md
    */
-  public Attribute(String label, String score, String reason, boolean experimental) {
+  public Attribute(String label, String score, String reason, boolean experimental, String toxicityScore, String toxicityLabel) {
+    this.toxicityScore = toxicityScore;
+    this.toxicityLabel = toxicityLabel;
     this.label = label;
     this.score = score;
     this.reason = reason;
@@ -45,6 +49,7 @@ public class Attribute {
   };
 
   public String toString() {
-    return "Label: "  + label + " " + "Reason: " + reason + " "  + "Probability: " + score + " "  + "Experimental: " + String.valueOf(experimental);
+    return "Label: "  + label + " " + "Reason: " + reason + " "  + "Probability: " + score + " "  + "Experimental: " + String.valueOf(experimental) 
+    + " toxicityScore: " + toxicityScore + " toxicityLabel: " + toxicityLabel;
   }
 }
