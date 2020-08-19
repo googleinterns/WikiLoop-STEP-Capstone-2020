@@ -59,18 +59,17 @@
             <h6><b>Take Action</b></h6>
               <form method="post" action="/retrieve">
                 <div class="w3-center">
-                    <div class="dashboard-subtitle-action w3-bar">
-                        <input name="btn" type="radio" value="g"/>
-                        <!--class="w3-button w3-white w3-border w3-border-green w3-hover-green"-->
-                        Looks good (g)
-                        <input name="btn" type="radio" value="ns"/>                        
-                        <!--class="w3-button w3-white w3-border w3-border-grey w3-hover-grey"-->
-                        Not sure (p)
-                        <input name="btn" type="radio" value="r"/>
-                        <!--target="_blank" class="w3-button w3-white w3-border w3-border-red  w3-hover-red"-->
-                        Should report (v)
-                        <input type="submit" value="Submit" />
-                    </div>
+                  <div class="radio-toolbar">
+                    <input type="radio" id="good" name="btn" value="g" checked>
+                    <label for="good">Looks good (g)</label>
+
+                    <input type="radio" id="notsure" name="btn" value="ns">
+                    <label for="notsure">Not sure (n)</label>
+
+                    <input type="radio" id="report" name="btn" value="r">
+                    <label for="report">Should report (r)</label>
+                  </div>
+                  <input id="submit" type="submit" value="Submit" />
                 </div>
               </form>
           </div><br>
