@@ -5,7 +5,7 @@ document.onkeydown = checkKey;
  */
 function checkKey(e) {
   e = e || window.event;
-  if (e.keyCode === 67) {
+  if (e.keyCode === 84) {
       if (window.location.href.indexOf('/') != -1) {
         window.location.href = '/slider.html'
     }

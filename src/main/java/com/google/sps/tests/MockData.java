@@ -62,7 +62,7 @@ public final class MockData {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", ""), "0", date, article, "NEW"));
         }
       }
 

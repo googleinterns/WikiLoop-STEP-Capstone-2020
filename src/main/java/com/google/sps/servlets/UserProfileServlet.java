@@ -110,8 +110,8 @@ public class UserProfileServlet extends HttpServlet {
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
     for (String revid : listEditCommentsRevids) {
         // Filter query by the Key
-        Key key = KeyFactory.createKey("EditComment", revid + "en");
-        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+        Key key = KeyFactory.createKey("EditComments", revid + "en");
+        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
 
@@ -125,7 +125,7 @@ public class UserProfileServlet extends HttpServlet {
 
         try {
         JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
-        listEditComments.add(new EditComment(revisionId, userName, comment, computedAttribute.get("score").toString(), date, parentArticle, status));
+        listEditComments.add(new EditComment(revisionId, userName, comment, computedAttribute.get("toxicityScore").toString(), date, parentArticle, status));
 
         } catch(Exception e) {
         System.out.println(e);
