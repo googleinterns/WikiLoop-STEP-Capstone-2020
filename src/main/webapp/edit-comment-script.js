@@ -2,7 +2,6 @@ async function getDetailedEdit(id) {
     let response = await fetch("/retrieve?id=" + id);
     let detailedEdit = await response.json();
     let computedAttribute = JSON.parse(detailedEdit.toxicityObject);
-    console.log(computedAttribute);
     
     const article = document.getElementById('article');
     const username = document.getElementById('username');

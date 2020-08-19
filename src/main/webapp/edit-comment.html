@@ -57,14 +57,22 @@
           </div>
           <div class="action">
             <h6><b>Take Action</b></h6>
-            <div class="w3-center">
-             <form action="/actions" class="w3-bar">
-                <input name="good" id="good" value="Looks good" type="button" class="w3-bar-item w3-button w3-hover-green w3-border w3-border-green" />
-                <input name="notsure" id="notsure" value="Not sure" type="button" class="w3-bar-item w3-button w3-border" />
-                <input name="report" id="report" value="Should report" type="button" class="w3-bar-item w3-button w3-hover-red w3-border w3-border-red" />
-                <input type="submit" value="Submit" class="w3-bar-item w3-button w3-hover-grey w3-border w3-border-grey" />
+              <form method="post" action="/retrieve">
+                <div class="w3-center">
+                    <div class="dashboard-subtitle-action w3-bar">
+                        <input name="btn" type="radio" value="g"/>
+                        <!--class="w3-button w3-white w3-border w3-border-green w3-hover-green"-->
+                        Looks good (g)
+                        <input name="btn" type="radio" value="ns"/>                        
+                        <!--class="w3-button w3-white w3-border w3-border-grey w3-hover-grey"-->
+                        Not sure (p)
+                        <input name="btn" type="radio" value="r"/>
+                        <!--target="_blank" class="w3-button w3-white w3-border w3-border-red  w3-hover-red"-->
+                        Should report (v)
+                        <input type="submit" value="Submit" />
+                    </div>
+                </div>
               </form>
-            </div>
           </div><br>
         </div>
       </div>

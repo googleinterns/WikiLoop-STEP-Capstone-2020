@@ -23,6 +23,8 @@ import java.io.IOException;
 @WebServlet("/retrieve")
 public class RetrieveEditServlet extends HttpServlet {
 
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
@@ -34,11 +36,32 @@ public class RetrieveEditServlet extends HttpServlet {
 
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(edit));
-    }  
+    } 
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      String revisionId = request.getParameter("id");
+      String test = request.getParameter("test");
+      System.out.println("url: " + request.getRequestURL().toString());
+      System.out.println("btn: " + request.getParameter("btn"));
+      //check what user is logged in
+      String user = "Giano II";
+      String action = request.getParameter("btn");
+      long time = System.currentTimeMillis();
+      
+      Entity statusEntity = new Entity("Actions");
+      statusEntity.setProperty("revisionId", revisionId);
+      statusEntity.setProperty("user", user);
+      statusEntity.setProperty("time", time);
+      statusEntity.setProperty("action", action);
+      datastore.put(statusEntity);
+      
+
+      response.sendRedirect("/edit-comment.html?id=" + revisionId);
+    }
 
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       // Filter query by the Key
       // Key key = KeyFactory.createKey("EditComment", id + "en");
       // Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
