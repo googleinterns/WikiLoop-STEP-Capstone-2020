@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 import java.lang.Math;
 import java.lang.Double;
 import java.io.IOException;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -84,10 +85,12 @@ public class DiscoverServlet extends HttpServlet {
     // Check if any ids were passed through, if not return all edit comments in datastore
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
+      
     } else {
       List<String> idList = createListIds(ids);
       loadSpecificRevisions(idList, datastore, editComments);
     }
+    
     response.setContentType("application/json;"); 
     response.getWriter().println(convertToJsonUsingGson(editComments));
   }
@@ -99,7 +102,9 @@ public class DiscoverServlet extends HttpServlet {
    */
   private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
     //listEditComments.add(new EditComment())
+    
     for (Entity entity : results.asIterable()) {
+      
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -108,17 +113,7 @@ public class DiscoverServlet extends HttpServlet {
       String date = (String) entity.getProperty("date");
       String status = (String) entity.getProperty("status");
       try {
-        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
-        Entity editCommentEntity = new Entity("TestEditComments", revisionId + "en");
-        editCommentEntity.setProperty("revisionId", revisionId);
-        editCommentEntity.setProperty("userName", user);
-        editCommentEntity.setProperty("comment", comment);
-        editCommentEntity.setProperty("computedAttribute", computedAttributeString);
-        editCommentEntity.setProperty("parentArticle", article);
-        editCommentEntity.setProperty("date", date);
-        editCommentEntity.setProperty("status", status);
-        datastore.put(editCommentEntity);
+        editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status));
       } catch(Exception e) {
         System.out.println(e);
       }
