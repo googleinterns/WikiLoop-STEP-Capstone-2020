@@ -114,6 +114,24 @@ public final class MockData {
       return new JSONArray();
     } 
 
+  /**
+   * Reads the mockDataTest.json file in project directory which simulates end product of 
+   * DiscoverServlet. This function reads the mockDataTest.json file and returns JSONArry
+   * of information in order to compare within the DataServletTest file
+   * @return JSONArray of EditCommentObjects
+   */
+  public JSONObject readMockPerspective(String filename) {
+    // Read Json file 
+    try { 
+      Object obj = new JSONParser().parse(new FileReader(filename)); 
+      JSONObject comment = (JSONObject) obj;
+      return comment;
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+      return new JSONObject();
+    } 
+
 /*
   public JSONArray getExpectedResponse() {
     return expectedResponse;

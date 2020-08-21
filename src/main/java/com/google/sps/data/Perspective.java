@@ -33,9 +33,10 @@ import java.io.FileReader;
  * Refer to this doc to learn more https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md
  */
 public final class Perspective {
-  private JSONObject perspectiveResponse;
+  public JSONObject perspectiveResponse;
+  private JSONObject testResponse;
   private List<String> labels = Arrays.asList("TOXICITY", "IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", "SEXUALLY_EXPLICIT", "FLIRTATION");
-  private List<String> expLabels = Arrays.asList("IDENTITY_ATTACK", "INSULT", "PROFANITY", "THREAT", "SEXUALLY_EXPLICIT", "FLIRTATION");
+  private List<String> expLabels = Arrays.asList("SEXUALLY_EXPLICIT", "FLIRTATION");
   private HashSet<String> checkExpLabels = new HashSet<String>(expLabels);
   private ArrayList<Attribute> attributes = new ArrayList<Attribute>();
   private String TOXIC_REASON = "Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion";
@@ -67,6 +68,7 @@ public final class Perspective {
       setListAttributes(experimental);
       Collections.sort(attributes, Attribute.ORDER_BY_HIGH);
       this.computedAttribute = attributes.get(0);
+      
     } catch (Exception e) {
       System.out.println(e.toString());
     }   
@@ -149,7 +151,6 @@ public final class Perspective {
   private String getToxicityString(String comment) {
     try {
       MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      //System.out.println(getApiKey());
       String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
       "?key=" + getApiKey());
       String postUrl = buildUrl;
