@@ -47,6 +47,7 @@ public class RetrieveEditServlet extends HttpServlet {
       //check what user is logged in
       String user = "Giano II";
       String action = request.getParameter("btn");
+      String flag = request.getParameter("flag");
       long time = System.currentTimeMillis();
       
       Entity statusEntity = new Entity("Actions");
@@ -54,6 +55,11 @@ public class RetrieveEditServlet extends HttpServlet {
       statusEntity.setProperty("user", user);
       statusEntity.setProperty("time", time);
       statusEntity.setProperty("action", action);
+      if (flag == null) {
+        statusEntity.setProperty("flagged", "no");
+      } else {
+        statusEntity.setProperty("flagged", "yes");
+      }
       datastore.put(statusEntity);
       
 

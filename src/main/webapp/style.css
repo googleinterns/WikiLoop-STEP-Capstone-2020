@@ -53,9 +53,6 @@
 }
 
 /* ALL PAGES */
-body {
-    font-family: Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;
-}
 a {
   text-decoration: none;
   background-color: transparent;
@@ -170,6 +167,10 @@ th.dt-center, td.dt-center {
 
 /* Edit Comment Page */
 
+body {
+    font-family: 'Roboto';
+}
+
 .edit-info {
   padding: 20px;
   margin-left: auto;
@@ -199,14 +200,27 @@ th.dt-center, td.dt-center {
 }
 
 .edit-box {
-  text-align: center;
   justify-content: center;
   align-items: center;
+}
+
+.dashboard-subtitle {
+  display: flex; 
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.toxicity {
+  text-align: center;
 }
 
 /* FORM */
 .radio-toolbar {
   margin: 10px;
+}
+
+.flagged {
+  display: inline-block;
 }
 
 .radio-toolbar input[type="radio"] {
@@ -219,7 +233,6 @@ th.dt-center, td.dt-center {
   display: inline-block;
   background-color: white;
   padding: 10px 20px;
-  font-family: sans-serif, Arial;
   font-size: 16px;
   border-radius: 4px;
 }
@@ -265,7 +278,6 @@ th.dt-center, td.dt-center {
   border-color: #a0a6ab;
   display: inline-block;
   padding: 10px 20px;
-  font-family: sans-serif, Arial;
   font-size: 16px;
   border-radius: 4px;
 }

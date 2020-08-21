@@ -4,29 +4,26 @@ async function getDetailedEdit(id) {
     let computedAttribute = JSON.parse(detailedEdit.toxicityObject);
     
     const article = document.getElementById('article');
-    const username = document.getElementById('username');
+    const username = document.getElementById('user');
     const edit = document.getElementById('edit-comment');
     const date = document.getElementById('date');
     const score = document.getElementById('score');
     const scoreLabel = document.getElementById('label');
-    const scoreReason = document.getElementById('reason');
     const scoreIsExperimental = document.getElementById('experimental');
     const revid = document.getElementById('rev-id');
 
     const link = "https://en.wikipedia.org/w/index.php?title=" + detailedEdit.parentArticle;
     article.setAttribute("href", link);
-    article.setAttribute("target", "_blank");
     article.innerText = detailedEdit.parentArticle;
+    username.setAttribute("href", "https://en.wikipedia.org/wiki/User:" + detailedEdit.userName);
     username.innerText = detailedEdit.userName;
     edit.innerText = detailedEdit.comment;
     date.innerText = detailedEdit.date;
-    score.innerText = "Score: " + computedAttribute.score + "%";
-    scoreLabel.innerText = "Label: " + computedAttribute.label;
-    scoreReason.innerText = "Reason: " + computedAttribute.reason;
+    score.innerText = computedAttribute.score + "%";
+    scoreLabel.innerText = computedAttribute.label + ': ' + computedAttribute.reason;
     scoreIsExperimental.innerText = experimentalMessage(computedAttribute.experimental);
     const revidLink = "https://en.wikipedia.org/w/index.php?diff=" + id;
     revid.setAttribute("href", revidLink);
-    revid.setAttribute("target", "_blank");
     revid.innerText = " rev." + "567483924";
 }
 
