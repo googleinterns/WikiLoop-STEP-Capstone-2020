@@ -1,26 +1,85 @@
-/* This is the User class */
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
+import com.google.sps.data.EditComment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
  
- 
-/** An individual comment. */
-/* TO DO (DEUS):   *//* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
+/* This is single user class */
 public final class User{
 
-  public final long id;
-  public final String userName;
-  public final String avgToxicityScore;
-  //public final ArrayList<EditComment> list_edit_comments;
-  public final ArrayList<String> list_edit_comments;
+  private final String id;
+  private final String userName;
+  private String avgToxicityScore;
+  private ArrayList<EditComment> listEditComments;
 
-  public User(long id, String userName, String avgToxicityScore, ArrayList<String> list_edit_comments) {
+  public User(String id, String userName, ArrayList<EditComment> listEditComments) {
     this.id = id;
     this.userName = userName;
-    this.avgToxicityScore = avgToxicityScore;
-    this.list_edit_comments= list_edit_comments;
+    this.listEditComments= listEditComments;
+
+    double average = 0;
+    int size = listEditComments.size();
+    for (int i = 0; i < size; i++) {
+        average += Double.parseDouble(this.listEditComments.get(i).getToxicityObject());
+    }
+
+    this.avgToxicityScore = String.valueOf(average/size);
   }
+
+  public String getId() {
+      return this.id;
+  }
+
+  public String getUserName() {
+      return this.userName;
+  }
+
+  public String getAvgToxicityScore() {
+      return this.avgToxicityScore;
+  }
+
+  public ArrayList<EditComment> getListEditComments() {
+      return this.listEditComments;
+  }
+
+  public void addEditComment(EditComment newEditComment) {
+      int size = this.listEditComments.size();
+      double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
+      tempVar += Double.parseDouble(newEditComment.getToxicityObject());
+      this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
+      this.listEditComments.add(newEditComment);
+  }
+
+  @Override
+  public boolean equals (Object otherObject) {
+      // return true in case of reference equality
+      if (this == otherObject){
+          return true;
+      }
+      if (!(otherObject instanceof User)) return false;
+      User otherUser = (User) otherObject;
+      // Check for id equality
+      if (this.id != otherUser.getId()) return false;
+      // check for name equality
+      if (this.userName != otherUser.getUserName()) return false;
+
+      return true;
+  }
+
 }

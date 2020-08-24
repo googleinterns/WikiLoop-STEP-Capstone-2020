@@ -26,6 +26,10 @@ public final class EditComment {
     return userName;
   }
 
+  public String getRevisionId() {
+      return revisionId;
+  }
+
   public String getDate() {
     return date;
   }
@@ -40,7 +44,7 @@ public final class EditComment {
 
   public String getParentArticle() {
     return parentArticle;
-  }
+  } 
 
   public String getToxicityObject() {
     return toxicityObject;

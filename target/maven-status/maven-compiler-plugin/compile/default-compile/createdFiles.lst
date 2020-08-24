@@ -1,6 +1,1 @@
 com/google/sps/data/User.class
-com/google/sps/servlets/UserProfileServlet.class
-com/google/sps/servlets/DiscoverServlet.class
-com/google/sps/tests/MockData.class
-com/google/sps/data/MockComment.class
-com/google/sps/data/EditComment.class

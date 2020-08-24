@@ -20,10 +20,20 @@ body {
 	justify-content: center;
 }
 
-#user-name-container {
+#header {
+    width: 100%;
+}
+
+#discover-link {
+	float: left;
+	margin-right: 80%;
+	margin-bottom: 0%;
+}
+
+#user-name {
 	float: right;
 	margin-left: 80%;
-	margin-bottom: 5%;
+	margin-bottom: 10%;
 }
 
 #user-information {
