@@ -45,8 +45,6 @@ import com.google.sps.data.EditComment;
 import com.google.sps.data.Perspective;
 import com.google.sps.data.Attribute;
 
-
-
 /**
  * Class tests the DiscoverServlet logic using mock data from MockData.java
  *
