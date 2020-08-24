@@ -44,7 +44,7 @@ public class RetrieveEditServlet extends HttpServlet {
       System.out.println("url: " + request.getRequestURL().toString());
       System.out.println("btn: " + request.getParameter("btn"));
       //check what user is logged in
-      String user = "Giano II";
+      String user = request.getParameter("user");
       String action = request.getParameter("btn");
       String flag = request.getParameter("flag");
       long time = System.currentTimeMillis();
@@ -60,9 +60,8 @@ public class RetrieveEditServlet extends HttpServlet {
         statusEntity.setProperty("flagged", "yes");
       }
       datastore.put(statusEntity);
-      
 
-      response.sendRedirect("/slider.html?id=" + revisionId);
+      response.sendRedirect("/slider.html");
     }
 
     /* TO DO: Use Datastore */
