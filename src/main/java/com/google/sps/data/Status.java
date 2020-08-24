@@ -10,29 +10,15 @@ import java.util.Comparator;
  */
 
 public class Status {
-  public Integer good;
-  public Integer notSure;
-  public Integer report;
+  public String id;
+  public String user;
+  public String action;
+  public long time;
 
-  public Status(Integer good, Integer notSure, Integer report) {
-      this.good = 0;
-      this.notSure = 0;
-      this.report = 0;
-  }
-
-  public Integer getGood() {
-      return good;
-  }
-
-  public Integer getNotSure() {
-      return notSure;
-  }
-
-  public Integer getReport() {
-      return report;
-  }
-
-  public String toString() {
-      return "Good: " + Integer.toString(good) + " " + "Not Sure: " + Integer.toString(notSure) + " " + "Report: " + Integer.toString(report);
+  public Status(String id, String user, String action, long time) {
+      this.id = id;
+      this.user = user;
+      this.action = action;
+      this.time = time;
   }
 }

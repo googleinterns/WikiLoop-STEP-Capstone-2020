@@ -5,6 +5,7 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <title>Discover</title>
 	    <link rel="stylesheet" type="text/css" href="discover-style.css">
+	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
@@ -91,15 +92,27 @@
             </div>
           </div>
           <div class="dashboard-subtitle-action w3-bar">
-            <button class="w3-button w3-white w3-border w3-border-green w3-hover-green">
-              Looks good (g)
-            </button>
-            <button class="w3-button w3-white w3-border w3-border-grey w3-hover-grey">
-              Not sure (p)
-            </button>
-            <button target="_blank" class="w3-button w3-white w3-border w3-border-red  w3-hover-red">
-              Should report (v)
-            </button>
+            <form method="post" action="/retrieve">
+            <input id="hidden-id" name="revid" style="display: none">
+            <input id="hidden-user" name="user" style="display: none">
+              <div class="w3-center">
+                <div class="radio-toolbar">
+                  <div class="flagged">
+                    <input type="checkbox" name="flag" value="flag">
+                    <label for="flag" class="material-icons">flag</label><br>
+                  </div>
+                  <input type="radio" id="good" name="btn" value="g" checked>
+                  <label for="good">Looks good (g)</label>
+
+                  <input type="radio" id="notsure" name="btn" value="ns">
+                  <label for="notsure">Not sure (n)</label>
+
+                  <input type="radio" id="report" name="btn" value="r">
+                  <label for="report">Should report (r)</label>
+                </div>
+                <input id="submit" type="submit" value="Submit" />
+              </div>
+            </form>
           </div>
           <br></br>
           <div class="dashboard-subtitle">
