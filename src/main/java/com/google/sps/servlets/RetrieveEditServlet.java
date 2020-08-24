@@ -40,8 +40,7 @@ public class RetrieveEditServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      String revisionId = request.getParameter("id");
-      String test = request.getParameter("test");
+      String revisionId = request.getParameter("revid");
       System.out.println("url: " + request.getRequestURL().toString());
       System.out.println("btn: " + request.getParameter("btn"));
       //check what user is logged in
@@ -63,7 +62,7 @@ public class RetrieveEditServlet extends HttpServlet {
       datastore.put(statusEntity);
       
 
-      response.sendRedirect("/edit-comment.html?id=" + revisionId);
+      response.sendRedirect("/slider.html?id=" + revisionId);
     }
 
     /* TO DO: Use Datastore */
