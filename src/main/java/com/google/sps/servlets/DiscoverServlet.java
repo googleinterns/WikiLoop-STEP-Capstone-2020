@@ -161,4 +161,3 @@ public class DiscoverServlet extends HttpServlet {
     return json;
   }
 }
-

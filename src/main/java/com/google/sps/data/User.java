@@ -1,26 +1,71 @@
-/* This is the User class */
 package com.google.sps.data;
 
+import com.google.sps.data.EditComment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
  
- 
-/** An individual comment. */
-/* TO DO (DEUS):   *//* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
+/* This is single user class */
 public final class User{
 
-  public final long id;
-  public final String userName;
-  public final String avgToxicityScore;
-  //public final ArrayList<EditComment> list_edit_comments;
-  public final ArrayList<String> list_edit_comments;
+  private final long id;
+  private final String userName;
+  private String avgToxicityScore;
+  private ArrayList<EditComment> listEditComments;
 
-  public User(long id, String userName, String avgToxicityScore, ArrayList<String> list_edit_comments) {
+  public User(long id, String userName, ArrayList<EditComment> listEditComments) {
     this.id = id;
     this.userName = userName;
-    this.avgToxicityScore = avgToxicityScore;
-    this.list_edit_comments= list_edit_comments;
+    this.listEditComments= listEditComments;
+
+    double average = 0;
+    int size = listEditComments.size();
+    for (int i = 0; i < size; i++) {
+        average += Double.parseDouble(this.listEditComments.get(i).getToxicityObject());
+    }
+
+    this.avgToxicityScore = String.valueOf(average/size);
   }
+
+  public long getID() {
+      return this.id;
+  }
+
+  public String getUserName() {
+      return this.userName;
+  }
+
+  public String getAvgToxicityScore() {
+      return this.avgToxicityScore;
+  }
+
+  public ArrayList<EditComment> getListEditComments() {
+      return this.listEditComments;
+  }
+
+  public void addEditComment(EditComment newEditComment) {
+      int size = this.listEditComments.size();
+      double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
+      tempVar += Double.parseDouble(newEditComment.getToxicityObject());
+      this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
+      this.listEditComments.add(newEditComment);
+  }
+
+  @Override
+  public boolean equals (Object otherObject) {
+      // return true in case of reference equality
+      if (this == otherObject){
+          return true;
+      }
+      if (!(otherObject instanceof User)) return false;
+      User otherUser = (User) otherObject;
+      // Check for id equality
+      if (this.id != otherUser.getID()) return false;
+      // check for name equality
+      if (this.userName != otherUser.getUserName()) return false;
+
+      return true;
+  }
+
 }
