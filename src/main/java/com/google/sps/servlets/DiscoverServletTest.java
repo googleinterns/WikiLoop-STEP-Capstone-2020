@@ -58,7 +58,7 @@ public class DiscoverServletTest extends HttpServlet {
     WikiMedia call = new WikiMedia();
     
     response.setContentType("application/json;"); 
-    response.getWriter().println(call.getByUser("Devonian Wombat", "10"));
+    response.getWriter().println("a");
   }
 
   /**
