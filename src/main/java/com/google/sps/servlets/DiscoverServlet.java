@@ -40,7 +40,15 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+<<<<<<< HEAD
+=======
 
+import com.google.appengine.api.datastore.*;
+
+>>>>>>> 3389198ffb6a91995f9bb219e1d1c83cfa2dfa39
+=======
+
+>>>>>>> 15fb4aa... Fixed errors
 import java.util.Date;
 
 import com.google.appengine.api.users.UserService;
@@ -66,7 +74,7 @@ import com.google.sps.data.EditComment;
 import com.google.sps.data.Perspective;
 import com.google.sps.data.Attribute;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.DatastoreService;
+import coSm.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 import org.json.simple.JSONArray;
@@ -87,9 +95,7 @@ public class DiscoverServlet extends HttpServlet {
     while (st.hasMoreTokens()) {
      idList.add(st.nextToken());  
     }
-    System.out.println(idList);
-
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
@@ -111,7 +117,6 @@ public class DiscoverServlet extends HttpServlet {
       } catch(Exception e) {
         System.out.println(e);
       }
-    }
     } else {
       System.out.println("WHY");
       for (String id : idList) {
