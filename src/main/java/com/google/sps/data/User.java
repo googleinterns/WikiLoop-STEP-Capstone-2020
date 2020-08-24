@@ -52,4 +52,20 @@ public final class User{
       this.listEditComments.add(newEditComment);
   }
 
+  @Override
+  public boolean equals (Object otherObject) {
+      // return true in case of reference equality
+      if (this == otherObject){
+          return true;
+      }
+      if (!(otherObject instanceof User)) return false;
+      User otherUser = (User) otherObject;
+      // Check for id equality
+      if (this.id != otherUser.getID()) return false;
+      // check for name equality
+      if (this.userName != otherUser.getUserName()) return false;
+
+      return true;
+  }
+
 }

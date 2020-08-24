@@ -1,0 +1,94 @@
+{
+    "continue": {
+        "rvcontinue": "20190216104241|883593817",
+        "continue": "||"
+    },
+    "query": {
+        "pages": {
+            "876262": {
+                "pageid": 876262,
+                "ns": 0,
+                "title": "Incivility",
+                "revisions": [
+                    {
+                        "revid": 967025587,
+                        "parentid": 967024362,
+                        "minor": "",
+                        "user": "Blippincott",
+                        "timestamp": "2020-07-10T17:40:51Z",
+                        "comment": "Removal of the merge tags - per protocol followed in Talk page"
+                    },
+                    {
+                        "revid": 967024362,
+                        "parentid": 960185055,
+                        "minor": "",
+                        "user": "Blippincott",
+                        "timestamp": "2020-07-10T17:32:23Z",
+                        "comment": "/* Added tag for Civility */"
+                    },
+                    {
+                        "revid": 960185055,
+                        "parentid": 940053846,
+                        "user": "Fgnievinski",
+                        "timestamp": "2020-06-01T15:35:07Z",
+                        "comment": "/* top */"
+                    },
+                    {
+                        "revid": 940053846,
+                        "parentid": 940052260,
+                        "minor": "",
+                        "user": "AnomieBOT",
+                        "timestamp": "2020-02-10T07:27:32Z",
+                        "comment": "Dating maintenance tags: {{Cn}}"
+                    },
+                    {
+                        "revid": 940052260,
+                        "parentid": 920694839,
+                        "user": "George100",
+                        "timestamp": "2020-02-10T07:06:39Z",
+                        "comment": "/* Quotes */ link names"
+                    },
+                    {
+                        "revid": 920694839,
+                        "parentid": 917166084,
+                        "minor": "",
+                        "user": "Rjwilmsi",
+                        "timestamp": "2019-10-11T08:33:06Z",
+                        "comment": "/* Political incivility */Added 1 doi to a journal cite"
+                    },
+                    {
+                        "revid": 917166084,
+                        "parentid": 899065804,
+                        "minor": "",
+                        "user": "Monkbot",
+                        "timestamp": "2019-09-22T15:26:33Z",
+                        "comment": "/* top */[[User:Monkbot/task 16: remove replace deprecated dead-url params|Task 16]]: replaced (1) / removed (0) deprecated |dead-url= and |deadurl= with |url-status=;"
+                    },
+                    {
+                        "revid": 899065804,
+                        "parentid": 892989695,
+                        "minor": "",
+                        "user": "IznoRepeat",
+                        "timestamp": "2019-05-27T17:28:25Z",
+                        "comment": "/* top */cleaning (ed[s]); template now always displays editor annotation; gen fixes"
+                    },
+                    {
+                        "revid": 892989695,
+                        "parentid": 892989481,
+                        "minor": "",
+                        "user": "El C",
+                        "timestamp": "2019-04-18T06:31:50Z",
+                        "comment": "Reverted edits by [[Special:Contribs/GreatPardon|GreatPardon]] ([[User talk:GreatPardon|talk]]) to last version by Kahtar"
+                    },
+                    {
+                        "revid": 892989481,
+                        "parentid": 883593817,
+                        "user": "GreatPardon",
+                        "timestamp": "2019-04-18T06:29:19Z",
+                        "commenthidden": ""
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,91 @@
+[
+  {
+    "userName": "Blippincott",
+    "comment": "Removal of the merge tags - per protocol followed in Talk page",
+    "date": "2020-07-10T17:40:51Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "967025587",
+    "toxicityObject": "7"
+  },
+  {
+    "userName": "Blippincott",
+    "comment": "/* Added tag for Civility */",
+    "date": "2020-07-10T17:32:23Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "967024362",
+    "toxicityObject": "5"
+  },
+  {
+    "userName": "Fgnievinski",
+    "comment": "/* top */",
+    "date": "2020-06-01T15:35:07Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "960185055",
+    "toxicityObject": "8"
+  },
+  {
+    "userName": "AnomieBOT",
+    "comment": "Dating maintenance tags: {{Cn}}",
+    "date": "2020-02-10T07:27:32Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "940053846",
+    "toxicityObject": "6"
+  },
+  {
+    "userName": "George100",
+    "comment": "/* Quotes */ link names",
+    "date": "2020-02-10T07:06:39Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "940052260",
+    "toxicityObject": "11"
+  },
+  {
+    "userName": "Rjwilmsi",
+    "comment": "/* Political incivility */Added 1 doi to a journal cite",
+    "date": "2019-10-11T08:33:06Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "920694839",
+    "toxicityObject": "8"
+  },
+  {
+    "userName": "Monkbot",
+    "comment": "/* top */[[User:Monkbot/task 16: remove replace deprecated dead-url params|Task 16]]: replaced (1) / removed (0) deprecated |dead-url= and |deadurl= with |url-status=;",
+    "date": "2019-09-22T15:26:33Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "917166084",
+    "toxicityObject": "6"
+  },
+  {
+    "userName": "IznoRepeat",
+    "comment": "/* top */cleaning (ed[s]); template now always displays editor annotation; gen fixes",
+    "date": "2019-05-27T17:28:25Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "899065804",
+    "toxicityObject": "6"
+  },
+  {
+    "userName": "El C",
+    "comment": "Reverted edits by [[Special:Contribs/GreatPardon|GreatPardon]] ([[User talk:GreatPardon|talk]]) to last version by Kahtar",
+    "date": "2019-04-18T06:31:50Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "892989695",
+    "toxicityObject": "3"
+  },
+  {
+    "userName": "GreatPardon",
+    "date": "2019-04-18T06:29:19Z",
+    "parentArticle": "Incivility",
+    "status": "NEW",
+    "revisionId": "892989481",
+    "toxicityObject": "12"
+  }
+]
