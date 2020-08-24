@@ -1,3 +1,17 @@
+document.onkeydown = checkKey;
+
+/**
+ * Handles the functionality of going to slide function
+ */
+function checkKey(e) {
+  e = e || window.event;
+  if (e.keyCode === 67) {
+      if (window.location.href.indexOf('/') != -1) {
+        window.location.href = '/slider.html'
+    }
+  }
+}
+
 
 /**
  * False
@@ -46,14 +60,14 @@ async function getComments(ids) {
   let listEditComments = await response.json();
   console.log(listEditComments);
   listEditComments.forEach(editComment => {
-    let toxicityPercentage = editComment.toxicityObject + "%";
+    let toxicityPercentage = JSON.parse(editComment.toxicityObject).score + "%";
     createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
                         editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
+                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
                         ]);
   });
 }
@@ -73,7 +87,7 @@ async function getOneComments(ids) {
                         editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
+                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
                         ]);
   
 }
@@ -108,7 +122,7 @@ window.onload = function() {
   var url = new URL(url_string);
   var ids = url.searchParams.get("ids");
   console.log(ids);
-  getOneComments(ids);
+  getComments(ids);
 }
 
 /**
@@ -117,5 +131,6 @@ window.onload = function() {
 $(document).ready( function () {
     $('#my-table').DataTable({
       "order": [[ 0, "desc" ]],
+      "search": "Filter:"
     });
 } );
