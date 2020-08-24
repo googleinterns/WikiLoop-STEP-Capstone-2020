@@ -12,50 +12,30 @@ function checkKey(e) {
   }
 }
 
-
-/**
- * False
- */
-function testData(){
-  
-}
-/**
- * Load some comments from the Media API
- */
-function loadData() {
-  var ids = document.getElementById("revids").value;
-  console.log(ids);
-  ids = ids.replace(" ","|")
-  // Build request url
-  var url = "https://en.wikipedia.org/w/api.php"; 
-  var params = {
-	action: "query",
-	format: "json",
-	prop: "revisions",
-	revids: ids
-};
-  url = url + "?origin=*";
-  Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
-  fetch(url,{headers:{"User-agent":"WikiLoop DoubleCheck Team"}}).then(response => response.json()).then((json) => {
-      console.log(json);
-    fetch('/load-data', {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify(json)
-    }).then(response => {
-        console.log("POST REQUEST WENT THROUGH");
-        document.location.href = response.url;
-    });
-  });
-}
-
 /** 
  * Get edit comments from server
  */
 async function getComments(ids) {
+  console.log(ids);
+  if (ids === 'revid') {
+    ids = document.getElementById("revids").value;
+    ids = ids.replace(" ","-");
+    window.location.href = '/?id='+ids;
+    return;
+  } else if (ids === 'user') {
+    ids = document.getElementById("userNames").value;
+    ids = ids.replace(" ","-");
+    ids += "&type=user"
+    window.location.href = '/?id='+ids;
+    return;
+  } else if (ids === 'article') {
+    ids = document.getElementById("userNames").value;
+    ids = ids.replace(" ","-");
+    ids += "&type=article"
+    window.location.href = '/?id='+ids;
+  }
+
+  console.log(ids);
   let response = await fetch('/comments?id='+ids); 
   let listEditComments = await response.json();
   console.log(listEditComments);
@@ -70,26 +50,6 @@ async function getComments(ids) {
                         "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
                         ]);
   });
-}
-
-/** 
- * Get edit comments from server
- */
-async function getOneComments(ids) {
-  let response = await fetch('/comments?id='+ids); 
-  let listEditComments = await response.json();
-  console.log(listEditComments);
-  let editComment = listEditComments[0];
-    let toxicityPercentage = editComment.toxicityObject + "%";
-    createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
-                        editComment.comment, 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
-                        editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
-                        ]);
-  
 }
 
 /**
@@ -120,8 +80,7 @@ function createTableElement(text) {
 window.onload = function() {
   var url_string = window.location.href 
   var url = new URL(url_string);
-  var ids = url.searchParams.get("ids");
-  console.log(ids);
+  var ids = url.searchParams.get("id");
   getComments(ids);
 }
 
@@ -134,3 +93,31 @@ $(document).ready( function () {
       "search": "Filter:"
     });
 } );
+
+$(function () {
+        $('#datetimepicker6').datetimepicker();
+        $('#datetimepicker7').datetimepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+
+    // Change the selector if needed
+var $table = $('#my-table'),
+    $bodyCells = $table.find('tbody tr:first').children(),
+    colWidth;
+
+// Get the tbody columns width array
+colWidth = $bodyCells.map(function() {
+    return $(this).width();
+}).get();
+
+// Set the width of thead columns
+$table.find('thead tr').children().each(function(i, v) {
+    $(v).width(colWidth[i]);
+});  

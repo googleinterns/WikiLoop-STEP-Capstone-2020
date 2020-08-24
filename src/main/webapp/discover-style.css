@@ -10,6 +10,14 @@
   max-width: 1140px;
 }
 
+thead, tbody { display: block; }
+
+tbody {
+    height: 20em;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
 .nav-brand {
   display: inline-block;
   padding-top: .3125rem;

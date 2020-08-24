@@ -32,7 +32,6 @@ import java.util.Date;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Map;
@@ -55,7 +54,7 @@ import com.google.sps.data.Attribute;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
+import com.google.sps.data.WikiMedia;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
@@ -79,18 +78,19 @@ public class DiscoverServlet extends HttpServlet {
     Query query = new Query("EditComments");
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
-    
-    ArrayList editComments = new ArrayList<EditComment>();
+    String type = request.getParameter("type");
 
+    ArrayList editComments = new ArrayList<EditComment>();
     // Check if any ids were passed through, if not return all edit comments in datastore
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
-      
     } else {
       List<String> idList = createListIds(ids);
+      if (type == "user") {
+        ids = getUserIds(idList);
+      }
       loadSpecificRevisions(idList, datastore, editComments);
     }
-    
     response.setContentType("application/json;"); 
     response.getWriter().println(convertToJsonUsingGson(editComments));
   }
@@ -101,10 +101,7 @@ public class DiscoverServlet extends HttpServlet {
    * @param results PreparedQuery of revision summaries in datastore
    */
   private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
-    //listEditComments.add(new EditComment())
-    
-    for (Entity entity : results.asIterable()) {
-      
+    for (Entity entity : results.asIterable()) {  
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -135,7 +132,6 @@ public class DiscoverServlet extends HttpServlet {
     return idList;
   }
 
-
   /**
    * Given a list of specific ids, retrieve ids from the database
    * @param idList List of ids to find in database
@@ -146,6 +142,12 @@ public class DiscoverServlet extends HttpServlet {
         Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
+        if (entity == null) {
+          addIdToDatastore(id, datastore);
+          query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+          pq = datastore.prepare(query);
+          entity = pq.asSingleEntity();
+        }
         String revisionId = (String) entity.getProperty("revisionId");
         String user = (String) entity.getProperty("userName");
         String comment = (String) entity.getProperty("comment");
@@ -173,6 +175,13 @@ public class DiscoverServlet extends HttpServlet {
   }
 
   /**
+   * Given a list of users, gets the revision ids of all the 
+   * revision user made
+   */
+  public List<String> getUserIds(List<String> users) {
+    
+  }
+  /**
    * Converts a comments instance into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
    */
@@ -181,4 +190,32 @@ public class DiscoverServlet extends HttpServlet {
     String json = gson.toJson(label);
     return json;
   }
+  
+  /**
+   * Given EditComment object and Datastore service, stores the edit comment into 
+   * the datastore
+   * @param editComment EditComment Object containing detail about the edit comment
+   * @param datastore Datastore service
+   */
+   private void addIdToDatastore(String id, DatastoreService datastore) {
+      WikiMedia call = new WikiMedia();
+      String response = call.getByRevIds(Arrays.asList(id));
+
+      // Parses response to edit comment
+      EditComment editComment = call.readStringRevisionId(response).get(0);
+
+      // Create attribute containing comment perspective api label
+      Attribute attribute = new Perspective(editComment.comment, true).computedAttribute;
+      editComment.toxicityObject = new Gson().toJson(attribute);
+
+      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+      editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
+      editCommentEntity.setProperty("userName", editComment.getUserName());
+      editCommentEntity.setProperty("comment", editComment.getComment());
+      editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+      editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
+      editCommentEntity.setProperty("date", editComment.getDate());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+      datastore.put(editCommentEntity);
+   }
 }
