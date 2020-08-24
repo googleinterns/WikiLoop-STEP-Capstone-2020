@@ -1,31 +1,32 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package com.google.sps.data;
 import java.util.Date;
+import java.util.Objects;
 
-/** Class containing server statistics. */
+/**
+ * Class that implements the template for an edit comment. This is the 
+ * main class used to store information of Wikipedia edit comments such 
+ * as username, comment, data, article it came from, revisionid, and 
+ * toxicity label (perspective api attribute : label, reason, score
+ */
 public final class EditComment {
-  
-  private final String userName;
+  public final String userName;
   public final String comment;
-  private final String date;
-  private final String parentArticle;
-  private final String status;
-  private final String revisionId;
+  public final String date;
+  public final String parentArticle;
+  public final String status;
+  public final String revisionId;
   public String toxicityObject;
 
+  /**
+   * Stores information regarding a Wikipedia edit comment
+   * @param revisionId Wikipedia's revisionId from comment
+   * @param userName Username of the person that made comment
+   * @param comment text content of the edit comment
+   * @param toxicObject string json of Attribute class that contains label, reason, and probability of label
+   * @param date Date the comment was made
+   * @param parentArticle Aritcle the comment was made in
+   * @param status Status of the comment, was action taken upon the comoent
+   */
   public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {
     this.revisionId = revisionId;
     this.userName = userName;
@@ -38,6 +39,10 @@ public final class EditComment {
 
   public String getUserName() {
     return userName;
+  }
+
+  public String getRevisionId() {
+      return revisionId;
   }
 
   public String getDate() {
@@ -54,10 +59,30 @@ public final class EditComment {
 
   public String getParentArticle() {
     return parentArticle;
-  }
+  } 
 
   public String getToxicityObject() {
     return toxicityObject;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if ((object == null) || !(object instanceof EditComment)) {
+        return false;
+    }
+
+    if (this == object) return true;
+
+    return fieldsEquality((EditComment) object);
+  }
+
+  private boolean fieldsEquality(EditComment other) {
+    return (this.userName.equals(other.getUserName())) && (this.comment.equals(other.getComment())) && (this.date.equals(other.getDate())) && (this.parentArticle.equals(other.getParentArticle()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.userName, this.comment, this.date);
   }
 
 }

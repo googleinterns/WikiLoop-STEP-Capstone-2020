@@ -1,94 +1,133 @@
 {
-    "continue": {
-        "rvcontinue": "20190216104241|883593817",
-        "continue": "||"
-    },
-    "query": {
-        "pages": {
-            "876262": {
-                "pageid": 876262,
-                "ns": 0,
-                "title": "Incivility",
-                "revisions": [
-                    {
-                        "revid": 967025587,
-                        "parentid": 967024362,
-                        "minor": "",
-                        "user": "Blippincott",
-                        "timestamp": "2020-07-10T17:40:51Z",
-                        "comment": "Removal of the merge tags - per protocol followed in Talk page"
-                    },
-                    {
-                        "revid": 967024362,
-                        "parentid": 960185055,
-                        "minor": "",
-                        "user": "Blippincott",
-                        "timestamp": "2020-07-10T17:32:23Z",
-                        "comment": "/* Added tag for Civility */"
-                    },
-                    {
-                        "revid": 960185055,
-                        "parentid": 940053846,
-                        "user": "Fgnievinski",
-                        "timestamp": "2020-06-01T15:35:07Z",
-                        "comment": "/* top */"
-                    },
-                    {
-                        "revid": 940053846,
-                        "parentid": 940052260,
-                        "minor": "",
-                        "user": "AnomieBOT",
-                        "timestamp": "2020-02-10T07:27:32Z",
-                        "comment": "Dating maintenance tags: {{Cn}}"
-                    },
-                    {
-                        "revid": 940052260,
-                        "parentid": 920694839,
-                        "user": "George100",
-                        "timestamp": "2020-02-10T07:06:39Z",
-                        "comment": "/* Quotes */ link names"
-                    },
-                    {
-                        "revid": 920694839,
-                        "parentid": 917166084,
-                        "minor": "",
-                        "user": "Rjwilmsi",
-                        "timestamp": "2019-10-11T08:33:06Z",
-                        "comment": "/* Political incivility */Added 1 doi to a journal cite"
-                    },
-                    {
-                        "revid": 917166084,
-                        "parentid": 899065804,
-                        "minor": "",
-                        "user": "Monkbot",
-                        "timestamp": "2019-09-22T15:26:33Z",
-                        "comment": "/* top */[[User:Monkbot/task 16: remove replace deprecated dead-url params|Task 16]]: replaced (1) / removed (0) deprecated |dead-url= and |deadurl= with |url-status=;"
-                    },
-                    {
-                        "revid": 899065804,
-                        "parentid": 892989695,
-                        "minor": "",
-                        "user": "IznoRepeat",
-                        "timestamp": "2019-05-27T17:28:25Z",
-                        "comment": "/* top */cleaning (ed[s]); template now always displays editor annotation; gen fixes"
-                    },
-                    {
-                        "revid": 892989695,
-                        "parentid": 892989481,
-                        "minor": "",
-                        "user": "El C",
-                        "timestamp": "2019-04-18T06:31:50Z",
-                        "comment": "Reverted edits by [[Special:Contribs/GreatPardon|GreatPardon]] ([[User talk:GreatPardon|talk]]) to last version by Kahtar"
-                    },
-                    {
-                        "revid": 892989481,
-                        "parentid": 883593817,
-                        "user": "GreatPardon",
-                        "timestamp": "2019-04-18T06:29:19Z",
-                        "commenthidden": ""
-                    }
-                ]
-            }
-        }
-    }
+   "batchcomplete":"",
+   "query":{
+      "pages":{
+         "11536":{
+            "pageid":11536,
+            "ns":0,
+            "title":"Fianna Fáil",
+            "revisions":[
+               {
+                  "revid":969495573,
+                  "parentid":969492785,
+                  "user":"Bastun",
+                  "timestamp":"2020-07-25T19:46:43Z",
+                  "comment":"The list isn't about which is their most heartfelt ideology. Or the ideology they profess that someone has found the most cites for. So let's try alphabetical."
+               }
+            ]
+         },
+         "438960":{
+            "pageid":438960,
+            "ns":4,
+            "title":"Wikipedia:Arbitration/Requests",
+            "revisions":[
+               {
+                  "revid":288843704,
+                  "parentid":288842576,
+                  "user":"Giano II",
+                  "timestamp":"2009-05-09T10:07:38Z",
+                  "comment":"/* Statement by Giano */ \"by a shouting threatening thug who must....\"Would someone please ask him to strike that statement and appologise?"
+               }
+            ]
+         },
+         "5137507":{
+            "pageid":5137507,
+            "ns":4,
+            "title":"Wikipedia:Administrators' noticeboard/Incidents",
+            "revisions":[
+               {
+                  "revid":283416010,
+                  "parentid":283415709,
+                  "user":"Giano II",
+                  "timestamp":"2009-04-12T19:57:15Z",
+                  "comment":"/* Comments */ what the fuck use is that?"
+               }
+            ]
+         },
+         "11522384":{
+            "pageid":11522384,
+            "ns":0,
+            "title":"Shelbourne Hotel",
+            "revisions":[
+               {
+                  "revid":970167002,
+                  "parentid":970166856,
+                  "user":"Bastun",
+                  "timestamp":"2020-07-29T17:16:46Z",
+                  "comment":"Undid revision 970166856 by [[Special:Contributions/Castlehamilton|Castlehamilton]] ([[User talk:Castlehamilton|talk]]) Stop removing referenced material. Please wait five minutes for me to actually write on the talk page!"
+               }
+            ]
+         },
+         "14917389":{
+            "pageid":14917389,
+            "ns":3,
+            "title":"User talk:Giano II",
+            "revisions":[
+               {
+                  "revid":283242467,
+                  "parentid":283242124,
+                  "user":"Giano II",
+                  "timestamp":"2009-04-11T20:58:39Z",
+                  "comment":"/* Please... */ olOh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apogy on my behalf, a"
+               },
+               {
+                  "revid":290547577,
+                  "parentid":290538033,
+                  "user":"Giano II",
+                  "timestamp":"2009-05-17T17:46:35Z",
+                  "comment":"/* Time now for 2groups of editors each with their own Admins. */ That the chanel is for the banal is not in dispute, the problem is when the banal decide they are bored there, and having done little"
+               }
+            ]
+         },
+         "22759986":{
+            "pageid":22759986,
+            "ns":4,
+            "title":"Wikipedia:Requests for adminship/FlyingToaster 2",
+            "revisions":[
+               {
+                  "revid":290490251,
+                  "parentid":290489673,
+                  "user":"Giano II",
+                  "timestamp":"2009-05-17T11:41:52Z",
+                  "comment":"/* Discussion */ If she wants to chat on IRC - fine, but don't come here wanting to be an admin on the strength of it."
+               },
+               {
+                  "revid":290692859,
+                  "parentid":290692048,
+                  "user":"Giano II",
+                  "timestamp":"2009-05-18T11:13:20Z",
+                  "comment":"/* Oppose */ accept it and stop badgering! ~~~~"
+               }
+            ]
+         },
+         "47243802":{
+            "pageid":47243802,
+            "ns":0,
+            "title":"Social Democrats (Ireland)",
+            "revisions":[
+               {
+                  "revid":968857509,
+                  "parentid":968852262,
+                  "user":"Bastun",
+                  "timestamp":"2020-07-21T23:02:43Z",
+                  "comment":"Undid revision 968852262 by [[Special:Contributions/B. M. L. Peters|B. M. L. Peters]] ([[User talk:B. M. L. Peters|talk]]) Ok, I get reordering lists arbitrarily seems to be your thing, but stop now?"
+               }
+            ]
+         },
+         "64136870":{
+            "pageid":64136870,
+            "ns":4,
+            "title":"Wikipedia:Move review/Log/2020 July",
+            "revisions":[
+               {
+                  "revid":967664593,
+                  "parentid":967664008,
+                  "user":"Bastun",
+                  "timestamp":"2020-07-14T15:05:13Z",
+                  "comment":"Undid revision 967664008 by [[Special:Contributions/Serial Number 54129|Serial Number 54129]] ([[User talk:Serial Number 54129|talk]]) WTF? Now you're overwriting my comments?!"
+               }
+            ]
+         }
+      }
+   }
 }

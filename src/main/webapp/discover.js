@@ -1,46 +1,59 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * False
+ */
+function testData(){
+  
+}
+/**
+ * Load some comments from the Media API
+ */
+function loadData() {
+  var ids = document.getElementById("revids").value;
+  console.log(ids);
+  ids = ids.replace(" ","|")
+  // Build request url
+  var url = "https://en.wikipedia.org/w/api.php"; 
+  var params = {
+	action: "query",
+	format: "json",
+	prop: "revisions",
+	revids: ids
+};
+  url = url + "?origin=*";
+  Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
+  fetch(url,{headers:{"User-agent":"WikiLoop DoubleCheck Team"}}).then(response => response.json()).then((json) => {
+      console.log(json);
+    fetch('/load-data', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(json)
+    }).then(response => {
+        console.log("POST REQUEST WENT THROUGH");
+        document.location.href = response.url;
+    });
+  });
+}
 
 /** 
  * Get edit comments from server
  */
-async function getComments() {
-  let response = await fetch('/comments');
+async function getComments(ids) {
+  let response = await fetch('/comments?ids='+ids); 
   let listEditComments = await response.json();
+  console.log(listEditComments);
   listEditComments.forEach(editComment => {
     let toxicityPercentage = editComment.toxicityObject + "%";
     createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
-                        "<a target=\"_blank\"> "+ editComment.comment + "</a>", 
+                        editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/edit-comment.html?" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
+                        "<a target=\"_blank\" href=\"/edit-comment.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"
                         ]);
   });
 }
@@ -71,7 +84,11 @@ function createTableElement(text) {
  * Loads comments on the page if user is logged in
  */
 window.onload = function() {
-  getComments();
+  var url_string = window.location.href 
+  var url = new URL(url_string);
+  var ids = url.searchParams.get("ids");
+  console.log(ids);
+  getComments(ids);
 }
 
 /**

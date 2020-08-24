@@ -47,6 +47,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -62,91 +63,81 @@ import com.google.gson.Gson;
 
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
+import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
-import org.json.simple.JSONArray; 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
+                                       
 import java.io.FileReader;
 
-/** Servlet that returns a list of Edit Comment Objects */
+/** This Servlet goes to the datastore and retuns the list of Edit */
 @WebServlet("/comments")
 public class DiscoverServlet extends HttpServlet {
   /* Given mock edit comments from Wikipedia, returns a list of Edit Comment Objects */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<EditComment> listMockComments = new ArrayList<EditComment>();
-    listMockComments = new MockData().getMockComments();
-                
-    Query query = new Query("edit-comments");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {                
+    String ids = request.getParameter("ids");
+    StringTokenizer st = new StringTokenizer(ids, "-");
+    List<String> idList = new ArrayList<String>();
+    while (st.hasMoreTokens()) {
+     idList.add(st.nextToken());  
+    }
+    System.out.println(idList);
 
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
-    for (EditComment mockComment : listMockComments) {
-
-      String toxicString = getToxicityString(mockComment.comment);
-      try { 
-        JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
-        
-        // typecasting obj to JSONObject 
-        JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
-        JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
-        JSONObject summaryScore = (JSONObject) toxicity.get("summaryScore");
-        String toxicScore = String.valueOf(Math.round((100 * Double.parseDouble(summaryScore.get("value").toString()))));
-        mockComment.toxicityObject = toxicScore;
-        editComments.add(mockComment);
-      } catch (Exception e) {
+    System.out.println("Check " + ids);
+    if (ids.equals("null")) {
+    Query query = new Query("EditComments");
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      String revisionId = (String) entity.getProperty("revisionId");
+      String user = (String) entity.getProperty("userName");
+      String comment = (String) entity.getProperty("comment");
+      String computedAttributeString = (String) entity.getProperty("computedAttribute");
+      String article = (String) entity.getProperty("parentArticle");
+      String date = (String) entity.getProperty("date");
+      String status = (String) entity.getProperty("status");
+      try {
+        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.get("score").toString(), date, article, status));
+      } catch(Exception e) {
         System.out.println(e);
-      }   
+      }
+    }
+    } else {
+      System.out.println("WHY");
+      for (String id : idList) {
+        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+        PreparedQuery pq = datastore.prepare(query);
+        Entity entity = pq.asSingleEntity();
+        System.out.println(entity);
+          String revisionId = (String) entity.getProperty("revisionId");
+          String user = (String) entity.getProperty("userName");
+          String comment = (String) entity.getProperty("comment");
+          String computedAttributeString = (String) entity.getProperty("computedAttribute");
+          String article = (String) entity.getProperty("parentArticle");
+          String date = (String) entity.getProperty("date");
+          String status = (String) entity.getProperty("status");
+          try {
+            JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.get("score").toString(), date, article, status));
+          } catch(Exception e) {
+            System.out.println(e);
+          }
+        }
     }
     String json = convertToJsonUsingGson(editComments);
     // Send the JSON as the response
-    response.setContentType("application/json;");
+    response.setContentType("application/json;"); 
     response.getWriter().println(json);
-  }
-
-  /**
-   * Function calls the perspective api via post request
-   * to analyze an edit comment text
-   */
-  private String getToxicityString(String comment) {
-    try {
-      MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "AIzaSyCLs-HQGTS_Fdpg3rvrbtb-XlOvsEgG3pQ";
-      String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
-      "?key=" + api_key);
-      String postUrl = buildUrl;
-      OkHttpClient client = new OkHttpClient();
-      RequestBody body = RequestBody.create(JSON, convertToJson(comment));
-      Request request = new Request.Builder()
-                .url(postUrl)
-                .post(body)
-                .build();
-      Response response = client.newCall(request).execute();
-      return response.body().string();
-    }
-    catch(IOException e) {
-        e.printStackTrace();
-    }
-    return "Error";
-  }
-  
-  /** 
-   * Build json header for perspective api post request
-   */
-  private String convertToJson(String comment) {
-    String json = "{";
-    json += "\"comment\": ";
-    json += "{\"text\": " + "\"" + comment + "\"" + "}";
-    json += ", ";
-    json += "\"languages\": ";
-    json += "[\"en\"]";
-    json += ", ";
-    json += "\"requestedAttributes\": ";
-    json += "{\"TOXICITY\": {}}";
-    json += "}";
-    return json;
   }
 
   /**
@@ -158,5 +149,14 @@ public class DiscoverServlet extends HttpServlet {
     String json = gson.toJson(comments);
     return json;
   }
-}
 
+  /**
+   * Converts a comments instance into a JSON string using the Gson library. Note: We first added
+   * the Gson library dependency to pom.xml.
+   */
+  private String convertAttributeToString(Attribute label) {
+    Gson gson = new Gson();
+    String json = gson.toJson(label);
+    return json;
+  }
+}
