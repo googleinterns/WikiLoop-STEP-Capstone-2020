@@ -37,42 +37,13 @@ $(document).ready( function () {
 } );
 
 /**
- * Load some comments 
- */
-function loadData() {
-
-  // Build request url
-  var url = "https://en.wikipedia.org/w/api.php"; 
-  var params = {
-    action: "query",
-    format: "json",
-    list: "allrevisions",
-    arvprop: "ids|user|comment|timestamp"
-};
-  url = url + "?origin=*";
-  Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
-  fetch(url,{headers:{"User-agent":"WikiLoop DoubleCheck Team"}}).then(response => response.json()).then((json) => {
-      console.log(json);
-    fetch('/load-data', {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify(json)
-    }).then(response => {
-        console.log("POST REQUEST WENT THROUGH");
-    });
-  });
-}
-
-/**
  * Get user profile from server
  */
 function getUser() {
-  loadData();
   fetch('/user').then(response => response.json()).then((user) => {
     console.log(user);
+    const userNameSection = document.getElementById('user-name-section');
+    userNameSection.innerHTML = user.userName;
     const userPersonalInformationSection = document.getElementById('personal-information');
     userPersonalInformationSection.innerHTML = "email: "+ "tom@gmail.com";
     const avgToxicityScore = document.getElementById('incivility');
@@ -90,12 +61,13 @@ function getUser() {
 function createEditElement(edit, userName, avgToxicityScore) {
   var table = $('#my-table').DataTable();
  
-  table.row.add( ["<span style=\"color:red;\">" + edit.toxicityObject + "</span>",
+  table.row.add( ["<span style=\"color:red;\">" + edit.toxicityObject + "%" + "</span>",
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + edit.revisionId + "\"> "+ edit.revisionId + "</a>", 
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + edit.userName + "\"> "+ edit.userName + "</a>", 
-                  "<a target=\"_blank\" href=\"/edit-comment.html\" onClick=\" + viewEditComment(" + edit.revisionId + ") \"> "+ edit.comment + "</a>",
+                  edit.comment,
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + edit.parentArticle + "\"> "+ edit.parentArticle + "</a>", 
-                  edit.date]).draw();
+                  edit.date,
+                  "<a target=\"_blank\" href=\"/edit-comment.html?" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
 }
 
 

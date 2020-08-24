@@ -71,6 +71,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
+                                       
 import java.io.FileReader;
 
 /** Servlet that returns a list of Edit Comment Objects */
@@ -85,7 +86,7 @@ public class DiscoverServlet extends HttpServlet {
 
     // Go through each comment and analyze comment's toxicity, creating an Edit Comment Object
     ArrayList editComments = new ArrayList<String>();
-   for (Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable()) {
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -102,7 +103,7 @@ public class DiscoverServlet extends HttpServlet {
     }
     String json = convertToJsonUsingGson(editComments);
     // Send the JSON as the response
-    response.setContentType("application/json;");
+    response.setContentType("application/json;"); 
     response.getWriter().println(json);
   }
 

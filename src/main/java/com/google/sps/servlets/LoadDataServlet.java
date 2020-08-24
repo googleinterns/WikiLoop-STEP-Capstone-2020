@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.sps.servlets;
+package com.google.sps.servlets; 
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,8 @@ import com.google.sps.data.User;
 import com.google.sps.data.Users;
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
-import com.google.sps.data.MockComment;
+import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
 
 import com.google.gson.Gson;
 
@@ -60,79 +61,95 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.*; 
 import java.io.FileReader;
 
-/** Servlet that handles comments data */
-/* TO DO (DEUS):   Use the actual EditComment Class as soon as David pushes some code*/
+/** Servlet that receives and store data from the Media API*/
 @WebServlet("/load-data")
 public class LoadDataServlet extends HttpServlet {
-  String USER_PROFILE_DATASTORE_ENTITY_NAME = "userProfileEntity";
-
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get request json
-    StringBuffer stringBuffer = new StringBuffer();
-    String line = null;
-    try {
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null){
-            stringBuffer.append(line);
-        } 
-    } catch (Exception e) { System.out.println("EXCEPTION: \t" + e);}
+    // this boolean variable determines whether we update the Datastore or not
+    boolean updateDatastore = false;
+    String json = getEditComments(request);
 
-    String json = stringBuffer.toString();
-    System.out.println(json);
-
-    // TO DO (Maybe David): parse json to add EditComments and store them
-    // parse json to mockdata
-    // run through the perspective api
-    // create edit comment
-    // store edit comment
-    List<MockComment> listMockComments = new ArrayList<MockComment>();
+    // Get a collection of edit comments without a toxicity attribute using the MockData class
+    Collection<EditComment> listMockComments = new ArrayList<EditComment>();
     listMockComments = new MockData(json).getMockComments();
+
+    // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
+    listEditComments = addToxicityBreakDown(listMockComments);
 
-    for (MockComment comment : listMockComments){
-      String toxicString = getToxicityString(comment.text);
-      try { 
-        JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
-        //System.out.println(toxicString); 
-        // typecasting obj to JSONObject 
-        JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
-        JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
-        JSONObject summaryScore = (JSONObject) toxicity.get("summaryScore");
-        String toxicScore = String.valueOf(Math.round((100 * Double.parseDouble(summaryScore.get("value").toString()))));
-        EditComment analyzedComment = new EditComment(comment.revisionId, comment.userName, comment.text, 
-                                              toxicScore, comment.date, comment.parentArticle, "NEW");
-        listEditComments.add(analyzedComment);
-      } catch (Exception e) {
-        //System.out.println(e);
-      }   
-        
+    // store the new data in Datastore
+    if (updateDatastore){
+      loadEditCommentsToDatastore(listEditComments);    
+      loadUsersToDatastore(listEditComments); 
     }
-
-    // TO DO (Deus): parse json and use David's work to add and edit UserProfiles and store them
-    loadUserToDatastore(listEditComments);
-
     // Redirect back to the HTML page.
     response.sendRedirect("index.html");
   }
 
-  private void loadUserToDatastore(Collection<EditComment> listEditComments) {
+  /**
+   * Goes through all edit comments passed though in a collection, and stores them to the Datastore
+   * @param Collection<EditComment> listEditComments
+   */
+  private void loadEditCommentsToDatastore(Collection<EditComment> listEditComments) {
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    
-    Entity userProfileEntity = new Entity("UserProfile", "Tom");
-    userProfileEntity.setProperty("userName", "Tom");
-    ArrayList<EmbeddedEntity> listEditCommentsEntity = new ArrayList<EmbeddedEntity>();
-    for (EditComment ec : listEditComments) {
-      System.out.println("USERNAME IS: \t" + ec.getUserName());
-      EmbeddedEntity editCommentEntity = createEmbeddedEntity(ec);
-      listEditCommentsEntity.add(editCommentEntity);
-    }
-    userProfileEntity.setProperty("listEditComments", listEditCommentsEntity);
-    datastore.put(userProfileEntity);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+      for (EditComment editComment : listEditComments) {
+          Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+
+          editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
+          editCommentEntity.setProperty("userName", editComment.getUserName());
+          editCommentEntity.setProperty("comment", editComment.getComment());
+          editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+          editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
+          editCommentEntity.setProperty("date", editComment.getDate());
+          editCommentEntity.setProperty("status", editComment.getStatus());
+
+          datastore.put(editCommentEntity);
+      }
   }
 
+  /**
+   * Goes through all edit comments passed though in a collection, and stores the author in Datastore.
+   * Stores a list of EditComments for each author.
+   * Updates the list if an existing author has a new comment
+   * @param Collection<EditComment> listEditComments
+   */
+  private void loadUsersToDatastore(Collection<EditComment> listEditComments) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    for (EditComment editComment : listEditComments) {
+      Query query = 
+        new Query("UserProfile")
+            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, editComment.getUserName()));
+      PreparedQuery results = datastore.prepare(query);
+
+      Entity entity = results.asSingleEntity();
+      Collection<EmbeddedEntity> listEditCommentsEntity = new ArrayList<EmbeddedEntity>();
+      if (entity != null){
+        listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
+        datastore.delete(entity.getKey());
+      }
+      
+      EmbeddedEntity editCommentEntity = createEmbeddedEntity(editComment);
+      if (!containsEditComment(listEditCommentsEntity, editComment)){
+          listEditCommentsEntity.add(editCommentEntity);
+          }
+
+      Entity userProfileEntity = new Entity("UserProfile", editComment.getUserName());
+      userProfileEntity.setProperty("userName", editComment.getUserName());
+      userProfileEntity.setProperty("listEditComments", listEditCommentsEntity);
+      datastore.put(userProfileEntity);
+    }
+  }
+
+  /**
+   * Sets properties for an EditComment EmbeddedEntity
+   * Returns the EmbeddedEntity to be added to Datastore as a user's property
+   * @param EditComment editComment
+   * @return EmbeddedEntity describing the EditComment
+   */
   private EmbeddedEntity createEmbeddedEntity(EditComment editComment) {
     EmbeddedEntity editCommentEntity = new EmbeddedEntity();
 
@@ -148,46 +165,68 @@ public class LoadDataServlet extends HttpServlet {
   }
 
   /**
-   * Function calls the perspective api via post request
-   * to analyze an edit comment text
+   * Goes through all edit comments passed though in a collection without a toxicity attribute,
+   * and add a toxicity attribute to each one by using the Perspective class
+   * @param Collection<EditComment> listMockComments
+   * @return Collection<EditComment> containing EditComments with toxicity attributes
    */
-  private String getToxicityString(String comment) {
-    try {
-      MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-      String api_key = "AIzaSyCLs-HQGTS_Fdpg3rvrbtb-XlOvsEgG3pQ";
-      String buildUrl = ("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze" +    
-      "?key=" + api_key);
-      String postUrl = buildUrl;
-      OkHttpClient client = new OkHttpClient();
-      RequestBody body = RequestBody.create(JSON, convertToJson(comment));
-      Request request = new Request.Builder()
-                .url(postUrl)
-                .post(body)
-                .build();
-      Response response = client.newCall(request).execute();
-      return response.body().string();
+  private Collection<EditComment> addToxicityBreakDown(Collection<EditComment> listMockComments) {
+    Collection<EditComment> listEditComments = new ArrayList<EditComment>();
+
+    for (EditComment comment : listMockComments){
+      Attribute attribute = new Perspective(comment.comment, true).computedAttribute;
+      Gson gson = new Gson();
+      String attributeString = gson.toJson(attribute);
+      //System.out.println("Comment: " + comment.comment + " " + attributeString);
+      comment.toxicityObject = attributeString;
+      listEditComments.add(comment);
     }
-    catch(IOException e) {
-        e.printStackTrace();
-    }
-    return "Error";
-  }
-  
-  /** 
-   * Build json header for perspective api post request
-   */
-  private String convertToJson(String comment) {
-    String json = "{";
-    json += "\"comment\": ";
-    json += "{\"text\": " + "\"" + comment + "\"" + "}";
-    json += ", ";
-    json += "\"languages\": ";
-    json += "[\"en\"]";
-    json += ", ";
-    json += "\"requestedAttributes\": ";
-    json += "{\"TOXICITY\": {}}";
-    json += "}";
-    return json;
+
+    return listEditComments;
   }
 
+  /**
+   * Goes through all EditComment entities passed though a collection, and checks if any of them 
+   * contains an EditComment that equals the second EditComment (second parameter)
+   * @param Collection<EditComment> listEditCommentsEntity
+   * @param EditComment editComment
+   * @return boolean
+   */
+  private boolean containsEditComment(Collection<EmbeddedEntity> listEditCommentsEntity, EditComment editComment){
+      for (EmbeddedEntity embeddedEntity : listEditCommentsEntity){
+        String userName = (String) embeddedEntity.getProperty("userName");
+        String comment = (String) embeddedEntity.getProperty("comment");
+        String date = (String) embeddedEntity.getProperty("date");
+        String parentArticle = (String) embeddedEntity.getProperty("parentArticle");
+        String status = (String) embeddedEntity.getProperty("status");
+        String revisionId = (String) embeddedEntity.getProperty("revisionID");
+        String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
+
+        EditComment tempEditComment = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
+
+        if (editComment.equals(tempEditComment)){
+            return true;
+        }
+      }
+      return false;
+  }
+
+  /**
+   * Parses the HTTP request and return a string in a json format
+   * @param HttpServletRequest request
+   * @return String structured in a json format, containing comments from the Media API
+   */
+  private String getEditComments(HttpServletRequest request) {
+    StringBuffer stringBuffer = new StringBuffer();
+    String line = null;
+    try {
+        BufferedReader reader = request.getReader();
+        while ((line = reader.readLine()) != null){
+            stringBuffer.append(line);
+        } 
+    } catch (Exception e) { System.out.println("EXCEPTION: \t" + e);}
+
+    String json = stringBuffer.toString();
+    return json;
+  }
 }

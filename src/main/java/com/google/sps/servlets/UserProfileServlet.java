@@ -37,6 +37,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*; 
+
 /** Servlet that returns UserProfile information */
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
@@ -44,10 +47,13 @@ public class UserProfileServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
     
-    // Get User's ID
-    String id = getRequestParameters();
     // Get User's instance from Datastore
-    User user = retrieveUser(id);
+    List<String> listOfUsers = new ArrayList<String>();
+    listOfUsers.add("Giano II");
+    listOfUsers.add("Bastun");
+    Collections.shuffle(listOfUsers);
+    String userToRetrieve = listOfUsers.get(0);
+    User user = retrieveUser(userToRetrieve);
 
     // Jasonify the User (Convert the userprofile to JSON)
     Gson gson = new Gson();
@@ -63,41 +69,23 @@ public class UserProfileServlet extends HttpServlet {
     response.sendRedirect("index.html");
   }
 
-  /**
-   * Return current User ID 
-   */
-  private String getRequestParameters () {
-
-     ArrayList<String> ids = new ArrayList<String>();
-     ids.add("100");
-     ids.add("101");
-     ids.add("102");
-
-    int randomIndex = (int) (Math.random() * ids.size());
-
-    String id =  ids.get(randomIndex);
-
-    
-    return id;
-  }
-
-
   /** 
    * Retrieve a user from Datastore 
    */
-   private User retrieveUser(String id) {
+  private User retrieveUser(String userToRetrieve) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by userName
     Query query = 
         new Query("UserProfile")
-            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, "Tom"));
+            .setFilter(new Query.FilterPredicate("userName", Query.FilterOperator.EQUAL, userToRetrieve));
     PreparedQuery results = datastore.prepare(query);
 
     Entity entity = results.asSingleEntity();
     if (entity == null){
         return null;
     }
-    String name = (String) entity.getProperty("userName");
+    String id = String.valueOf(entity.getKey().getId());
+    String userName = (String) entity.getProperty("userName");
     
     // Get User's edit comments list
     Collection<EmbeddedEntity> listEditCommentsEntity = (Collection<EmbeddedEntity>) entity.getProperty("listEditComments");
@@ -108,15 +96,18 @@ public class UserProfileServlet extends HttpServlet {
       String date = (String) embeddedEntity.getProperty("date");
       String parentArticle = (String) embeddedEntity.getProperty("parentArticle");
       String status = (String) embeddedEntity.getProperty("status");
-      String revisionID = (String) embeddedEntity.getProperty("revisionID");
+      String revisionId = (String) embeddedEntity.getProperty("revisionID");
       String toxicityObject = (String) embeddedEntity.getProperty("toxicityObject");
+      try {
+        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
+        listEditComments.add(new EditComment(revisionId, userName, comment, computedAttribute.get("score").toString(), date, parentArticle, status));
 
-      EditComment ec = new EditComment(revisionID, name, comment, toxicityObject, date, parentArticle, status);
-      listEditComments.add(ec);
+        } catch(Exception e) {
+        System.out.println(e);
+        }
     }
 
-    User user = new User(id, name, listEditComments);
-
+    User user = new User(id, userName, listEditComments);
     return user;
   }
 }

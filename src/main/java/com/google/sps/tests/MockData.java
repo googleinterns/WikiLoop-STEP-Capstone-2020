@@ -2,6 +2,8 @@ package com.google.sps.tests;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.io.FileReader; 
 import org.json.simple.JSONArray; 
 import org.json.simple.JSONObject; 
@@ -22,12 +24,12 @@ import com.google.gson.Gson;
  **/
 public final class MockData {
 
-  private final List<EditComment> listMockComments;
-  private final JSONArray expectedResponse;
+  private final Collection<EditComment> listMockComments;
+  //private final JSONArray expectedResponse;
 
   public MockData(String json) {
     this.listMockComments = this.readMockJson(json);
-    this.expectedResponse = this.readMockTestJson();
+    //this.expectedResponse = this.readMockTestJson();
   }
   
   /**
@@ -36,9 +38,8 @@ public final class MockData {
    * comments for testing
    * @return List<MockComments>
    */
-  private List<MockComment> readMockJson(String json) {
-    ArrayList<MockComment> mockComments = new ArrayList<MockComment>();
-
+  private List<EditComment> readMockJson(String json) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
 
     /* Reads JSON file & converts to edit comment */
     try { 
@@ -47,23 +48,24 @@ public final class MockData {
       /* Parse mockDataJSON */
       JSONObject mockDataObject = (JSONObject) jsonObj;
       JSONObject query = (JSONObject) mockDataObject.get("query");
-      JSONArray allrevisions = (JSONArray) query.get("allrevisions");
+      JSONObject pages = (JSONObject) query.get("pages");
+      for (Object key : pages.keySet()) {
+          //JSONObject jsonKey = (JSONObject) key;
+          String pageId = String.valueOf(key);
+          
+          JSONObject jsonKey = (JSONObject) pages.get(pageId);
 
-      /*Iterate and Parse each revision, create mock comments */
-      for (Object o : allrevisions) {
+          String article = (String) jsonKey.get("title");
+          JSONArray revisions = (JSONArray) jsonKey.get("revisions");
+          /* Iterate & Parse article revisions, create mock comments*/
+        for (Object o: revisions) {
           JSONObject comment = (JSONObject) o;
-          String pageId = String.valueOf(comment.get("pageid"));
-          JSONArray revision = (JSONArray) comment.get("revisions");
-          String article = (String) comment.get("title");
-          for (Object obj : revision) {
-              JSONObject object = (JSONObject) obj;
-              String revisionId = String.valueOf(object.get("revid"));
-              String user = (String) object.get("user");
-              String mockComment = (String) object.get("comment");
-              String date = (String) object.get("timestamp");
-
-              mockComments.add(new MockComment(revisionId, user, mockComment, date, article));
-          }
+          String revisionId = String.valueOf(comment.get("revid"));
+          String user = (String) comment.get("user");
+          String mockComment = (String) comment.get("comment");
+          String date = (String) comment.get("timestamp");
+          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+        }
       }
 
     } catch (Exception e) {
@@ -78,8 +80,9 @@ public final class MockData {
    * of information in order to compare within the DataServletTest file
    * @return JSONArray of EditCommentObjects
    */
+/*
   private JSONArray readMockTestJson() {
-    /* Read Json file */
+    // Read Json file 
     try { 
       Object obj = new JSONParser().parse(new FileReader("mockDataTest.json")); 
       JSONArray comment = (JSONArray) obj;
@@ -88,15 +91,15 @@ public final class MockData {
       System.out.println(e);
     }
       return new JSONArray();
-    }
+    } */
 
-  public List<EditComment> getMockComments() {
+  public Collection<EditComment> getMockComments() {
     return listMockComments;
   }
-
+/*
   public JSONArray getExpectedResponse() {
     return expectedResponse;
-  }
+  } */
   
 
 }

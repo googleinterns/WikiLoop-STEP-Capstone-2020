@@ -1,7 +1,8 @@
 package com.google.sps.data;
 import java.util.Date;
+import java.util.Objects;
 
-/** Class containing server statistics. */
+/** Class containing an Edit Comment */
 public final class EditComment {
   
   public final String userName;
@@ -48,6 +49,27 @@ public final class EditComment {
 
   public String getToxicityObject() {
     return toxicityObject;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if ((object == null) || !(object instanceof EditComment)) {
+        return false;
+    }
+
+    if (this == object) return true;
+
+    return fieldsEquality((EditComment) object);
+  }
+
+  
+  private boolean fieldsEquality(EditComment other) {
+    return (this.userName.equals(other.getUserName())) && (this.comment.equals(other.getComment())) && (this.date.equals(other.getDate())) && (this.parentArticle.equals(other.getParentArticle()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.userName, this.comment, this.date);
   }
 
 }
