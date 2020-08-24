@@ -1,0 +1,194 @@
+/* template */
+
+.dashboard-header {
+  width: 100%;
+  background: #f8f9fa;
+  height: 5em;
+  display: flex;
+  align-items: center;
+}
+
+.nav-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1140px;
+}
+
+.user-loggedin {
+  font-size: 16px;
+  line-height: 32px;
+  height: 2.5em;
+  width: 8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007bff;
+}
+
+.nav-brand {
+  display: inline-block;
+  padding-top: .3125rem;
+  padding-bottom: .3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+  color: black
+}
+
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: grey;
+   text-align: center;
+}
+
+/* ALL PAGES */
+a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a:hover {
+  cursor: pointer;
+  text-decoration: none;
+  color: #007bff;
+}
+
+th.dt-center, td.dt-center {
+    text-align: center; 
+}
+
+.table-container{
+    width: 100em;
+    margin: 2em;
+}
+
+/* Discover Page */
+.dashboard-content {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  max-width: 1140px;
+}
+
+.dashboard-feed {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+}
+
+.navbar-brand {
+  color: black;
+  display: inline-block;
+  padding-top: .3125rem;
+  padding-bottom: .3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+/* User Profile Page*/
+ .user-profile-content {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1140px;
+}
+ 
+.user-information {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  
+}
+.personal-information-box {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-right: 1.5rem;
+}
+
+.incivility-box {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-left: 1.5rem;
+}
+
+.user-edits-feed {
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+}
+
+/* Edit Comment Page */
+
+.edit-info {
+  padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 25px;
+  background: white;
+}
+
+.section {
+  padding: 1.5em;
+  max-width: 1140px;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+  position: relative;
+}

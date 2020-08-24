@@ -1,5 +1,5 @@
 //update status servlet
-
+/*
 package com.google.sps.servlets;
 
 //datastore
@@ -27,14 +27,8 @@ public class UpdateStatusServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    }
-
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      /*
-      long id;
+      long id = reques;
       String userName = request.getParameter("username");
       String editCommentText = request.getParameter("edit-comment");
       String date = request.getParameter("date");
@@ -52,6 +46,7 @@ public class UpdateStatusServlet extends HttpServlet {
       datastore.update(editEntity);
 
       response.sendRedirect("/edit-comment.html");
-      */
+      
     }
 }
+*/
