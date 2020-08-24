@@ -62,7 +62,7 @@ public final class MockData {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", ""), "0", date, article, "NEW"));
         }
       }
 
@@ -71,29 +71,67 @@ public final class MockData {
     }
     return editComments;
   }
-  
+
+  /**
+   * Given a JSONArray of edit comments function stores the edit comments in a local
+   * datastore used for testing
+   @param editcomments JSON array of EditComments
+   */
+  public void storeLocalData(JSONArray editComments, DatastoreService datastore) {
+    for (Object editCommentObj: editComments) {
+      JSONObject editComment = (JSONObject) editCommentObj;
+      Entity editCommentEntity = new Entity("EditComments", (String) editComment.get("revisionId") + "en");
+      editCommentEntity.setProperty("revisionId", (String) editComment.get("revisionId"));
+      editCommentEntity.setProperty("userName", (String) editComment.get("userName"));
+      editCommentEntity.setProperty("comment", (String) editComment.get("comment"));
+      editCommentEntity.setProperty("computedAttribute", (String) editComment.get("toxicityObject"));
+      editCommentEntity.setProperty("parentArticle", (String) editComment.get("parentArticle"));
+      editCommentEntity.setProperty("date", (String) editComment.get("date"));
+      editCommentEntity.setProperty("status", (String) editComment.get("status"));
+      datastore.put(editCommentEntity);
+    }
+  }
+
+  public Collection<EditComment> getMockComments() {
+    return listMockComments;
+  }
+
   /**
    * Reads the mockDataTest.json file in project directory which simulates end product of 
    * DiscoverServlet. This function reads the mockDataTest.json file and returns JSONArry
    * of information in order to compare within the DataServletTest file
    * @return JSONArray of EditCommentObjects
    */
-/*
-  private JSONArray readMockTestJson() {
+  public JSONArray readMockTestJson(String filename) {
     // Read Json file 
     try { 
-      Object obj = new JSONParser().parse(new FileReader("mockDataTest.json")); 
+      Object obj = new JSONParser().parse(new FileReader(filename)); 
       JSONArray comment = (JSONArray) obj;
       return comment;
     } catch (Exception e) {
       System.out.println(e);
     }
       return new JSONArray();
-    } */
+    } 
 
-  public Collection<EditComment> getMockComments() {
-    return listMockComments;
-  }
+  /**
+   * Reads the mockDataTest.json file in project directory which simulates end product of 
+   * DiscoverServlet. This function reads the mockDataTest.json file and returns JSONArry
+   * of information in order to compare within the DataServletTest file
+   * @return JSONArray of EditCommentObjects
+   */
+  public JSONObject readMockPerspective(String filename) {
+    // Read Json file 
+    try { 
+      Object obj = new JSONParser().parse(new FileReader(filename)); 
+      JSONObject comment = (JSONObject) obj;
+      return comment;
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+      return new JSONObject();
+    } 
+
 /*
   public JSONArray getExpectedResponse() {
     return expectedResponse;

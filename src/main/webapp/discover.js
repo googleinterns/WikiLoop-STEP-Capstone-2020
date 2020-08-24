@@ -5,7 +5,7 @@ document.onkeydown = checkKey;
  */
 function checkKey(e) {
   e = e || window.event;
-  if (e.keyCode === 67) {
+  if (e.keyCode === 84) {
       if (window.location.href.indexOf('/') != -1) {
         window.location.href = '/slider.html'
     }
@@ -60,7 +60,7 @@ async function getComments(ids) {
   let listEditComments = await response.json();
   console.log(listEditComments);
   listEditComments.forEach(editComment => {
-    let toxicityPercentage = JSON.parse(editComment.toxicityObject).score + "%";
+    let toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
     createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
