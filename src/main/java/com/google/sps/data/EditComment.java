@@ -84,5 +84,4 @@ public final class EditComment {
   public int hashCode() {
     return Objects.hash(this.userName, this.comment, this.date);
   }
-
 }

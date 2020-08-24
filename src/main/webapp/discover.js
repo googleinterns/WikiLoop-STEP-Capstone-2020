@@ -29,10 +29,10 @@ function loadData() {
   // Build request url
   var url = "https://en.wikipedia.org/w/api.php"; 
   var params = {
-	action: "query",
-	format: "json",
-	prop: "revisions",
-	revids: ids
+  action: "query",
+  format: "json",
+  prop: "revisions",
+  revids: ids
 };
   url = url + "?origin=*";
   Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});

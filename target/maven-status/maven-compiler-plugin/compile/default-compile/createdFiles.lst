@@ -5,5 +5,6 @@ com/google/sps/data/User.class
 com/google/sps/data/Attribute.class
 com/google/sps/servlets/DiscoverServletTest.class
 com/google/sps/servlets/DiscoverServlet.class
+com/google/sps/tests/TestData.class
 com/google/sps/data/Status.class
 com/google/sps/data/Perspective.class

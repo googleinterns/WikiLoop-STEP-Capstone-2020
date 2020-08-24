@@ -70,4 +70,3 @@ function createEditElement(edit, userName, avgToxicityScore) {
                   "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
 }
 
-
