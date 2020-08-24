@@ -8,6 +8,7 @@
     <script src="edit-comment-script.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Add bootstap, jQuery, and datatables -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -26,45 +27,66 @@
 
   <body>
     <div id=template></div>
-    <section class="feed w3-round w3-card">
-      <h3><b>[[<a style="color: #057eff" id="article"></a>]]</b><sup><a style="color: #057eff" id="rev-id"></a></sup></h3><br>
+        <section class="feed w3-round w3-card">
+      <h3><b>[[<a target="_blank" style="color: #057eff" id="article"></a>]]</b><sup><a style="color: #057eff" target="_blank" id="rev-id"></a></sup></h3><br>
+      <div class="dashboard-subtitle">
+        <div class="discover-subtitle-score-container">
+          <div class="discover-score-title">
+            Incivility:
+          </div>
+          <div><span id="score" style="color:red;"></span></div>
+        </div>
+        <div class="slider-subheader">
+          Date:
+          <div id="date"></div>
+        </div>
+        <div class="slider-subheader">
+          By User:
+          <div><a  id="user" target="_blank"></a></div>
+        </div>
+      </div>
+
+      <h2>Edit Comment</h2>
       <div class="edit-box">
         <br>
         <div class="edit-info">
           <table>
             <tbody>
               <tr>
-                <td id="date"></td>
-              </tr>
-              <tr>
-                <td><b id="username"></b></td>
-              </tr>
-              <tr>
                 <td id="edit-comment"></td>
               </tr>
             </tbody>
-          </table><br>
+          </table>
         </div><br>
+
         <div class="toxic-info">
-          <div class="toxicity">
-            <h4>Report</h4>
-            <div>
+          <div>
+            <h2>Incivility Label</h2>
+            <div  class="toxicity">
               <div id="label"></div>
-              <div id="score"></div>
-              <div id="reason"></div>
               <div id="experimental"></div>
             </div>
-          </div>
+          </div><br>
           <div class="action">
-            <h6><b>Take Action</b></h6>
-            <div class="w3-center">
-             <form action="update" class="w3-bar">
-                <input value="Looks good" type="button" class="w3-bar-item w3-button w3-hover-green w3-border w3-border-green" />
-                <input value="Not sure" type="button" class="w3-bar-item w3-button w3-border" />
-                <input value="Should report" type="button" class="w3-bar-item w3-button w3-hover-red w3-border w3-border-red" />
-                <input type="submit" value="Submit" class="w3-bar-item w3-button w3-hover-grey w3-border w3-border-grey" />
-              </form>
-            </div>
+            <form method="post" action="/retrieve">
+              <div class="w3-center">
+                <div class="radio-toolbar">
+                  <div class="flagged">
+                    <span class="material-icons">flag</span><br>
+                    <input type="checkbox" name="flag" value="flag">
+                  </div>
+                  <input type="radio" id="good" name="btn" value="g" checked>
+                  <label for="good">Looks good (g)</label>
+
+                  <input type="radio" id="notsure" name="btn" value="ns">
+                  <label for="notsure">Not sure (n)</label>
+
+                  <input type="radio" id="report" name="btn" value="r">
+                  <label for="report">Should report (r)</label>
+                </div>
+                <input id="submit" type="submit" value="Submit" />
+              </div>
+            </form>
           </div><br>
         </div>
       </div>

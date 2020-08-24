@@ -9,6 +9,9 @@ let revisionHeader = document.getElementById("discover-subtitle-revision");
 let incivilityReason = document.getElementById("discover-edit-comment-reason");
 let notice = document.getElementById("slider-notice");
 
+let hiddenId = document.getElementById("hidden-id");
+let hiddenUser = document.getElementById("hidden-user");
+
 document.onkeydown = checkKey;
 
 /**
@@ -73,6 +76,8 @@ async function getComments() {
    notice.innerHTML = `
    <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
    Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.</i>`;
+   hiddenId.setAttribute("value", editComment.revisionId);
+   hiddenUser.setAttribute("value", editComment.userName);
  }
 
 
