@@ -22,11 +22,11 @@ async function getDetailedEdit(id) {
     score.innerText = "Score: " + computedAttribute.score + "%";
     scoreLabel.innerText = "Label: " + computedAttribute.label;
     scoreReason.innerText = "Reason: " + computedAttribute.reason;
-    scoreIsExperimental.innerText = experimentalMessage(computedAttribute.scoreIsExperimental);
+    scoreIsExperimental.innerText = experimentalMessage(computedAttribute.experimental);
 }
 
 function experimentalMessage(boolAns) {
-    if (boolAns == 'true') {
+    if (boolAns === true) {
         return "This is an experimental score from the Perspective API."
     } else {
         return "This is not an experimental score."
