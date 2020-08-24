@@ -41,6 +41,9 @@ $(document).ready( function () {
  */
 function getUser() {
   fetch('/user').then(response => response.json()).then((user) => {
+    console.log(user);
+    const userNameSection = document.getElementById('user-name-section');
+    userNameSection.innerHTML = user.userName;
     const userPersonalInformationSection = document.getElementById('personal-information');
     userPersonalInformationSection.innerHTML = "User name: "+ user.userName;
     const avgToxicityScore = document.getElementById('incivility');
@@ -51,17 +54,6 @@ function getUser() {
     });
   });
 }
-
-/**
- * Get username from server
- */
- function getUsername() {
-  fetch('/user').then(response => response.json()).then((user) => {
-    console.log(user);
-    const userNameSection = document.getElementById('user-name-section');
-    userNameSection.innerHTML = user.userName;
-   });
- }
 
 /**
  * Create a row containing an edit in the table.
@@ -77,5 +69,4 @@ function createEditElement(edit, userName, avgToxicityScore) {
                   edit.date,
                   "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
 }
-
 

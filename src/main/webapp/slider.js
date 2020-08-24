@@ -20,10 +20,12 @@ function checkKey(e) {
   e = e || window.event;
   // right arrow, go to next edit comment
   if (e.keyCode === 39) {
-    index++;
-    if (listEditComments.length > index) {
-      setContent(listEditComments[index]);
-    }   
+      if (window.location.href.indexOf('?id=') == -1) {
+      index++;
+      if (listEditComments.length > index) {
+        setContent(listEditComments[index]);
+      }   
+    }
   } else if (e.keyCode == 67) {
     if (window.location.href.indexOf('slider.html') != -1) {
       console.log('he')
@@ -37,8 +39,19 @@ function checkKey(e) {
 /** 
  * Get edit comments from server
  */
-async function getComments(ids) {
-  let response = await fetch('/comments?ids='+ids); 
+async function getSpecificComment(id) {
+  let response = await fetch('/comments?id=' + id); 
+  let newEditComments = await response.json();
+  listEditComments = newEditComments;
+  let editComment = newEditComments[0];
+  setContent(editComment);
+}
+
+/** 
+ * Get edit comments from server
+ */
+async function getComments() {
+  let response = await fetch('/comments'); 
   let newEditComments = await response.json();
   listEditComments = newEditComments;
   let editComment = newEditComments[0];
@@ -58,7 +71,7 @@ async function getComments(ids) {
    revisionHeader.innerHTML = "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>";
    incivilityReason.innerHTML = `${toxicityObject.label}: ${toxicityObject.reason} <br></br><br></br>`;
    notice.innerHTML = `
-   <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a style="{color: blue}" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
+   <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
    Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.</i>`;
  }
 
@@ -67,10 +80,13 @@ async function getComments(ids) {
  * Loads comments on the page if user is logged in
  */
 window.onload = function() {
-  var url_string = window.location.href 
-  var url = new URL(url_string);
-  var ids = url.searchParams.get("ids");
-  console.log(ids);
-  getComments(ids);
+  if (window.location.href.indexOf('id') != -1) {
+    var url_string = window.location.href 
+    var url = new URL(url_string);
+    var id = url.searchParams.get("id");
+    getSpecificComment(id);
+  } else {
+    getComments();
 }
+  }
 

@@ -1,40 +1,34 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 package com.google.sps.servlets;
 import java.lang.Math;
 import java.lang.Double;
 import java.io.IOException;
+
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+
 import java.util.Date;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -45,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
 import java.lang.Double;
+
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,10 +58,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
-
+                                       
 import java.io.FileReader;
-
-
 
 /** 
  * Servlet is responsible for sending a queried list of edit comments
@@ -85,7 +78,7 @@ public class DiscoverServlet extends HttpServlet {
     Query query = new Query("EditComments");
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
-
+    
     ArrayList editComments = new ArrayList<EditComment>();
 
     // Check if any ids were passed through, if not return all edit comments in datastore
@@ -95,7 +88,6 @@ public class DiscoverServlet extends HttpServlet {
       List<String> idList = createListIds(ids);
       loadSpecificRevisions(idList, datastore, editComments);
     }
-
     response.setContentType("application/json;"); 
     response.getWriter().println(convertToJsonUsingGson(editComments));
   }
@@ -105,7 +97,7 @@ public class DiscoverServlet extends HttpServlet {
    * @param editComments Arraylist of edit comments
    * @param results PreparedQuery of revision summaries in datastore
    */
-    private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
+  private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
     //listEditComments.add(new EditComment())
     for (Entity entity : results.asIterable()) {
       String revisionId = (String) entity.getProperty("revisionId");
