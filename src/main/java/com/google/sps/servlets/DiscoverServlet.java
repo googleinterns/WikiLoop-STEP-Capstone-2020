@@ -89,7 +89,7 @@ public class DiscoverServlet extends HttpServlet {
       String toxicString = getToxicityString(comment.text);
       try { 
         JSONObject toxicityObject =(JSONObject) new JSONParser().parse(toxicString); 
-        System.out.println(toxicString); 
+        //System.out.println(toxicString); 
         // typecasting obj to JSONObject 
         JSONObject attributeScores = (JSONObject) toxicityObject.get("attributeScores");
         JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
@@ -99,7 +99,7 @@ public class DiscoverServlet extends HttpServlet {
                                               toxicScore, comment.date, comment.parentArticle, "NEW");
         editComments.add(analyzedComment);
       } catch (Exception e) {
-        System.out.println(e);
+        //System.out.println(e);
       }   
     }
     String json = convertToJsonUsingGson(editComments);
