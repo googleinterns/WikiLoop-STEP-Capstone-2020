@@ -1,3 +1,35 @@
+
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
+var seenRevisions;
+console.log(getCookie("seenRevisions") + " hee");
+if (getCookie("seenRevisions") === null) {
+  console.log("Hello");
+  seenRevisions = [];
+  setCookie("seenRevisions", JSON.stringify(seenRevisions))
+} else {
+  seenRevisions = JSON.parse(getCookie("seenRevisions"));
+}
+console.log(getCookie("seenRevisions"))
 document.onkeydown = checkKey;
 
 /**
@@ -49,17 +81,36 @@ async function getComments(ids, type, date) {
   let response = await fetch(`/comments?id=${ids}&type=${type}&date=${date}`); 
   let listEditComments = await response.json();
   console.log(listEditComments);
+  // Create a set to look for a given id
+  let alreadySeen = new Set(seenRevisions);
   listEditComments.forEach(editComment => {
-    let toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
-    createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
-                        editComment.comment, 
-                        "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
-                        editComment.date,
-                        "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>  <span class=\"material-icons\"> remove_circle</span>"
-                        ]);
+    if (!alreadySeen.has(editComment.revisionId)) {
+      let toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
+      createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
+                          "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
+                          "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
+                          editComment.comment, 
+                          "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
+                          editComment.date,
+                          "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>  <a onClick=seenComment('"+ editComment.revisionId + "') class=\"material-icons\"> remove_circle</a>"
+                          ], editComment.revisionId);
+   }
   });
+  //Remove loader comments finished
+  document.getElementById('discover-loader').remove();
+  //View table 
+  document.getElementById("table-container").style.display = "block";
+}
+
+/**
+ * Given a revision id, stores the revision id inside a cookie
+ * to show that the user has already seen comment
+ */
+function seenComment(id) {
+  seenRevisions.push(id);
+  setCookie("seenRevisions", JSON.stringify(seenRevisions));
+   var $datatable = $('#my-table').DataTable();
+    $datatable.row($`revid${id}`).remove().draw(false);
 }
 
 /**
@@ -79,9 +130,11 @@ async function getComments(ids, type, date) {
 /**
  * Create new table element for
  */
-function createTableElement(text) {
+function createTableElement(text, id) {
+  let rowId = `revid${id}`;
   var table = $('#my-table').DataTable();
-  table.row.add(text).draw();
+  var rowNode = table.row.add(text).draw();
+  rowNode.nodes().to$().attr('id', rowId);
 }
 
 /**
