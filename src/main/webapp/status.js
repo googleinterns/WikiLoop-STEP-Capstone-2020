@@ -21,18 +21,19 @@ function createActionListElem(a) {
     edit.setAttribute('id', 'edit');
     edit.innerText = a.revisionId;
 
-    const btn = document.createElement('a');
-    btn.setAttribute('id', 'action');
+    const action = document.createElement('a');
+    action.setAttribute('id', 'action');
     action.innerText = a.action;
 
     const time = document.createElement('a');
     time.setAttribute('id', 'time');
-    const timeDif = System.currentTimeMillis() - a.time;
-    time.innerText = timeDif;
+    time.innerText = a.time;
 
-    const statement = `${user}reviewed${edit}and says${action}about${time}ago.`;
+    line.appendChild(user);
+    line.innerHTML = "reviewed"
 
-    line.appendChild(statement);
+    line.innerHTML = "Actions";
+    //line.appendChild(statement);
     liElem.appendChild(line);
 
     return liElem;
