@@ -285,3 +285,9 @@ body {
 #submit:hover {
   background-color: #e8e6e1;
 }
+
+/* actions */
+#list-div {
+    align-items: center;
+    justify-content: center;
+}
