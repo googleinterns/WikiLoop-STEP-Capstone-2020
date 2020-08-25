@@ -9,13 +9,13 @@ import java.util.Comparator;
  * Takes response from edit comment page to store action
  */
 
-public class Status {
+public class Action {
   public String id;
   public String user;
   public String action;
-  public long time;
+  public String time;
 
-  public Status(String id, String user, String action, long time) {
+  public Action(String id, String user, String action, String time) {
       this.id = id;
       this.user = user;
       this.action = action;
