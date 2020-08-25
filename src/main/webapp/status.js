@@ -1,5 +1,5 @@
 function getActions() {
-  fetch('/actions') .then(response => response.json()).then((actions) => { 
+  fetch('/action') .then(response => response.json()).then((actions) => { 
     const actionList = document.getElementById('container');
     actions.forEach((a) => {
         actionList.appendChild(createActionListElem(a));
@@ -8,33 +8,37 @@ function getActions() {
 }
 
 function createActionListElem(a) {
-    const liElem = document.createElement('li');
-    liElem.classname = 'w3-bar';
 
-    const line = document.createElement('p');
+    var liElem = document.createElement('li');
+    var pElem = document.createElement('p');
 
-    const user = document.createElement('a');
-    user.setAttribute('id', 'user');
-    user.innerText = a.user;
+    var user = document.createElement('span');
+    var id = document.createElement('a');
+    var action = document.createElement('span');
+    var time = document.createElement('span');
 
-    const edit = document.createElement('a');
-    edit.setAttribute('id', 'edit');
-    edit.innerText = a.revisionId;
+    user.innerHTML = a.user + " reviewed ";
 
-    const action = document.createElement('a');
-    action.setAttribute('id', 'action');
-    action.innerText = a.action;
+    console.log(a.revisionId);
+    id.innerHTML = a.revisionId;
+    id.setAttribute('href', '/slider.html?id=' + a.revisionId);
 
-    const time = document.createElement('a');
-    time.setAttribute('id', 'time');
-    time.innerText = a.time;
+    if (a.action == "g") {
+      action.innerHTML = " and says Looks good ";
+    } else if (a.action == "ns") {
+      action.innerHTML = " and says Not sure ";
+    } else if (a.action == "r") {
+      action.innerHTML = " and says Should report ";
+    }
 
-    line.appendChild(user);
-    line.innerHTML = "reviewed"
+    time.innerHTML = a.time + " ago."
+    
+    pElem.appendChild(user);
+    pElem.appendChild(id);
+    pElem.appendChild(action);
+    pElem.appendChild(time);
 
-    line.innerHTML = "Actions";
-    //line.appendChild(statement);
-    liElem.appendChild(line);
+    liElem.appendChild(pElem);
 
     return liElem;
 }

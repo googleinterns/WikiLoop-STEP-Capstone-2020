@@ -28,7 +28,7 @@ import java.io.IOException;
 //get comment based on what is clicked in discover page
 // TO DO: Link with Datastore
 
-@WebServlet("/actions")
+@WebServlet("/action")
 public class ActionLoadServlet extends HttpServlet {
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -42,10 +42,10 @@ public class ActionLoadServlet extends HttpServlet {
       for (Entity e : results.asIterable()) {
         String id = (String) e.getProperty("revisionId");
         String user = (String) e.getProperty("user");
-        String time = (String) e.getProperty("time");
+        long time = (long) e.getProperty("time");
         String action = (String) e.getProperty("action");
 
-        Action a = new Action(id, user, time, action);
+        Action a = new Action(id, user, action, time);
         actions.add(a);
       }
       
