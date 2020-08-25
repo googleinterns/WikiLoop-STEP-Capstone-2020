@@ -41,9 +41,6 @@ public class RetrieveEditServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String revisionId = request.getParameter("revid");
-      System.out.println("url: " + request.getRequestURL().toString());
-      System.out.println("btn: " + request.getParameter("btn"));
-      //check what user is logged in
       String user = request.getParameter("user");
       String action = request.getParameter("btn");
       String flag = request.getParameter("flag");
@@ -61,6 +58,30 @@ public class RetrieveEditServlet extends HttpServlet {
       }
       datastore.put(statusEntity);
 
+      //update EditComments counters
+      EditComment ec = retrieveEdit(revisionId);
+
+      Entity edit = new Entity("EditComment");
+      edit.setProperty("userName", ec.getUserName());
+      edit.setProperty("comment", ec.getComment());
+      edit.setProperty("date", ec.getDate());
+      edit.setProperty("parentArticle", ec.getParentArticle());
+      edit.setProperty("status", ec.getStatus());
+      edit.setProperty("computedAttribute", ec.getToxicityObject());
+      edit.setProperty("revisionId", ec.getRevisionId());
+      
+      if (action == "g") {
+        ec.looksGoodCounter++;
+      } else if (action == "ns") {
+        ec.notSureCounter++;  
+      } else if (action == "r") {
+        ec.shouldReportCounter++;
+      }
+      edit.setProperty("looksGoodCounter", ec.looksGoodCounter);
+      edit.setProperty("notSureCounter", ec.notSureCounter);
+      edit.setProperty("shouldReportCounter", ec.shouldReportCounter);
+      datastore.update(edit);
+
       response.sendRedirect("/slider.html");
     }
 
@@ -69,7 +90,7 @@ public class RetrieveEditServlet extends HttpServlet {
       // Filter query by the Key
       // Key key = KeyFactory.createKey("EditComment", id + "en");
       // Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
-      Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
       PreparedQuery results = datastore.prepare(query);
       Entity entity = results.asSingleEntity();
 
@@ -80,8 +101,12 @@ public class RetrieveEditServlet extends HttpServlet {
       String status = (String) entity.getProperty("status");
       String toxicityObject = (String) entity.getProperty("computedAttribute");
       String revisionId = (String) entity.getProperty("revisionId");
+      Integer gc = (Integer) entity.getProperty("looksGoodCounter");
+      Integer nsc = (Integer) entity.getProperty("notSureCounter");
+      Integer rc = (Integer) entity.getProperty("shouldReportCounter");
 
-      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status);
+
+      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status, gc, rc, nsc);
 
       return ec;
     } 
