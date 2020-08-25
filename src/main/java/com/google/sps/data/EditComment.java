@@ -46,12 +46,12 @@ public final class EditComment {
     this.shouldReportCounter = shouldReportCounter;
     this.notSureCounter = notSureCounter;
 
-    if ((toxicityObject == null) || (toxicityObject == "")) this.toxicityScore = "0.0";
+    if ((toxicityObject == null) || (toxicityObject == "") || (toxicityObject == "0")) this.toxicityScore = "0.0";
     else {
       try {
           JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
           //check if comment is in the timeFrame
-          this.toxicityScore = computedAttribute.get("score").toString();
+          this.toxicityScore = computedAttribute.get("toxicityScore").toString();
 
         } catch(Exception e) {
         System.out.println(e);
@@ -65,7 +65,7 @@ public final class EditComment {
       try {
           JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
           //check if comment is in the timeFrame
-          this.toxicityScore = computedAttribute.get("score").toString();
+          this.toxicityScore = computedAttribute.get("toxicityScore").toString();
 
         } catch(Exception e) {
         System.out.println(e);

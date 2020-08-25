@@ -94,7 +94,7 @@ async function getOneComments(ids) {
   let listEditComments = await response.json();
   console.log(listEditComments);
   let editComment = listEditComments[0];
-    let toxicityPercentage = editComment.toxicityObject + "%";
+    let toxicityPercentage = editComment.toxicityScore + "%";
     createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 

@@ -54,7 +54,7 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json");
+    //response.setContentType("application/json");
    // first check id number with data
 
    //Get data from Media API using the WikiMedia class
@@ -75,7 +75,7 @@ public class LoadDataServlet extends HttpServlet {
     }
     
     // Send the JSON as the response
-    response.getWriter().println(json);
+    //response.getWriter().println(json);
   }
 
   /**
