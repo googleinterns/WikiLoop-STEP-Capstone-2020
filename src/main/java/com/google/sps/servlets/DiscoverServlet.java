@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 import java.lang.Math;
 import java.lang.Double;
 import java.io.IOException;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -31,7 +32,6 @@ import java.util.Date;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Map;
@@ -54,7 +54,7 @@ import com.google.sps.data.Attribute;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
+import com.google.sps.data.WikiMedia;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
@@ -78,14 +78,19 @@ public class DiscoverServlet extends HttpServlet {
     Query query = new Query("EditComments");
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
-    
-    ArrayList editComments = new ArrayList<EditComment>();
+    String type = request.getParameter("type");
 
+    ArrayList editComments = new ArrayList<EditComment>();
     // Check if any ids were passed through, if not return all edit comments in datastore
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
     } else {
+      System.out.println(type);
       List<String> idList = createListIds(ids);
+      /* Get specific ids for the type of query */
+      if (type.equals("user")) {
+        idList = getUserIds(idList);
+      }
       loadSpecificRevisions(idList, datastore, editComments);
     }
     response.setContentType("application/json;"); 
@@ -98,8 +103,7 @@ public class DiscoverServlet extends HttpServlet {
    * @param results PreparedQuery of revision summaries in datastore
    */
   private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
-    //listEditComments.add(new EditComment())
-    for (Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable()) {  
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -108,17 +112,7 @@ public class DiscoverServlet extends HttpServlet {
       String date = (String) entity.getProperty("date");
       String status = (String) entity.getProperty("status");
       try {
-        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
-        Entity editCommentEntity = new Entity("TestEditComments", revisionId + "en");
-        editCommentEntity.setProperty("revisionId", revisionId);
-        editCommentEntity.setProperty("userName", user);
-        editCommentEntity.setProperty("comment", comment);
-        editCommentEntity.setProperty("computedAttribute", computedAttributeString);
-        editCommentEntity.setProperty("parentArticle", article);
-        editCommentEntity.setProperty("date", date);
-        editCommentEntity.setProperty("status", status);
-        datastore.put(editCommentEntity);
+        editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status));
       } catch(Exception e) {
         System.out.println(e);
       }
@@ -140,7 +134,6 @@ public class DiscoverServlet extends HttpServlet {
     return idList;
   }
 
-
   /**
    * Given a list of specific ids, retrieve ids from the database
    * @param idList List of ids to find in database
@@ -151,18 +144,27 @@ public class DiscoverServlet extends HttpServlet {
         Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
-        String revisionId = (String) entity.getProperty("revisionId");
-        String user = (String) entity.getProperty("userName");
-        String comment = (String) entity.getProperty("comment");
-        String computedAttributeString = (String) entity.getProperty("computedAttribute");
-        String article = (String) entity.getProperty("parentArticle");
-        String date = (String) entity.getProperty("date");
-        String status = (String) entity.getProperty("status");
-        try {
-          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-          editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
-        } catch(Exception e) {
-          System.out.println(e);
+        if (entity == null) {
+          addIdToDatastore(id, datastore);
+          query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+          pq = datastore.prepare(query);
+          entity = pq.asSingleEntity();
+        }
+        // If comment still isn't added to database don't load
+        if (entity != null) {
+          String revisionId = (String) entity.getProperty("revisionId");
+          String user = (String) entity.getProperty("userName");
+          String comment = (String) entity.getProperty("comment");
+          String computedAttributeString = (String) entity.getProperty("computedAttribute");
+          String article = (String) entity.getProperty("parentArticle");
+          String date = (String) entity.getProperty("date");
+          String status = (String) entity.getProperty("status");
+          try {
+            JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
+          } catch(Exception e) {
+            System.out.println(entity);
+          }
         }
       }
   }
@@ -178,6 +180,41 @@ public class DiscoverServlet extends HttpServlet {
   }
 
   /**
+   * Given a list of users, gets the revision ids of all the 
+   * revision each user has made
+   * @param users List of user to get their revision ids
+   * @return the list of all revision ids of a specific user
+   */
+  public List<String> getUserIds(List<String> users) {
+    List<String> idList = new ArrayList<>();
+    WikiMedia call = new WikiMedia();
+    for (String user: users) {
+      String response = call.getByUser(user, "10");
+      System.out.println(response);
+      try {
+        Object jsonObj = new JSONParser().parse(response); 
+        /* Parse mockDataJSON */
+        JSONObject userRevisionsObject = (JSONObject) jsonObj;
+        JSONObject query = (JSONObject) userRevisionsObject.get("query");
+        JSONArray revision = (JSONArray) query.get("allrevisions");
+        for (Object page: revision) {
+          JSONObject revisionContainer= (JSONObject) page;
+          JSONArray allRevisions = (JSONArray) revisionContainer.get("revisions");
+          for (Object obj: allRevisions) {
+            JSONObject revisionObj = (JSONObject) obj;
+            idList.add(revisionObj.get("revid").toString());
+          }
+        
+        }
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+    }
+    System.out.println(idList);
+    return idList;
+  }
+
+  /**
    * Converts a comments instance into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
    */
@@ -186,4 +223,37 @@ public class DiscoverServlet extends HttpServlet {
     String json = gson.toJson(label);
     return json;
   }
+  
+  /**
+   * Given EditComment object and Datastore service, stores the edit comment into 
+   * the datastore
+   * @param editComment EditComment Object containing detail about the edit comment
+   * @param datastore Datastore service
+   */
+   private void addIdToDatastore(String id, DatastoreService datastore) {
+      WikiMedia call = new WikiMedia();
+      String response = call.getByRevIds(Arrays.asList(id));
+
+      // Parses response to edit comment
+      EditComment editComment = call.readStringRevisionId(response).get(0);
+
+      // Create an empty comment if comment is null
+      if (editComment.comment == null || editComment.comment.equals("")) {
+        editComment.comment = " ";
+      }
+
+      // Create attribute containing comment perspective api label
+      Attribute attribute = new Perspective(editComment.comment, true).computedAttribute;
+      editComment.toxicityObject = new Gson().toJson(attribute);
+
+      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+      editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
+      editCommentEntity.setProperty("userName", editComment.getUserName());
+      editCommentEntity.setProperty("comment", editComment.getComment());
+      editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+      editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
+      editCommentEntity.setProperty("date", editComment.getDate());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+      datastore.put(editCommentEntity);
+   }
 }

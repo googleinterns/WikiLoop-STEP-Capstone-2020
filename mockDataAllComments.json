@@ -1,0 +1,83 @@
+[
+   {
+      "userName":"Giano II",
+      "comment":"/* Please... */ Oh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apology on my behalf, a",
+      "date":"2009-04-11T20:58:39Z",
+      "parentArticle":"User talk:Giano II",
+      "status":"NEW",
+      "revisionId":"283242467",
+      "toxicityObject":"{\"score\":\"68\",\"reason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"toxicityScore\":\"68\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":false,\"label\":\"TOXICITY\"}"
+   },
+   {
+      "userName":"Giano II",
+      "comment":"/* Comments */ what the fuck use is that?",
+      "date":"2009-04-12T19:57:15Z",
+      "parentArticle":"Wikipedia:Administrators\u0027 noticeboard/Incidents",
+      "status":"NEW",
+      "revisionId":"283416010",
+      "toxicityObject":"{\"score\":\"91\",\"reason\":\"Swear words, curse words, or other obscene or profane language\",\"toxicityScore\":\"80\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"PROFANITY\"}"
+   },
+   {
+      "userName":"Giano II",
+      "comment":"/* Discussion */ If she wants to chat on IRC - fine, but don\u0027t come here wanting to be an admin on the strength of it.",
+      "date":"2009-05-17T11:41:52Z",
+      "parentArticle":"Wikipedia:Requests for adminship/FlyingToaster 2",
+      "status":"NEW",
+      "revisionId":"290490251",
+      "toxicityObject":"{\"score\":\"32\",\"reason\":\"Pickup lines, complimenting appearance, subtle sexual innuendos, etc\",\"toxicityScore\":\"11\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"FLIRTATION\"}"
+   },
+   {
+      "userName":"Giano II",
+      "comment":"/* Time now for 2groups of editors each with their own Admins. */ That the chanel is for the banal is not in dispute, the problem is when the banal decide they are bored there, and having done little",
+      "date":"2009-05-17T17:46:35Z",
+      "parentArticle":"User talk:Giano II",
+      "status":"NEW",
+      "revisionId":"290547577",
+      "toxicityObject":"{\"score\":\"12\",\"reason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"toxicityScore\":\"12\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":false,\"label\":\"TOXICITY\"}"
+   },
+   {
+      "userName":"Giano II",
+      "comment":"/* Oppose */ accept it and stop badgering! ~~~~",
+      "date":"2009-05-18T11:13:20Z",
+      "parentArticle":"Wikipedia:Requests for adminship/FlyingToaster 2",
+      "status":"NEW",
+      "revisionId":"290692859",
+      "toxicityObject":"{\"score\":\"32\",\"reason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"toxicityScore\":\"32\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":false,\"label\":\"TOXICITY\"}"
+   },
+   {
+      "userName":"Bastun",
+      "comment":" WTF? Now you\u0027re overwriting my comments?!",
+      "date":"2020-07-14T15:05:13Z",
+      "parentArticle":"Wikipedia:Move review/Log/2020 July",
+      "status":"NEW",
+      "revisionId":"967664593",
+      "toxicityObject":"{\"score\":\"85\",\"reason\":\"Swear words, curse words, or other obscene or profane language\",\"toxicityScore\":\"78\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"PROFANITY\"}"
+   },
+   {
+      "userName":"Bastun",
+      "comment":" Ok, I get reordering lists arbitrarily seems to be your thing, but stop now?",
+      "date":"2020-07-21T23:02:43Z",
+      "parentArticle":"Social Democrats (Ireland)",
+      "status":"NEW",
+      "revisionId":"968857509",
+      "toxicityObject":"{\"score\":\"27\",\"reason\":\"Describes an intention to inflict pain, injury, or violence against an individual or group\",\"toxicityScore\":\"12\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"THREAT\"}"
+   },
+   {
+      "userName":"Bastun",
+      "comment":"The list isn\u0027t about which is their most heartfelt ideology. Or the ideology they profess that someone has found the most cites for. So let\u0027s try alphabetical.",
+      "date":"2020-07-25T19:46:43Z",
+      "parentArticle":"Fianna Fáil",
+      "status":"NEW",
+      "revisionId":"969495573",
+      "toxicityObject":"{\"score\":\"7\",\"reason\":\"Negative or hateful comments targeting someone because of their identity\",\"toxicityScore\":\"5\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"IDENTITY_ATTACK\"}"
+   },
+   {
+      "userName":"Bastun",
+      "comment":" Stop removing referenced material. Please wait five minutes for me to actually write on the talk page!",
+      "date":"2020-07-29T17:16:46Z",
+      "parentArticle":"Shelbourne Hotel",
+      "status":"NEW",
+      "revisionId":"970167002",
+      "toxicityObject":"{\"score\":\"23\",\"reason\":\"Describes an intention to inflict pain, injury, or violence against an individual or group\",\"toxicityScore\":\"14\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":true,\"label\":\"THREAT\"}"
+   }
+]

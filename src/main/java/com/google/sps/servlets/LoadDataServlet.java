@@ -173,9 +173,10 @@ public class LoadDataServlet extends HttpServlet {
    */
   private Collection<EditComment> addToxicityBreakDown(Collection<EditComment> listMockComments) {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
-
+    
     for (EditComment comment : listMockComments){
       Attribute attribute = new Perspective(comment.comment, true).computedAttribute;
+
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);
       comment.toxicityObject = attributeString;

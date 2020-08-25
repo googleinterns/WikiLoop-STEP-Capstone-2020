@@ -46,6 +46,7 @@ function getUser() {
     const avgToxicityScore = document.getElementById('incivility');
     avgToxicityScore.innerHTML= "Average Incivility Score: \t" + user.avgToxicityScore.substring(0,Math.min(5,user.avgToxicityScore.length)) + "%";
     // Build the list of edits
+    console.log(user.listEditComments);
     user.listEditComments.forEach((edit) => {
       createEditElement(edit, user.userName, user.avgToxicityScore);
     });

@@ -10,13 +10,14 @@ import java.util.Objects;
  */
 public final class EditComment {
   public final String userName;
-  public final String comment;
+  public String comment;
   public final String date;
   public final String parentArticle;
   public final String status;
   public final String revisionId;
   public String toxicityObject;
-
+  // Looks good
+  //
   /**
    * Stores information regarding a Wikipedia edit comment
    * @param revisionId Wikipedia's revisionId from comment
