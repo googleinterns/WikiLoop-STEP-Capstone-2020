@@ -85,9 +85,11 @@ public class DiscoverServlet extends HttpServlet {
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
     } else {
+      System.out.println(type);
       List<String> idList = createListIds(ids);
-      if (type == "user") {
-        ids = getUserIds(idList);
+      /* Get specific ids for the type of query */
+      if (type.equals("user")) {
+        idList = getUserIds(idList);
       }
       loadSpecificRevisions(idList, datastore, editComments);
     }
@@ -148,18 +150,21 @@ public class DiscoverServlet extends HttpServlet {
           pq = datastore.prepare(query);
           entity = pq.asSingleEntity();
         }
-        String revisionId = (String) entity.getProperty("revisionId");
-        String user = (String) entity.getProperty("userName");
-        String comment = (String) entity.getProperty("comment");
-        String computedAttributeString = (String) entity.getProperty("computedAttribute");
-        String article = (String) entity.getProperty("parentArticle");
-        String date = (String) entity.getProperty("date");
-        String status = (String) entity.getProperty("status");
-        try {
-          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-          editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
-        } catch(Exception e) {
-          System.out.println(e);
+        // If comment still isn't added to database don't load
+        if (entity != null) {
+          String revisionId = (String) entity.getProperty("revisionId");
+          String user = (String) entity.getProperty("userName");
+          String comment = (String) entity.getProperty("comment");
+          String computedAttributeString = (String) entity.getProperty("computedAttribute");
+          String article = (String) entity.getProperty("parentArticle");
+          String date = (String) entity.getProperty("date");
+          String status = (String) entity.getProperty("status");
+          try {
+            JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
+          } catch(Exception e) {
+            System.out.println(entity);
+          }
         }
       }
   }
@@ -176,11 +181,39 @@ public class DiscoverServlet extends HttpServlet {
 
   /**
    * Given a list of users, gets the revision ids of all the 
-   * revision user made
+   * revision each user has made
+   * @param users List of user to get their revision ids
+   * @return the list of all revision ids of a specific user
    */
   public List<String> getUserIds(List<String> users) {
-    
+    List<String> idList = new ArrayList<>();
+    WikiMedia call = new WikiMedia();
+    for (String user: users) {
+      String response = call.getByUser(user, "10");
+      System.out.println(response);
+      try {
+        Object jsonObj = new JSONParser().parse(response); 
+        /* Parse mockDataJSON */
+        JSONObject userRevisionsObject = (JSONObject) jsonObj;
+        JSONObject query = (JSONObject) userRevisionsObject.get("query");
+        JSONArray revision = (JSONArray) query.get("allrevisions");
+        for (Object page: revision) {
+          JSONObject revisionContainer= (JSONObject) page;
+          JSONArray allRevisions = (JSONArray) revisionContainer.get("revisions");
+          for (Object obj: allRevisions) {
+            JSONObject revisionObj = (JSONObject) obj;
+            idList.add(revisionObj.get("revid").toString());
+          }
+        
+        }
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+    }
+    System.out.println(idList);
+    return idList;
   }
+
   /**
    * Converts a comments instance into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
@@ -203,6 +236,11 @@ public class DiscoverServlet extends HttpServlet {
 
       // Parses response to edit comment
       EditComment editComment = call.readStringRevisionId(response).get(0);
+
+      // Create an empty comment if comment is null
+      if (editComment.comment == null || editComment.comment.equals("")) {
+        editComment.comment = " ";
+      }
 
       // Create attribute containing comment perspective api label
       Attribute attribute = new Perspective(editComment.comment, true).computedAttribute;

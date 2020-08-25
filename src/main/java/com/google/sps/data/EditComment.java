@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public final class EditComment {
   public final String userName;
-  public final String comment;
+  public String comment;
   public final String date;
   public final String parentArticle;
   public final String status;

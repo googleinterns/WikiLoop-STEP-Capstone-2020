@@ -15,28 +15,38 @@ function checkKey(e) {
 /** 
  * Get edit comments from server
  */
-async function getComments(ids) {
+async function getComments(ids, type, date) {
+  if (type == null) {
+    type = "";
+  }
+  if (date == null) {
+    date = "";
+  }
   console.log(ids);
   if (ids === 'revid') {
+    type = ids;
     ids = document.getElementById("revids").value;
     ids = ids.replace(" ","-");
-    window.location.href = '/?id='+ids;
+    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
     return;
   } else if (ids === 'user') {
+    type = ids;
     ids = document.getElementById("userNames").value;
+    date = `${document.getElementById("startDate")}+${document.getElementById("endDate")}`;
     ids = ids.replace(" ","-");
-    ids += "&type=user"
-    window.location.href = '/?id='+ids;
+    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
     return;
   } else if (ids === 'article') {
-    ids = document.getElementById("userNames").value;
+    type = ids;
+    ids = document.getElementById("articles").value;
     ids = ids.replace(" ","-");
-    ids += "&type=article"
-    window.location.href = '/?id='+ids;
+    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
+    date = `${document.getElementById("startDateArticle")}+${document.getElementById("endDateArticle")}`;
+    return;
   }
 
   console.log(ids);
-  let response = await fetch('/comments?id='+ids); 
+  let response = await fetch(`/comments?id=${ids}&type=${type}&date=${date}`); 
   let listEditComments = await response.json();
   console.log(listEditComments);
   listEditComments.forEach(editComment => {
@@ -47,7 +57,7 @@ async function getComments(ids) {
                         editComment.comment, 
                         "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                         editComment.date,
-                        "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>"
+                        "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>  <span class=\"material-icons\"> remove_circle</span>"
                         ]);
   });
 }
@@ -78,10 +88,13 @@ function createTableElement(text) {
  * Loads comments on the page if user is logged in
  */
 window.onload = function() {
-  var url_string = window.location.href 
-  var url = new URL(url_string);
-  var ids = url.searchParams.get("id");
-  getComments(ids);
+  let url_string = window.location.href 
+  let url = new URL(url_string);
+  let ids = url.searchParams.get("id");
+  let type = url.searchParams.get("type");
+  let date = url.searchParams.get("date");
+
+  getComments(ids, type, date);
 }
 
 /**
@@ -93,19 +106,6 @@ $(document).ready( function () {
       "search": "Filter:"
     });
 } );
-
-$(function () {
-        $('#datetimepicker6').datetimepicker();
-        $('#datetimepicker7').datetimepicker({
-            useCurrent: false //Important! See issue #1075
-        });
-        $("#datetimepicker6").on("dp.change", function (e) {
-            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-        });
-        $("#datetimepicker7").on("dp.change", function (e) {
-            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-        });
-    });
 
     // Change the selector if needed
 var $table = $('#my-table'),
