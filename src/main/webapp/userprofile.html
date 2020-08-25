@@ -2,9 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>User Profile Page</title>
-	    <link rel="stylesheet" type="text/css" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile Page</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
@@ -36,18 +36,18 @@
     <body onload="getUser()">
         <div id="template"></div>
         <div class="user-profile-content">
-        	<div class="user-information">
-            	<class class="personal-information-box w3-round w3-card ">
+            <div class="user-information">
+                <class class="personal-information-box w3-round w3-card ">
                     <div id="personal-information"></div>
                 </class>
-            	<class class="incivility-box w3-round w3-card ">
+                <class class="incivility-box w3-round w3-card ">
                     <div id="incivility"></div>
                 </class>
         	</div>
         	<div class="user-edits-feed w3-round w3-card ">
         		<div id="table-container">
                     <div>
-                        <form id="time-frame-form" action="#" onchange="updateTable ()" onsubmit="window.location.reload();">
+                        <form id="time-frame-form" action="#" onchange="getUser()" onsubmit="window.location.reload();">
                             <label for="time-frames">Time Frame</label>
                             <select name="time-frame" id="time-frame">
                                 <option value="0">All Time</option>
@@ -58,14 +58,18 @@
                             </select>
                         </form>
                     </div>
+        		</div>
+            </div>
+            <div class="user-edits-feed w3-round w3-card ">
+                <div id="table-container">
                     <table class="table table-fluid" id="my-table">
                         <thead>
                             <tr><th class="dt-center">Incivility %</th><th class="dt-center">Revision ID</th><th class="dt-center">User Name</th><th class="dt-center">Edit Comment</th><th class="dt-center">Article</th><th class="dt-center">Date</th><th class="dt-center">Action</th></tr>
                         </thead>
                         <tbody id="edits-table" style="text-align:center;"></tbody>
                     </table>
-            	</div>
-        	</div>
+                </div>
+            </div>
         </div>
         <script src="userprofile.js"></script>
     </body>

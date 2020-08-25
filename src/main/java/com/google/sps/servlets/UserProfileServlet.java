@@ -118,6 +118,7 @@ public class UserProfileServlet extends HttpServlet {
         Key key = KeyFactory.createKey("EditComment", revid + "en");
         Query query = new Query("EditComment")
             .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
 
@@ -133,8 +134,8 @@ public class UserProfileServlet extends HttpServlet {
         String notSureCounter = (String) entity.getProperty("notSureCounter");
 
         if (timeFrame == 0 || isInTimeFrame(dateString, timeFrame)) listEditComments.add(new EditComment(revisionId, userName, comment, toxicityObject, dateString, parentArticle, status, looksGoodCounter, shouldReportCounter, notSureCounter));
-
     }
+        
     return listEditComments;
   }
 

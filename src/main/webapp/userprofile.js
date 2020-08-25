@@ -55,6 +55,7 @@ function getUser() {
     
 
     // Build the list of edits
+    console.log(user.listEditComments);
     user.listEditComments.forEach((edit) => {
         console.log(timeFrame == 0 || isInTimeFrame(edit.date, timeFrame));
       if (timeFrame == 0 || isInTimeFrame(edit.date, timeFrame)) {
@@ -78,29 +79,5 @@ function createEditElement(edit, userName, avgToxicityScore) {
                   edit.date,
                   "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
 }
-
-/**
- * Check if editComment is in the right time frame
- */
- function isInTimeFrame (editCommentDate, timeFrameInDays) {
-   const timeFrameInMilliSeconds = timeFrameInDays * 86400000;
-   var currentTime = new Date().getTime(); 
-   var commentTimeinMilliseconds = Date.parse(editCommentDate);
-   return commentTimeinMilliseconds > (currentTime - timeFrameInMilliSeconds);
- }
-
- /**
-  * Handle the time filter
-  */
-  function updateTable () {
-    // first clear the table
-    var table = $('#my-table' ).DataTable();
- 
-   var rows = table
-    .rows()
-    .remove()
-    .draw();
-    getUser();
-  }
 
 

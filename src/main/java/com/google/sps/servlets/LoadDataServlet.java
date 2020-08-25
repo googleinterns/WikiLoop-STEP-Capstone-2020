@@ -54,6 +54,7 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("application/json");
    // first check id number with data
 
    //Get data from Media API using the WikiMedia class
@@ -68,14 +69,13 @@ public class LoadDataServlet extends HttpServlet {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
 
-    List<String> ids = new ArrayList<String>();
-    for (EditComment comment: listEditComments) {
-      ids.add(comment.getRevisionId());
-    }
     // store the new data in Datastore
     if (updateDatastore){
       loadToDatastore(listEditComments); 
     }
+    
+    // Send the JSON as the response
+    response.getWriter().println(json);
   }
 
   /**
@@ -159,9 +159,8 @@ public class LoadDataServlet extends HttpServlet {
    */
   private Collection<EditComment> addToxicityBreakDown(Collection<EditComment> listMockComments) {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
-
+    
     for (EditComment comment : listMockComments){
-
       Attribute attribute = new Perspective(comment.getComment(), true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);

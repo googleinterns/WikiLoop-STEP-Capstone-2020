@@ -229,8 +229,9 @@ public final class WikiMedia {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
-        }
+          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
+       }
       }
 
     } catch (Exception e) {
@@ -262,7 +263,8 @@ public final class WikiMedia {
             String user = (String) comment.get("user");
             String mockComment = (String) comment.get("comment");
             String date = (String) comment.get("timestamp");
-            if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+            editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
           }
        }
 
@@ -292,7 +294,8 @@ public final class WikiMedia {
           String user = (String) object.get("user");
           String mockComment = (String) object.get("comment");
           String date = (String) object.get("timestamp");
-          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
       }
 
     } catch (Exception e) {

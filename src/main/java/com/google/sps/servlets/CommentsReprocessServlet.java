@@ -68,7 +68,6 @@ public class CommentsReprocessServlet extends HttpServlet {
 
     Gson gson = new Gson();
     String json = gson.toJson(listEditComments);
-    System.out.println(json);
     
     // Send the JSON as the response
     response.getWriter().println(json);

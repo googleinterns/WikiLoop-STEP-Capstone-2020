@@ -23,6 +23,8 @@ import java.io.IOException;
 @WebServlet("/retrieve")
 public class RetrieveEditServlet extends HttpServlet {
 
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       //retrieve edit information from discover page
@@ -34,11 +36,57 @@ public class RetrieveEditServlet extends HttpServlet {
 
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(edit));
-    }  
+    } 
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      String revisionId = request.getParameter("revid");
+      String user = request.getParameter("user");
+      String action = request.getParameter("btn");
+      String flag = request.getParameter("flag");
+      long time = System.currentTimeMillis();
+      
+      Entity statusEntity = new Entity("Actions");
+      statusEntity.setProperty("revisionId", revisionId);
+      statusEntity.setProperty("user", user);
+      statusEntity.setProperty("time", time);
+      statusEntity.setProperty("action", action);
+      if (flag == null) {
+        statusEntity.setProperty("flagged", "no");
+      } else {
+        statusEntity.setProperty("flagged", "yes");
+      }
+      datastore.put(statusEntity);
+
+      //update EditComments counters
+      EditComment ec = retrieveEdit(revisionId);
+
+      Entity edit = new Entity("EditComment");
+      edit.setProperty("userName", ec.getUserName());
+      edit.setProperty("comment", ec.getComment());
+      edit.setProperty("date", ec.getDate());
+      edit.setProperty("parentArticle", ec.getParentArticle());
+      edit.setProperty("status", ec.getStatus());
+      edit.setProperty("computedAttribute", ec.getToxicityObject());
+      edit.setProperty("revisionId", ec.getRevisionId());
+      
+      if (action == "g") {
+        ec.incrementLooksGoodCounter();
+      } else if (action == "ns") {
+        ec.incrementNotSureCounter();  
+      } else if (action == "r") {
+        ec.incrementShouldReportCounter();
+      }
+      edit.setProperty("looksGoodCounter", ec.getLooksGoodCounter());
+      edit.setProperty("notSureCounter", ec.getNotSureCounter());
+      edit.setProperty("shouldReportCounter", ec.getShouldReportCounter());
+      datastore.put(edit);
+
+      response.sendRedirect("/slider.html");
+    }
 
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       // Filter query by the Key
       // Key key = KeyFactory.createKey("EditComment", id + "en");
       // Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
@@ -53,11 +101,12 @@ public class RetrieveEditServlet extends HttpServlet {
       String status = (String) entity.getProperty("status");
       String toxicityObject = (String) entity.getProperty("computedAttribute");
       String revisionId = (String) entity.getProperty("revisionId");
-      String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
-      String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
-      String notSureCounter = (String) entity.getProperty("notSureCounter");
+      String gc = (String) entity.getProperty("looksGoodCounter");
+      String nsc = (String) entity.getProperty("notSureCounter");
+      String rc = (String) entity.getProperty("shouldReportCounter");
 
-      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status, looksGoodCounter, shouldReportCounter, notSureCounter);
+
+      EditComment ec = new EditComment(revisionId, userName, comment, toxicityObject, date, parentArticle, status, gc, rc, nsc);
 
       return ec;
     } 

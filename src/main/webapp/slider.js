@@ -9,6 +9,9 @@ let revisionHeader = document.getElementById("discover-subtitle-revision");
 let incivilityReason = document.getElementById("discover-edit-comment-reason");
 let notice = document.getElementById("slider-notice");
 
+let hiddenId = document.getElementById("hidden-id");
+let hiddenUser = document.getElementById("hidden-user");
+
 document.onkeydown = checkKey;
 
 /**
@@ -26,9 +29,8 @@ function checkKey(e) {
         setContent(listEditComments[index]);
       }   
     }
-  } else if (e.keyCode == 67) {
+  } else if (e.keyCode == 84) {
     if (window.location.href.indexOf('slider.html') != -1) {
-      console.log('he')
       window.location.href = '/'
     } else {
        window.location.href = '/slider.html'
@@ -66,13 +68,20 @@ async function getComments() {
    articleName.innerHTML = "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>";
    dateHeader.innerText = editComment.date;
    userHeader.innerHTML = "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>";
-   scoreHeader.innerHTML = "<span style=\"color:red;\">" + toxicityObject.score + "% </span>";
+   scoreHeader.innerHTML = "<span style=\"color:red;\">" + toxicityObject.toxicityScore + "% </span>";
    textHeader.innerText = editComment.comment;
    revisionHeader.innerHTML = "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>";
-   incivilityReason.innerHTML = `${toxicityObject.label}: ${toxicityObject.reason} <br></br><br></br>`;
+   if (toxicityObject.experimental) {
+     incivilityReason.innerHTML = `TOXICITIY: ${toxicityObject.toxicityReason} <br></br> <h3> Experimental Label </h3> ${toxicityObject.label}: ${toxicityObject.reason} <br></br> <i>This label is experimental, meaning it hasn't been thoroughly tested. Learn more about experimental labels <a style="color: blue;" target=\"_blank\" href="https://support.perspectiveapi.com/s/about-the-api-attributes-and-languages">here</a>. <br></br></i>`;
+   } else {
+     incivilityReason.innerHTML = `${toxicityObject.label}: ${toxicityObject.reason} <br></br><br></br>`;
+   }
+   
    notice.innerHTML = `
-   <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
+   <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a target="_blank" style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
    Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.</i>`;
+   hiddenId.setAttribute("value", editComment.revisionId);
+   hiddenUser.setAttribute("value", editComment.userName);
  }
 
 
@@ -89,5 +98,4 @@ window.onload = function() {
     getComments();
 }
   }
-
 
