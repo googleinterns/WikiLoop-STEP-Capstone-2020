@@ -17,6 +17,7 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       $(function() {
         $("#template").load("template.html");
@@ -27,7 +28,7 @@
 
   <body>
     <div id=template></div>
-        <section class="feed w3-round w3-card">
+    <section class="feed w3-round w3-card">
       <h3><b>[[<a target="_blank" style="color: #057eff" id="article"></a>]]</b><sup><a style="color: #057eff" target="_blank" id="rev-id"></a></sup></h3><br>
       <div class="dashboard-subtitle">
         <div class="discover-subtitle-score-container">
@@ -42,7 +43,7 @@
         </div>
         <div class="slider-subheader">
           By User:
-          <div><a  id="user" target="_blank"></a></div>
+          <div><a id="user" target="_blank"></a></div>
         </div>
       </div>
 
@@ -62,7 +63,7 @@
         <div class="toxic-info">
           <div>
             <h2>Incivility Label</h2>
-            <div  class="toxicity">
+            <div class="toxicity">
               <div id="label"></div>
               <div id="experimental"></div>
             </div>
@@ -70,11 +71,10 @@
           <div class="action">
             <form method="post" action="/retrieve">
               <div class="w3-center">
+                <input type="checkbox" id="flag" name="flag" value="flag">
+                <label for="flag">Flag incivility score?</label>
                 <div class="radio-toolbar">
-                  <div class="flagged">
-                    <input type="checkbox" id="flag" name="flag" value="flag">
-                    <label for="flag" class="material-icons">flag</label>
-                  </div>
+
                   <input type="radio" id="good" name="btn" value="g" checked>
                   <label for="good">Looks good (g)</label>
 

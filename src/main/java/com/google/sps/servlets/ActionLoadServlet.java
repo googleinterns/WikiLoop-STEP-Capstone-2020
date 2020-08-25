@@ -27,7 +27,7 @@ import java.io.IOException;
 
 //get comment based on what is clicked in discover page
 // TO DO: Link with Datastore
-/*
+
 @WebServlet("/actions")
 public class ActionLoadServlet extends HttpServlet {
 
@@ -55,4 +55,3 @@ public class ActionLoadServlet extends HttpServlet {
       response.getWriter().println(gson.toJson(actions));
     }
 }
-*/
