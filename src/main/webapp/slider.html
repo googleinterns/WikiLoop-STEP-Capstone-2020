@@ -95,12 +95,11 @@
             <form method="post" action="/retrieve">
             <input id="hidden-id" name="revid" style="display: none">
             <input id="hidden-user" name="user" style="display: none">
-              <div class="w3-center">
+             <div class="w3-center">
+                <input type="checkbox" id="flag" name="flag" value="flag">
+                <label for="flag">Flag incivility score?</label>
                 <div class="radio-toolbar">
-                  <div class="flagged">
-                    <input type="checkbox" name="flag" value="flag">
-                    <label for="flag" class="material-icons">flag</label><br>
-                  </div>
+
                   <input type="radio" id="good" name="btn" value="g" checked>
                   <label for="good">Looks good (g)</label>
 

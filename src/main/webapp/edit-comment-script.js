@@ -24,7 +24,7 @@ async function getDetailedEdit(id) {
     scoreIsExperimental.innerText = experimentalMessage(computedAttribute.experimental);
     const revidLink = "https://en.wikipedia.org/w/index.php?diff=" + id;
     revid.setAttribute("href", revidLink);
-    revid.innerText = " rev." + "567483924";
+    revid.innerText = " rev." + id;
 }
 
 function experimentalMessage(boolAns) {
