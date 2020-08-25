@@ -66,7 +66,7 @@ public final class WikiMedia {
                                     //.put("rcnamespace","1|2|3|4|5|11|9|7|12|13|15|101|109")
                                     .put("rcnamespace","2%7C3%7C4%7C5%7C7%7C9%7C11%7C13%7C15%7C101%7C109%7C119%7C447%7C711%7C829%7C2301%7C2302")
                                     .put("rcprop","title%7Ctimestamp%7Cids%7Ccomment%7Cuser%7Cuserid")
-                                    .put("rclimit","10")
+                                    .put("rclimit","max")
                                     .build();
     return getWikiMediaResponse(params);
   }

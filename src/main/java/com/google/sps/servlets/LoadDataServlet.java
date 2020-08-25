@@ -166,6 +166,13 @@ public class LoadDataServlet extends HttpServlet {
       String attributeString = gson.toJson(attribute);
       comment.setToxicityObject(attributeString);
       listEditComments.add(comment);
+      try{
+        Thread.sleep(1000);
+      }
+      catch(InterruptedException ex)
+      {
+        Thread.currentThread().interrupt();
+      }
     }
     return listEditComments;
   }
