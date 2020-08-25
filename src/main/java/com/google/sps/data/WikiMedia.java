@@ -52,6 +52,25 @@ public final class WikiMedia {
      return formattedIds;
    }
 
+   /**
+   * Given revision id(s) this function return the WikiMedia response for finding
+   * certain revisions by id.
+   * @param ids List of revision ids 
+   * @return WikiMedia API Response
+   */
+  public String getByRecentChanges() {
+    Map<String, String> params = ImmutableMap.<String, String>builder()
+                                    .put("action", "query")
+                                    .put("format", "json")
+                                    .put("list","recentchanges")
+                                    //.put("rcnamespace","1|2|3|4|5|11|9|7|12|13|15|101|109")
+                                    .put("rcnamespace","2%7C3%7C4%7C5%7C7%7C9%7C11%7C13%7C15%7C101%7C109%7C119%7C447%7C711%7C829%7C2301%7C2302")
+                                    .put("rcprop","title%7Ctimestamp%7Cids%7Ccomment%7Cuser%7Cuserid")
+                                    .put("rclimit","10")
+                                    .build();
+    return getWikiMediaResponse(params);
+  }
+
   /**
    * Given revision id(s) this function return the WikiMedia response for finding
    * certain revisions by id.
@@ -138,12 +157,14 @@ public final class WikiMedia {
       RequestBody body = RequestBody.create(JSON, getApiHeader());
       Request request = new Request.Builder()
                 .url(postUrl)
+                .header("User-agent", "WikiLoop DoubleCheck Team")
                 .post(body)
                 .build();
       Response response = client.newCall(request).execute();
       return response.body().string();
     }
     catch(IOException e) {
+        System.out.println("55555" + "\t" + e);
         e.printStackTrace();
     }
     return "Error";
@@ -155,7 +176,7 @@ public final class WikiMedia {
    * @param  String json response from the WikiMedia API
    * @return List<EditComment> A list of EditComments 
    */
-   private List<EditComment> readWikiMediaResponse(String json) {
+   public List<EditComment> readWikiMediaResponse(String json) {
     ArrayList<EditComment> editComments = new ArrayList<EditComment>();
 
     /* Reads JSON file & converts to edit comment */
@@ -167,22 +188,21 @@ public final class WikiMedia {
       JSONObject query = (JSONObject) mockDataObject.get("query");
 
       for (Object key : query.keySet()) {
-          String queryType = String.valueOf(key);
-          if (queryType.equals("pages")) {
-              editComments.addAll(readByRevisionID((JSONObject) query.get(queryType)));
-          }
-          else if (queryType.equals("allrevisions")) {
-              editComments.addAll(readByAllRevisions((JSONArray) query.get(queryType)));
-          }
-          else if (queryType.equals("recentchanges")) {
-              System.out.println("RECENT CHANGES");
-              editComments.addAll(readByRecentChanges((JSONArray) query.get(queryType)));
-          }
+        String queryType = String.valueOf(key);
+        if (queryType.equals("pages")) {
+          editComments.addAll(readByRevisionID((JSONObject) query.get(queryType)));
+        }
+        else if (queryType.equals("allrevisions")) {
+          editComments.addAll(readByAllRevisions((JSONArray) query.get(queryType)));
+        }
+        else if (queryType.equals("recentchanges")) {
+          editComments.addAll(readByRecentChanges((JSONArray) query.get(queryType)));
+        }
       }
-
     } catch (Exception e) {
       System.out.println(e);
     }
+    
     return editComments;
   }
 
@@ -209,7 +229,7 @@ public final class WikiMedia {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
         }
       }
 
@@ -242,7 +262,7 @@ public final class WikiMedia {
             String user = (String) comment.get("user");
             String mockComment = (String) comment.get("comment");
             String date = (String) comment.get("timestamp");
-            if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+            if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
           }
        }
 
@@ -272,7 +292,7 @@ public final class WikiMedia {
           String user = (String) object.get("user");
           String mockComment = (String) object.get("comment");
           String date = (String) object.get("timestamp");
-          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
       }
 
     } catch (Exception e) {

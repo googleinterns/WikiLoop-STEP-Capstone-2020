@@ -25,7 +25,7 @@
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
         crossorigin="anonymous"></script>
         <link rel="stylesheet"
-        href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+        href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"->
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
         <script> 
           $(function(){
@@ -46,6 +46,18 @@
         	</div>
         	<div class="user-edits-feed w3-round w3-card ">
         		<div id="table-container">
+                    <div>
+                        <form id="time-frame-form" action="#" onchange="updateTable ()" onsubmit="window.location.reload();">
+                            <label for="time-frames">Time Frame</label>
+                            <select name="time-frame" id="time-frame">
+                                <option value="0">All Time</option>
+                                <option value="365">Last Year</option>
+                                <option value="30">Last Month</option>
+                                <option value="7">Last Week</option>
+                                <option value="1">Last 24 hours</option>
+                            </select>
+                        </form>
+                    </div>
                     <table class="table table-fluid" id="my-table">
                         <thead>
                             <tr><th class="dt-center">Incivility %</th><th class="dt-center">Revision ID</th><th class="dt-center">User Name</th><th class="dt-center">Edit Comment</th><th class="dt-center">Article</th><th class="dt-center">Date</th><th class="dt-center">Action</th></tr>

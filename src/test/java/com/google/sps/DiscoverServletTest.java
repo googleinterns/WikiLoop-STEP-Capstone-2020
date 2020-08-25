@@ -90,8 +90,8 @@ public class DiscoverServletTest {
     ArrayList editComments = new ArrayList<String>();
     for (EditComment mockComment : listMockComments) {
       
-      String toxicString = getToxicityString(mockComment.comment);
-      Attribute find  = new Perspective(mockComment.comment, true).computedAttribute;
+      String toxicString = getToxicityString(mockComment.getComment());
+      Attribute find  = new Perspective(mockComment.getComment(), true).computedAttribute;
       System.out.println(find);
       try { 
         JSONObject toxicityObject = (JSONObject) new JSONParser().parse(toxicString); 
@@ -101,7 +101,7 @@ public class DiscoverServletTest {
         JSONObject toxicity = (JSONObject) attributeScores.get("TOXICITY");
         JSONObject summaryScore = (JSONObject) toxicity.get("summaryScore");
         String toxicScore = String.valueOf(Math.round((100 * Double.parseDouble(summaryScore.get("value").toString()))));
-        mockComment.toxicityObject = toxicScore;
+        mockComment.setToxicityObject(toxicScore);
         editComments.add(mockComment);
       } catch (Exception e) {
         System.out.println(e);

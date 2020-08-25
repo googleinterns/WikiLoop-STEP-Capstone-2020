@@ -50,32 +50,28 @@ import org.json.simple.parser.*;
 import java.io.FileReader;
 
 /** Servlet that receives and store data from the Media API*/
-@WebServlet("/load-data")
-public class LoadDataServlet extends HttpServlet {
+@WebServlet("/reprocess-data")
+public class CommentsReprocessServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-   // first check id number with data
-
+    response.setContentType("application/json");
+  
    //Get data from Media API using the WikiMedia class
-   WikiMedia wikiMedia = new WikiMedia();
-   String json = wikiMedia.getByRecentChanges();
-   Collection<EditComment> listMockComments = wikiMedia.readWikiMediaResponse(json) ;
-   
-    // this boolean variable determines whether we update the Datastore or not
-    boolean updateDatastore = true;
+   Collection<EditComment> listMockComments = getProblematicEditComments() ;
 
     // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
 
-    List<String> ids = new ArrayList<String>();
-    for (EditComment comment: listEditComments) {
-      ids.add(comment.getRevisionId());
-    }
     // store the new data in Datastore
-    if (updateDatastore){
-      loadToDatastore(listEditComments); 
-    }
+    loadToDatastore(listEditComments); 
+
+    Gson gson = new Gson();
+    String json = gson.toJson(listEditComments);
+    System.out.println(json);
+    
+    // Send the JSON as the response
+    response.getWriter().println(json);
   }
 
   /**
@@ -86,7 +82,6 @@ public class LoadDataServlet extends HttpServlet {
   private void loadToDatastore(Collection<EditComment> listEditComments) {
     for (EditComment editComment : listEditComments) {
       loadEditCommentToDatastore(editComment);
-      loadUserToDatastore(editComment);      
     }
   }
 
@@ -101,54 +96,21 @@ public class LoadDataServlet extends HttpServlet {
     Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
-      editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
-      editCommentEntity.setProperty("userName", editComment.getUserName());
-      editCommentEntity.setProperty("comment", editComment.getComment());
-      editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
-      editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
-      editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
-      editCommentEntity.setProperty("date", editComment.getDate());
-      editCommentEntity.setProperty("status", editComment.getStatus());
-      editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
-      editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
-      editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
-      datastore.put(editCommentEntity);
-    }
-  }
 
-  /**
-   * Stores the author of the editComment in Datastore.
-   * Adds the editComment's revision id to the list of revision ids of the author's editComments
-   * @param EditComment editComment
-   */
-  private void loadUserToDatastore(EditComment editComment) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // Filter query by the Key
-    Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
-    Query query = 
-      new Query("UserProfile")
-        .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
-            
-    PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
+    if (entity != null) datastore.delete(entity.getKey());
 
-    // Get revision ids for the existing comments by the user
-    Collection<String> listEditCommentsRevids = new ArrayList<String>();
-    if (entity != null){
-        listEditCommentsRevids = (Collection<String>) entity.getProperty("listEditComments");
-        datastore.delete(entity.getKey());
-    }
-    if (!listEditCommentsRevids.contains(editComment.getRevisionId())){
-        listEditCommentsRevids.add(editComment.getRevisionId());
-    }
-
-    Entity userProfileEntity = new Entity("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
-
-    userProfileEntity.setProperty("userName", editComment.getUserName());
-    userProfileEntity.setProperty("listEditComments", listEditCommentsRevids);
-    datastore.put(userProfileEntity);
+    Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
+    editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
+    editCommentEntity.setProperty("userName", editComment.getUserName());
+    editCommentEntity.setProperty("comment", editComment.getComment());
+    editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+    editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
+    editCommentEntity.setProperty("date", editComment.getDate());
+    editCommentEntity.setProperty("status", editComment.getStatus());
+    editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
+    editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
+    editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
+    datastore.put(editCommentEntity);
   }
 
   /**
@@ -159,9 +121,15 @@ public class LoadDataServlet extends HttpServlet {
    */
   private Collection<EditComment> addToxicityBreakDown(Collection<EditComment> listMockComments) {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
-
+    int i = 0;
     for (EditComment comment : listMockComments){
-
+      /*if (i % 10 == 0) {
+          try {
+            Thread.sleep(10000);
+         } catch (Exception e) {
+            System.out.println(e);
+         }
+      }*/
       Attribute attribute = new Perspective(comment.getComment(), true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);
@@ -169,5 +137,30 @@ public class LoadDataServlet extends HttpServlet {
       listEditComments.add(comment);
     }
     return listEditComments;
+  }
+
+  private Collection<EditComment> getProblematicEditComments () {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = 
+        new Query("EditComments")
+            .setFilter(new Query.FilterPredicate("computedAttribute", Query.FilterOperator.EQUAL, "null"));
+    PreparedQuery results = datastore.prepare(query); 
+    Collection<EditComment> editComments = new ArrayList<EditComment>();
+
+    for (Entity entity : results.asIterable()) {
+      String revisionId = (String) entity.getProperty("revisionId");
+      String user = (String) entity.getProperty("userName");
+      String comment = (String) entity.getProperty("comment");
+      String computedAttributeString = (String) entity.getProperty("computedAttribute");
+      String article = (String) entity.getProperty("parentArticle");
+      String date = (String) entity.getProperty("date");
+      String status = (String) entity.getProperty("status");
+      String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
+      String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
+      String notSureCounter = (String) entity.getProperty("notSureCounter");
+
+      editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
+    }
+    return editComments;
   }
 }

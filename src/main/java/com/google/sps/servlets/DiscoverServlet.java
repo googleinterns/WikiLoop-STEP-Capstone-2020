@@ -75,7 +75,7 @@ public class DiscoverServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("EditComments");
+    Query query = new Query("EditComment");
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
     
@@ -107,9 +107,12 @@ public class DiscoverServlet extends HttpServlet {
       String article = (String) entity.getProperty("parentArticle");
       String date = (String) entity.getProperty("date");
       String status = (String) entity.getProperty("status");
+      String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
+      String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
+      String notSureCounter = (String) entity.getProperty("notSureCounter");
       try {
         JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
+        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
         Entity editCommentEntity = new Entity("TestEditComments", revisionId + "en");
         editCommentEntity.setProperty("revisionId", revisionId);
         editCommentEntity.setProperty("userName", user);
@@ -148,7 +151,7 @@ public class DiscoverServlet extends HttpServlet {
    */ 
   private void loadSpecificRevisions(List<String> idList, DatastoreService datastore, ArrayList<EditComment> editComments) {
     for (String id : idList) {
-        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
         String revisionId = (String) entity.getProperty("revisionId");
@@ -158,9 +161,12 @@ public class DiscoverServlet extends HttpServlet {
         String article = (String) entity.getProperty("parentArticle");
         String date = (String) entity.getProperty("date");
         String status = (String) entity.getProperty("status");
+        String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
+        String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
+        String notSureCounter = (String) entity.getProperty("notSureCounter");
         try {
           JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-          editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
+          editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
         } catch(Exception e) {
           System.out.println(e);
         }

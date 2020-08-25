@@ -48,8 +48,38 @@ public final class MockData {
       /* Parse mockDataJSON */
       JSONObject mockDataObject = (JSONObject) jsonObj;
       JSONObject query = (JSONObject) mockDataObject.get("query");
-      JSONObject pages = (JSONObject) query.get("pages");
 
+      for (Object key : query.keySet()) {
+          String queryType = String.valueOf(key);
+          if (queryType.equals("pages")) {
+              editComments.addAll(readMockJsonByRevisionID((JSONObject) query.get(queryType)));
+          }
+          else if (queryType.equals("allrevisions")) {
+              editComments.addAll(readMockJsonByAllRevisions((JSONArray) query.get(queryType)));
+          }
+          else if (queryType.equals("recentchanges")) {
+              System.out.println("RECENT CHANGES");
+              editComments.addAll(readMockJsonByRecentChanges((JSONArray) query.get(queryType)));
+          }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Read the mockData.json file in project directory which simulates WikiMedia api response of a query
+   * for edit comment information of a wiki article. This function converts the json into a list of mock
+   * comments for testing
+   * @return List<MockComments>
+   */
+  private List<EditComment> readMockJsonByRevisionID(JSONObject pages) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
       for (Object key : pages.keySet()) {
           String pageId = String.valueOf(key);
           JSONObject jsonKey = (JSONObject) pages.get(pageId);
@@ -62,8 +92,70 @@ public final class MockData {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW"));
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
         }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Read the mockData.json file in project directory which simulates WikiMedia api response of a query
+   * for edit comment information of a wiki article. This function converts the json into a list of mock
+   * comments for testing
+   * @return List<MockComments>
+   */
+  private List<EditComment> readMockJsonByAllRevisions(JSONArray allrevisions) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : allrevisions) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          JSONArray revisions = (JSONArray) object.get("revisions");
+          
+          for (Object o: revisions) {
+            JSONObject comment = (JSONObject) o;
+            String revisionId = String.valueOf(comment.get("revid"));
+            String user = (String) comment.get("user");
+            String mockComment = (String) comment.get("comment");
+            String date = (String) comment.get("timestamp");
+            if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
+          }
+       }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Read the mockData.json file in project directory which simulates WikiMedia api response of a query
+   * for edit comment information of a wiki article. This function converts the json into a list of mock
+   * comments for testing
+   * @return List<MockComments>
+   */
+  private List<EditComment> readMockJsonByRecentChanges(JSONArray recentchanges) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : recentchanges) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          
+          String revisionId = String.valueOf(object.get("revid"));
+          String user = (String) object.get("user");
+          String mockComment = (String) object.get("comment");
+          String date = (String) object.get("timestamp");
+          if (!mockComment.equals("")) editComments.add(new EditComment(revisionId, user, mockComment, "0", date, article, "NEW", "0", "0", "0"));
       }
 
     } catch (Exception e) {

@@ -19,21 +19,32 @@ function checkKey(e) {
 function testData(){
   
 }
+
 /**
  * Load some comments from the Media API
  */
 function loadData() {
   var ids = document.getElementById("revids").value;
   console.log(ids);
-  ids = ids.replace(" ","|")
+  ids = ids.replace(" ","|");
+  console.log("ids");
   // Build request url
   var url = "https://en.wikipedia.org/w/api.php"; 
   var params = {
 	action: "query",
-	format: "json",
-	prop: "revisions",
-	revids: ids
+	format: "json"
 };
+/*
+
+if (ids.length == 0){
+  params["list"] = "recentchanges";
+  params["rcnamespace"] = "1|2|3|4|5|11|9|7|12|13|15|101|109";
+  params["rcprop"] = "title|timestamp|ids|parsedcomment|comment|flags|user|userid|tags"; 
+  params["rclimit"] = "10"; 
+} else {
+  params["prop"] = "revisions";
+  params["revids"] = ids;
+}
   url = url + "?origin=*";
   Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
   fetch(url,{headers:{"User-agent":"WikiLoop DoubleCheck Team"}}).then(response => response.json()).then((json) => {
@@ -43,14 +54,15 @@ function loadData() {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        method: "POST",
-        body: JSON.stringify(json)
+        method: "GET",
+        //body: JSON.stringify(json)
     }).then(response => {
         console.log("POST REQUEST WENT THROUGH");
         document.location.href = response.url;
     });
-  });
-}
+  }); */
+} 
+
 
 /** 
  * Get edit comments from server
@@ -112,7 +124,7 @@ async function getOneComments(ids) {
 function createTableElement(text) {
   var table = $('#my-table').DataTable();
   table.row.add(text).draw();
-}
+} 
 
 /**
  * Loads comments on the page if user is logged in
