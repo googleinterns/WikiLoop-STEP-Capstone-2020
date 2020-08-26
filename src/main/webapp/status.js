@@ -67,6 +67,8 @@ function createActionListElem(a) {
       var hrs = Math.round((timDiffInSeconds / 3600));
       if (hrs == 1) {
         time.innerHTML = " " + hrs + " hour ago.";
+      } else if (hrs == 24) {
+        time.innerHTML = " 1 day ago.";
       } else {
         time.innerHTML = " " + hrs + " hours ago.";
       }
