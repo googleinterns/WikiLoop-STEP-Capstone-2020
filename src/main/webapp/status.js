@@ -14,7 +14,8 @@ function createActionListElem(a) {
 
     var user = document.createElement('span');
     var id = document.createElement('a');
-    var action = document.createElement('span');
+    var actionLine = document.createElement('span');
+    var actionLabel = document.createElement('span');
     var time = document.createElement('span');
 
     user.innerHTML = a.user + " reviewed ";
@@ -22,13 +23,22 @@ function createActionListElem(a) {
     id.innerHTML = "edit:" + a.id;
     id.setAttribute('href', '/slider.html?id=' + a.id);
 
+   var actionAndSays = document.createElement('span');
+   actionAndSays.innerHTML = " and says ";
+
     if (a.action == "g") {
-      action.innerHTML = " and says Looks good ";
+      actionLabel.innerHTML = "Looks good";
+      actionLabel.setAttribute('class', 'badge-green');
     } else if (a.action == "ns") {
-      action.innerHTML = " and says Not sure ";
+      actionLabel.innerHTML = "Not sure";
+      actionLabel.setAttribute('class', 'badge-grey');
     } else if (a.action == "r") {
-      action.innerHTML = " and says Should report ";
+      actionLabel.innerHTML = "Should report";
+      actionLabel.setAttribute('class', 'badge-red');
     }
+
+    actionLine.appendChild(actionAndSays);
+    actionLine.appendChild(actionLabel);
 
     var d = new Date();
     var currentTime = d.getTime();
@@ -71,7 +81,7 @@ function createActionListElem(a) {
     
     pElem.appendChild(user);
     pElem.appendChild(id);
-    pElem.appendChild(action);
+    pElem.appendChild(actionLine);
     pElem.appendChild(time);
 
     liElem.appendChild(pElem);

@@ -29,27 +29,15 @@
         <link rel="stylesheet"
         href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script> 
+          $(function(){
+          $("#template").load("template.html"); 
+          });
+        </script> 
   </head>
 
   <body onload="getActions()">
-      <div class="dashboard-header w3-card w3-#f8f9fa"> 
-        <div class="nav-container">
-          <div class="nav-brand">
-           <a href="/"> 
-             WikiLoop CivilityCheck
-           </a>
-          </div>
-            <a href="/" class="material-icons"> 
-              view_list
-            </a>
-            <a href="/actions.html" class="material-icons">
-              history
-            </a>
-          <div class="user-loggedin ">
-            <a href="userprofile.html">Giano II</a>
-          </div>
-        </div>
-      </div>
+      <div id="template"></div>
       <div class="content">
         <div class="discover-slide-feed w3-round w3-card "> 
           <h2 class="dashboard-card-title">
