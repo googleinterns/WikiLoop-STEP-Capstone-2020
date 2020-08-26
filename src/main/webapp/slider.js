@@ -9,6 +9,9 @@ let revisionHeader = document.getElementById("discover-subtitle-revision");
 let incivilityReason = document.getElementById("discover-edit-comment-reason");
 let notice = document.getElementById("slider-notice");
 
+let hiddenId = document.getElementById("hidden-id");
+let hiddenUser = document.getElementById("hidden-user");
+
 function setCookie(name, value, days) {
   var expires = "";
   if (days) {
@@ -39,6 +42,7 @@ if (getCookie("seenRevisions") === null) {
 } else {
   seenRevisions = JSON.parse(getCookie("seenRevisions"));
 }
+
 document.onkeydown = checkKey;
 
 /**
@@ -62,7 +66,7 @@ function checkKey(e) {
         setContent(listEditComments[index]);
       }   
     }
-  } else if (e.keyCode == 84) {
+  } else if (e.keyCode == 18) {
     if (window.location.href.indexOf('slider.html') != -1) {
       window.location.href = '/'
     } else {
@@ -122,6 +126,8 @@ async function getComments(id) {
    notice.innerHTML = `
    <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a target="_blank" style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
    Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.</i>`;
+   hiddenId.setAttribute("value", editComment.revisionId);
+   hiddenUser.setAttribute("value", editComment.userName);
  }
 
 
@@ -140,5 +146,4 @@ window.onload = function() {
     getComments();
 }
   }
-
 

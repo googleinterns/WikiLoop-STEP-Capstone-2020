@@ -2,31 +2,33 @@ async function getDetailedEdit(id) {
     let response = await fetch("/retrieve?id=" + id);
     let detailedEdit = await response.json();
     let computedAttribute = JSON.parse(detailedEdit.toxicityObject);
-    console.log(computedAttribute);
     
     const article = document.getElementById('article');
-    const username = document.getElementById('username');
+    const username = document.getElementById('user');
     const edit = document.getElementById('edit-comment');
     const date = document.getElementById('date');
     const score = document.getElementById('score');
     const scoreLabel = document.getElementById('label');
-    const scoreReason = document.getElementById('reason');
     const scoreIsExperimental = document.getElementById('experimental');
+    const revid = document.getElementById('rev-id');
 
     const link = "https://en.wikipedia.org/w/index.php?title=" + detailedEdit.parentArticle;
     article.setAttribute("href", link);
     article.innerText = detailedEdit.parentArticle;
+    username.setAttribute("href", "https://en.wikipedia.org/wiki/User:" + detailedEdit.userName);
     username.innerText = detailedEdit.userName;
     edit.innerText = detailedEdit.comment;
     date.innerText = detailedEdit.date;
-    score.innerText = "Score: " + computedAttribute.score + "%";
-    scoreLabel.innerText = "Label: " + computedAttribute.label;
-    scoreReason.innerText = "Reason: " + computedAttribute.reason;
-    scoreIsExperimental.innerText = experimentalMessage(computedAttribute.scoreIsExperimental);
+    score.innerText = computedAttribute.score + "%";
+    scoreLabel.innerText = computedAttribute.label + ': ' + computedAttribute.reason;
+    scoreIsExperimental.innerText = experimentalMessage(computedAttribute.experimental);
+    const revidLink = "https://en.wikipedia.org/w/index.php?diff=" + id;
+    revid.setAttribute("href", revidLink);
+    revid.innerText = " rev." + "567483924";
 }
 
 function experimentalMessage(boolAns) {
-    if (boolAns == 'true') {
+    if (boolAns === true) {
         return "This is an experimental score from the Perspective API."
     } else {
         return "This is not an experimental score."

@@ -40,29 +40,30 @@ $(document).ready( function () {
  * Get user profile from server
  */
 function getUser() {
-  fetch('/user').then(response => response.json()).then((user) => {
+  const timeFrameSection = document.getElementById("time-frame");
+  var timeFrame = timeFrameSection.value;
+  fetch('/user?timeFrame='+timeFrame).then(response => response.json()).then((user) => {
+    timeFrameSection.value = timeFrame;
+    const userNameSection = document.getElementById('user-name-section');
+    userNameSection.innerHTML = user.userName;
     const userPersonalInformationSection = document.getElementById('personal-information');
     userPersonalInformationSection.innerHTML = "User name: "+ user.userName;
     const avgToxicityScore = document.getElementById('incivility');
     avgToxicityScore.innerHTML= "Average Incivility Score: \t" + user.avgToxicityScore.substring(0,Math.min(5,user.avgToxicityScore.length)) + "%";
+
+    // Get the time frame
+    
+
     // Build the list of edits
     console.log(user.listEditComments);
     user.listEditComments.forEach((edit) => {
-      createEditElement(edit, user.userName, user.avgToxicityScore);
+        console.log(timeFrame == 0 || isInTimeFrame(edit.date, timeFrame));
+      if (timeFrame == 0 || isInTimeFrame(edit.date, timeFrame)) {
+         createEditElement(edit, user.userName, user.avgToxicityScore);
+      }
     });
   });
 }
-
-/**
- * Get username from server
- */
- function getUsername() {
-  fetch('/user').then(response => response.json()).then((user) => {
-    console.log(user);
-    const userNameSection = document.getElementById('user-name-section');
-    userNameSection.innerHTML = user.userName;
-   });
- }
 
 /**
  * Create a row containing an edit in the table.
@@ -70,7 +71,7 @@ function getUser() {
 function createEditElement(edit, userName, avgToxicityScore) {
   var table = $('#my-table').DataTable();
  
-  table.row.add( ["<span style=\"color:red;\">" + edit.toxicityObject + "%" + "</span>",
+  table.row.add( ["<span style=\"color:red;\">" + edit.toxicityScore + "%" + "</span>",
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + edit.revisionId + "\"> "+ edit.revisionId + "</a>", 
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + edit.userName + "\"> "+ edit.userName + "</a>", 
                   edit.comment,

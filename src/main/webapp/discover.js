@@ -21,15 +21,12 @@ function getCookie(name) {
 }
 
 var seenRevisions;
-console.log(getCookie("seenRevisions") + " hee");
 if (getCookie("seenRevisions") === null) {
-  console.log("Hello");
   seenRevisions = [];
   setCookie("seenRevisions", JSON.stringify(seenRevisions))
 } else {
   seenRevisions = JSON.parse(getCookie("seenRevisions"));
 }
-console.log(getCookie("seenRevisions"))
 document.onkeydown = checkKey;
 
 /**
@@ -37,7 +34,7 @@ document.onkeydown = checkKey;
  */
 function checkKey(e) {
   e = e || window.event;
-  if (e.keyCode === 84) {
+  if (e.keyCode === 18) {
       if (window.location.href.indexOf('/') != -1) {
         window.location.href = '/slider.html'
     }
@@ -47,40 +44,36 @@ function checkKey(e) {
 /** 
  * Get edit comments from server
  */
-async function getComments(ids, type, date) {
+async function getComments(ids, type, num) {
   if (type == null) {
     type = "";
   }
-  if (date == null) {
-    date = "";
+  if (num == null) {
+    num = "";
   }
   console.log(ids);
+  if (ids === null) {
+    ids = "";
+  }
   if (ids === 'revid') {
     type = ids;
     ids = document.getElementById("revids").value;
     ids = ids.replace(" ","-");
-    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
+    window.location.href = `/?id=${ids}&type=${type}&num=`;
     return;
   } else if (ids === 'user') {
     type = ids;
     ids = document.getElementById("userNames").value;
-    date = `${document.getElementById("startDate")}+${document.getElementById("endDate")}`;
-    ids = ids.replace(" ","-");
-    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
-    return;
-  } else if (ids === 'article') {
-    type = ids;
-    ids = document.getElementById("articles").value;
-    ids = ids.replace(" ","-");
-    window.location.href = `/?id=${ids}&type=${type}&date=${date}`;
-    date = `${document.getElementById("startDateArticle")}+${document.getElementById("endDateArticle")}`;
+    num = document.getElementById("numComments").value;
+    ids = ids.replace("%20","-");
+    window.location.href = `/?id=${ids}&type=${type}&num=${num}`;
     return;
   }
 
-  console.log(ids);
-  let response = await fetch(`/comments?id=${ids}&type=${type}&date=${date}`); 
+ console.log(`/comments?id=${ids}&type=${type}&num=${num}`);
+  let response = await fetch(`/comments?id=${ids}&type=${type}&num=${num}`); 
   let listEditComments = await response.json();
-  console.log(listEditComments);
+  console.log(response);
   // Create a set to look for a given id
   let alreadySeen = new Set(seenRevisions);
   listEditComments.forEach(editComment => {
@@ -96,10 +89,12 @@ async function getComments(ids, type, date) {
                           ], editComment.revisionId);
    }
   });
+
   //Remove loader comments finished
   document.getElementById('discover-loader').remove();
   //View table 
   document.getElementById("table-container").style.display = "block";
+
 }
 
 /**
@@ -145,9 +140,9 @@ window.onload = function() {
   let url = new URL(url_string);
   let ids = url.searchParams.get("id");
   let type = url.searchParams.get("type");
-  let date = url.searchParams.get("date");
+  let num = url.searchParams.get("num");
 
-  getComments(ids, type, date);
+  getComments(ids, type, num);
 }
 
 /**
