@@ -1,5 +1,5 @@
 function getActions() {
-  fetch('/actions') .then(response => response.json()).then((actions) => { 
+  fetch('/action') .then(response => response.json()).then((actions) => { 
     const actionList = document.getElementById('container');
     actions.forEach((a) => {
         actionList.appendChild(createActionListElem(a));
@@ -8,33 +8,73 @@ function getActions() {
 }
 
 function createActionListElem(a) {
-    const liElem = document.createElement('li');
-    liElem.classname = 'w3-bar';
 
-    const line = document.createElement('p');
+    var liElem = document.createElement('li');
+    var pElem = document.createElement('p');
 
-    const user = document.createElement('a');
-    user.setAttribute('id', 'user');
-    user.innerText = a.user;
+    var user = document.createElement('span');
+    var id = document.createElement('a');
+    var action = document.createElement('span');
+    var time = document.createElement('span');
 
-    const edit = document.createElement('a');
-    edit.setAttribute('id', 'edit');
-    edit.innerText = a.revisionId;
+    user.innerHTML = a.user + " reviewed ";
 
-    const action = document.createElement('a');
-    action.setAttribute('id', 'action');
-    action.innerText = a.action;
+    id.innerHTML = "edit:" + a.id;
+    id.setAttribute('href', '/slider.html?id=' + a.id);
 
-    const time = document.createElement('a');
-    time.setAttribute('id', 'time');
-    time.innerText = a.time;
+    if (a.action == "g") {
+      action.innerHTML = " and says Looks good ";
+    } else if (a.action == "ns") {
+      action.innerHTML = " and says Not sure ";
+    } else if (a.action == "r") {
+      action.innerHTML = " and says Should report ";
+    }
 
-    line.appendChild(user);
-    line.innerHTML = "reviewed"
+    var d = new Date();
+    var currentTime = d.getTime();
+    var timDiffInMilli = currentTime - a.time;
 
-    line.innerHTML = "Actions";
-    //line.appendChild(statement);
-    liElem.appendChild(line);
+    var timDiffInSeconds = timDiffInMilli / 1000;
+    timDiffInSeconds = Math.round(timDiffInSeconds);
+
+    // what time to display
+    if (timDiffInSeconds <= 1) {
+      time.innerHTML = " just now.";
+    } else if (timDiffInSeconds >= 1 && timDiffInSeconds < 60) {
+      if (timDiffInSeconds == 1) {
+        time.innerHTML = " " + timDiffInSeconds + " second ago.";
+      } else {
+        time.innerHTML = " " + timDiffInSeconds + " seconds ago.";
+      }
+    } else if (timDiffInSeconds >= 60 && timDiffInSeconds < 3600) {
+      var mins = Math.round((timDiffInSeconds / 60));
+      if (mins == 1) {
+        time.innerHTML = " " + mins + " minute ago.";
+      } else {
+        time.innerHTML = " " + mins + " minutes ago.";
+      }
+    } else if (timDiffInSeconds >= 3600 && timDiffInSeconds < 86400) {
+      var hrs = Math.round((timDiffInSeconds / 3600));
+      if (hrs == 1) {
+        time.innerHTML = " " + hrs + " hour ago.";
+      } else {
+        time.innerHTML = " " + hrs + " hours ago.";
+      }
+    } else if (timDiffInSeconds >= 86400) {
+      var days = Math.round((timDiffInSeconds / 86400));
+      if (days == 1) {
+        time.innerHTML = " " + days + " day ago.";
+      } else {
+        time.innerHTML = " " + days + " days ago.";
+      }
+    }
+    
+    pElem.appendChild(user);
+    pElem.appendChild(id);
+    pElem.appendChild(action);
+    pElem.appendChild(time);
+
+    liElem.appendChild(pElem);
 
     return liElem;
 }

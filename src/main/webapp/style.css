@@ -287,7 +287,23 @@ body {
 }
 
 /* actions */
-#list-div {
-    align-items: center;
-    justify-content: center;
+.content {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  max-width: 1140px;
+}
+
+.discover-slide-feed{
+  padding: 1.5em;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  width: 100%;
 }
