@@ -19,12 +19,7 @@ import org.quartz.JobExecutionException;
 
 import com.google.appengine.api.datastore.*;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.Call;
+import okhttp3.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -51,12 +46,17 @@ public class WikiMediaRequestQueue implements Job{
       try {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         String postUrl = buildUrl;
-        OkHttpClient client = new OkHttpClient();
+        //new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.MINUTES) // connect timeout
+            .writeTimeout(10, TimeUnit.MINUTES) // write timeout
+            .readTimeout(10, TimeUnit.MINUTES) // read timeout
+            .build();
         Request request = new Request.Builder()
             .url(postUrl)
             .build();
         Response response = client.newCall(request).execute();
-        //System.out.println(response.body().string());
+        System.out.println(response.body().string());
       }
       catch(IOException e) {
         System.out.println(e);
