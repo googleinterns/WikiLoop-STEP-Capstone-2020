@@ -19,9 +19,8 @@ function createActionListElem(a) {
 
     user.innerHTML = a.user + " reviewed ";
 
-    console.log(a.revisionId);
-    id.innerHTML = a.revisionId;
-    id.setAttribute('href', '/slider.html?id=' + a.revisionId);
+    id.innerHTML = "edit:" + a.id;
+    id.setAttribute('href', '/slider.html?id=' + a.id);
 
     if (a.action == "g") {
       action.innerHTML = " and says Looks good ";
@@ -31,7 +30,44 @@ function createActionListElem(a) {
       action.innerHTML = " and says Should report ";
     }
 
-    time.innerHTML = a.time + " ago."
+    var d = new Date();
+    var currentTime = d.getTime();
+    var timDiffInMilli = currentTime - a.time;
+
+    var timDiffInSeconds = timDiffInMilli / 1000;
+    timDiffInSeconds = Math.round(timDiffInSeconds);
+
+    // what time to display
+    if (timDiffInSeconds <= 1) {
+      time.innerHTML = " just now.";
+    } else if (timDiffInSeconds >= 1 && timDiffInSeconds < 60) {
+      if (timDiffInSeconds == 1) {
+        time.innerHTML = " " + timDiffInSeconds + " second ago.";
+      } else {
+        time.innerHTML = " " + timDiffInSeconds + " seconds ago.";
+      }
+    } else if (timDiffInSeconds >= 60 && timDiffInSeconds < 3600) {
+      var mins = Math.round((timDiffInSeconds / 60));
+      if (mins == 1) {
+        time.innerHTML = " " + mins + " minute ago.";
+      } else {
+        time.innerHTML = " " + mins + " minutes ago.";
+      }
+    } else if (timDiffInSeconds >= 3600 && timDiffInSeconds < 86400) {
+      var hrs = Math.round((timDiffInSeconds / 3600));
+      if (hrs == 1) {
+        time.innerHTML = " " + hrs + " hour ago.";
+      } else {
+        time.innerHTML = " " + hrs + " hours ago.";
+      }
+    } else if (timDiffInSeconds >= 86400) {
+      var days = Math.round((timDiffInSeconds / 86400));
+      if (days == 1) {
+        time.innerHTML = " " + days + " day ago.";
+      } else {
+        time.innerHTML = " " + days + " days ago.";
+      }
+    }
     
     pElem.appendChild(user);
     pElem.appendChild(id);
