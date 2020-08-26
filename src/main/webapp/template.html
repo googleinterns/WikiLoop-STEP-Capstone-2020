@@ -5,8 +5,9 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <title>Template</title>
 	    <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="script.js"></script>
         <!-- Add bootstap, jQuery, and datatables -->
-        <link rel="stylesheet" 
+        <!--link rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
         crossorigin="anonymous">
@@ -23,10 +24,10 @@
         crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.js" 
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script-->
   </head> 
   <!--USER JS AND FIX TEMPLATE FILE-->
-  <body onload="getUsername()">
+  <body>
     <div class="dashboard-header w3-card w3-#f8f9fa">
       <div class="nav-container">
         <div class="nav-brand">
@@ -38,7 +39,9 @@
       </div>
     </div>
     <div class="footer">
-      <p>This score is derived from the results of the Perspective API. The API is not 100% accurate and may give fake positives and/or negatives.</p>
+      <p>The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. <br>
+          You can learn more about the API <a target="_blank" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>. Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate 
+          and might contain false positives</p>
     </div>
   </body>
 </html>

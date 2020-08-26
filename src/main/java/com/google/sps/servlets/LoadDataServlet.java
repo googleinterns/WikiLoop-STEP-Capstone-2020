@@ -1,16 +1,3 @@
-// Copyright 2019 Google LLC
-//  
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 package com.google.sps.servlets; 
 
 import java.util.ArrayList;
@@ -27,6 +14,7 @@ import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.Perspective;
 import com.google.sps.data.Attribute;
+import com.google.sps.data.WikiMedia;
 
 import com.google.gson.Gson;
 
@@ -65,35 +53,29 @@ import java.io.FileReader;
 @WebServlet("/load-data")
 public class LoadDataServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //response.setContentType("application/json");
    // first check id number with data
+
+   //Get data from Media API using the WikiMedia class
+   WikiMedia wikiMedia = new WikiMedia();
+   String json = wikiMedia.getByRecentChanges();
+   Collection<EditComment> listMockComments = wikiMedia.readWikiMediaResponse(json) ;
    
     // this boolean variable determines whether we update the Datastore or not
     boolean updateDatastore = true;
-    String json = getEditComments(request);
-    // Get a collection of edit comments without a toxicity attribute using the MockData class
-    Collection<EditComment> listMockComments = new ArrayList<EditComment>();
-    listMockComments = new MockData(json).getMockComments();
 
     // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
 
-    List<String> ids = new ArrayList<String>();
-    for (EditComment comment: listEditComments) {
-      ids.add(comment.revisionId);
-    }
-    String urlID = "index.html?ids=";
-    for (String id: ids) {
-      urlID += id + "-";
-    }
     // store the new data in Datastore
     if (updateDatastore){
       loadToDatastore(listEditComments); 
     }
-    // Redirect back to the HTML page.
-   response.sendRedirect(urlID);
-   return;
+    
+    // Send the JSON as the response
+    //response.getWriter().println(json);
   }
 
   /**
@@ -115,19 +97,23 @@ public class LoadDataServlet extends HttpServlet {
   private void loadEditCommentToDatastore(EditComment editComment) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by the Key
-    Key key = KeyFactory.createKey("EditComments", editComment.getRevisionId() + "en");
-    Query query = new Query("EditComments").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+    Key key = KeyFactory.createKey("EditComment", editComment.getRevisionId() + "en");
+    Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
-      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
       editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
       editCommentEntity.setProperty("userName", editComment.getUserName());
       editCommentEntity.setProperty("comment", editComment.getComment());
       editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+      editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
       editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
       editCommentEntity.setProperty("date", editComment.getDate());
       editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
+      editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
+      editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
       datastore.put(editCommentEntity);
     }
   }
@@ -175,32 +161,19 @@ public class LoadDataServlet extends HttpServlet {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     
     for (EditComment comment : listMockComments){
-      Attribute attribute = new Perspective(comment.comment, true).computedAttribute;
-
+      Attribute attribute = new Perspective(comment.getComment(), true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);
-      comment.toxicityObject = attributeString;
+      comment.setToxicityObject(attributeString);
       listEditComments.add(comment);
+      try{
+        Thread.sleep(1000);
+      }
+      catch(InterruptedException ex)
+      {
+        Thread.currentThread().interrupt();
+      }
     }
     return listEditComments;
-  }
-
-  /**
-   * Parses the HTTP request and return a string in a json format
-   * @param HttpServletRequest request
-   * @return String structured in a json format, containing comments from the Media API
-   */
-  private String getEditComments(HttpServletRequest request) {
-    StringBuffer stringBuffer = new StringBuffer();
-    String line = null;
-    try {
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null){
-            stringBuffer.append(line);
-        } 
-    } catch (Exception e) { System.out.println("EXCEPTION: \t" + e);}
-
-    String json = stringBuffer.toString();
-    return json;
   }
 }

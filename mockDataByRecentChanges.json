@@ -1,0 +1,35 @@
+{
+    "batchcomplete": "",
+    "continue": {
+        "rccontinue": "20200811161638|1290046090",
+        "continue": "-||"
+    },
+    "query": {
+        "recentchanges": [
+            {
+                "type": "log",
+                "ns": 6,
+                "title": "File:Pudhu Vasantham.jpg",
+                "pageid": 64828261,
+                "revid": 972359143,
+                "old_revid": 0,
+                "rcid": 1290046092,
+                "user": "Kailash29792",
+                "timestamp": "2020-08-11T16:16:39Z",
+                "comment": "{{Non-free use rationale poster\n| Article = Pudhu Vasantham\n| Use = Infobox\n| Media = film\n| Owner = [[Super Good Films]]\n| Source = https://www.facebook.com/groups/910865555630230/permalink/3380118315371596/\n}}\n== Licensing ==\n{{Non-free poster|image has rationale=yes}}"
+            },
+            {
+                "type": "categorize",
+                "ns": 14,
+                "title": "Category:Short description with empty Wikidata description",
+                "pageid": 64828225,
+                "revid": 972359142,
+                "old_revid": 972359027,
+                "rcid": 1290046091,
+                "user": "Jwale2",
+                "timestamp": "2020-08-11T16:16:38Z",
+                "comment": "[[:Samuel Kwesi Oppong]] added to category, [[Special:WhatLinksHere/Samuel Kwesi Oppong|this page is included within other pages]]"
+            }
+        ]
+    }
+}

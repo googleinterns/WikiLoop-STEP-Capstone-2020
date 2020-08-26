@@ -72,6 +72,7 @@ public class DiscoverServlet extends HttpServlet {
    * Get the comments in the datastore that match the id pass through
    * When no ids are given, doGet returns all edit comments in the database to review
    */
+   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -79,7 +80,10 @@ public class DiscoverServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
     String type = request.getParameter("type");
-
+    String num = request.getParameter("num");
+    if (num == null || num.equals("") || num.equals("null")) {
+      num = "1";
+    }
     ArrayList editComments = new ArrayList<EditComment>();
     // Check if any ids were passed through, if not return all edit comments in datastore
     if (ids == null || ids.equals("") || ids.equals("null")) {
@@ -89,7 +93,7 @@ public class DiscoverServlet extends HttpServlet {
       List<String> idList = createListIds(ids);
       /* Get specific ids for the type of query */
       if (type.equals("user")) {
-        idList = getUserIds(idList);
+        idList = getUserIds(idList, num);
       }
       loadSpecificRevisions(idList, datastore, editComments);
     }
@@ -111,8 +115,23 @@ public class DiscoverServlet extends HttpServlet {
       String article = (String) entity.getProperty("parentArticle");
       String date = (String) entity.getProperty("date");
       String status = (String) entity.getProperty("status");
+      String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
+      String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
+      String notSureCounter = (String) entity.getProperty("notSureCounter");
+
       try {
-        editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status));
+        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
+        Entity editCommentEntity = new Entity("TestEditComments", revisionId + "en");
+        editCommentEntity.setProperty("revisionId", revisionId);
+        editCommentEntity.setProperty("userName", user);
+        editCommentEntity.setProperty("comment", comment);
+        editCommentEntity.setProperty("computedAttribute", computedAttributeString);
+        editCommentEntity.setProperty("parentArticle", article);
+        editCommentEntity.setProperty("date", date);
+        editCommentEntity.setProperty("status", status);
+        datastore.put(editCommentEntity);
+
+        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
       } catch(Exception e) {
         System.out.println(e);
       }
@@ -141,7 +160,7 @@ public class DiscoverServlet extends HttpServlet {
    */ 
   private void loadSpecificRevisions(List<String> idList, DatastoreService datastore, ArrayList<EditComment> editComments) {
     for (String id : idList) {
-        Query query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
         if (entity == null) {
@@ -161,7 +180,7 @@ public class DiscoverServlet extends HttpServlet {
           String status = (String) entity.getProperty("status");
           try {
             JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status));
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, "", "", ""));
           } catch(Exception e) {
             System.out.println(entity);
           }
@@ -185,11 +204,11 @@ public class DiscoverServlet extends HttpServlet {
    * @param users List of user to get their revision ids
    * @return the list of all revision ids of a specific user
    */
-  public List<String> getUserIds(List<String> users) {
+  public List<String> getUserIds(List<String> users, String num) {
     List<String> idList = new ArrayList<>();
     WikiMedia call = new WikiMedia();
     for (String user: users) {
-      String response = call.getByUser(user, "10");
+      String response = call.getByUser(user, num);
       System.out.println(response);
       try {
         Object jsonObj = new JSONParser().parse(response); 

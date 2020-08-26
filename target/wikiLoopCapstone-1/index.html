@@ -1,10 +1,10 @@
-<!--DOCTYTYPE html-->
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <title>Discover</title>
-	    <link rel="stylesheet" type="text/css" href="discover-style.css">
+	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
@@ -21,37 +21,59 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
         crossorigin="anonymous"></script>
-        <script src="http://code.jquery.com/jquery-3.5.1.js" 
+        <script src="https://code.jquery.com/jquery-3.5.1.js" 
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
         crossorigin="anonymous"></script>
         <link rel="stylesheet"
         href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script> 
+          $(function(){
+          $("#template").load("template.html"); 
+          });
+        </script> 
     </head>
-    <body onload="getUser()">
+    <body>
       <div class="dashboard-header w3-card w3-#f8f9fa"> 
         <div class="nav-container">
           <div class="nav-brand">
            <a href="/"> 
-             WikiLoop IncivilityCheck
+             WikiLoop CivilityCheck
            </a>
           </div>
+          <div>
+            <a href="slider.html" class="material-icons"> 
+              view_carousel
+            </a>
+          </div>
           <div class="user-loggedin ">
-            <a href="userprofile.html">Tom</a>
+            <a href="userprofile.html">Giano II</a>
           </div>
         </div>
       </div>
       <div class="dashboard-content">
         <div class="dashboard-feed w3-round w3-card "> 
           <div id="table-container">
+            <div>
+              <form action="#" onsubmit="loadData();return false">
+                Find Revision ID(s)
+              <input type="text" id="revids" name="ids"></input>
+              </form>
+            </div>
             <table class="table table-fluid " id="my-table">
               <thead>
                 <tr><th class="dt-center">Incivility %</th><th class="dt-center">Revision ID</th><th class="dt-center">User Name</th><th class="dt-center">Edit Comment</th><th class="dt-center">Article</th><th class="dt-center">Date</th><th class="dt-center">Action</th></tr>
               </thead>
               <tbody id="edits-table" style="text-align:center;"></tbody>
             </table>
+            <br></br>
+            <i> 
+              The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
+              Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.
+            </i>
           </div>
         </div>
+        
       </div>
       <script src="discover.js"></script>
     </body>
