@@ -13,12 +13,12 @@ import org.json.simple.parser.*;
  */
 public final class EditComment {
   private final String userName;
-  private final String comment;
+  public String comment;
   private final String date;
   private final String parentArticle;
   private final String status;
   private final String revisionId;
-  private String toxicityObject;
+  public String toxicityObject;
   private String toxicityScore;
   private String looksGoodCounter;
   private String shouldReportCounter;

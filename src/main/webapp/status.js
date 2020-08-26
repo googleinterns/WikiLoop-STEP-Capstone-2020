@@ -1,4 +1,5 @@
 function getActions() {
+
   fetch('/action') .then(response => response.json()).then((actions) => { 
     const actionList = document.getElementById('container');
     actions.forEach((a) => {
@@ -8,7 +9,6 @@ function getActions() {
 }
 
 function createActionListElem(a) {
-
     var liElem = document.createElement('li');
     var pElem = document.createElement('p');
 

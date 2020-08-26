@@ -303,4 +303,43 @@ public final class WikiMedia {
     }
     return editComments;
   }
+
+  /**
+   * Read a string response from Wikimedia API response and convert it to edit comment
+   * @return List<MockComments>
+   */
+  public List<EditComment> readStringRevisionId(String json) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      Object jsonObj = new JSONParser().parse(json); 
+
+      /* Parse mockDataJSON */
+      JSONObject mockDataObject = (JSONObject) jsonObj;
+      JSONObject query = (JSONObject) mockDataObject.get("query");
+      JSONObject pages = (JSONObject) query.get("pages");
+
+      for (Object key : pages.keySet()) {
+          String pageId = String.valueOf(key);
+          JSONObject jsonKey = (JSONObject) pages.get(pageId);
+          String article = (String) jsonKey.get("title");
+          JSONArray revisions = (JSONArray) jsonKey.get("revisions");
+          
+        for (Object o: revisions) {
+          JSONObject comment = (JSONObject) o;
+          String revisionId = String.valueOf(comment.get("revid"));
+          String user = (String) comment.get("user");
+          String mockComment = (String) comment.get("comment");
+          String date = (String) comment.get("timestamp");
+          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", ""), "0", date, article, "NEW"," "," "," "));
+        }
+      }
+
+    } catch (Exception e) {
+      System.out.println("43" + e);
+    }
+    return editComments;
+  }
+
 }

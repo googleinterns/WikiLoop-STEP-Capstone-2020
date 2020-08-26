@@ -14,7 +14,6 @@ public class Action {
   public String user;
   public String action;
   public long time;
-
   public Action(String id, String user, String action, long time) {
       this.id = id;
       this.user = user;
