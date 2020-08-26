@@ -21,14 +21,12 @@ function getCookie(name) {
 }
 
 var seenRevisions;
-console.log(getCookie("seenRevisions") + " hee");
 if (getCookie("seenRevisions") === null) {
   seenRevisions = [];
   setCookie("seenRevisions", JSON.stringify(seenRevisions))
 } else {
   seenRevisions = JSON.parse(getCookie("seenRevisions"));
 }
-console.log(getCookie("seenRevisions"))
 document.onkeydown = checkKey;
 
 /**
@@ -36,7 +34,7 @@ document.onkeydown = checkKey;
  */
 function checkKey(e) {
   e = e || window.event;
-  if (e.keyCode === 84) {
+  if (e.keyCode === 18) {
       if (window.location.href.indexOf('/') != -1) {
         window.location.href = '/slider.html'
     }
@@ -67,7 +65,7 @@ async function getComments(ids, type, num) {
     type = ids;
     ids = document.getElementById("userNames").value;
     num = document.getElementById("numComments").value;
-    ids = ids.replace(" ","-");
+    ids = ids.replace("%20","-");
     window.location.href = `/?id=${ids}&type=${type}&num=${num}`;
     return;
   }

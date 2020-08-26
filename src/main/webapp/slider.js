@@ -66,7 +66,7 @@ function checkKey(e) {
         setContent(listEditComments[index]);
       }   
     }
-  } else if (e.keyCode == 84) {
+  } else if (e.keyCode == 18) {
     if (window.location.href.indexOf('slider.html') != -1) {
       window.location.href = '/'
     } else {

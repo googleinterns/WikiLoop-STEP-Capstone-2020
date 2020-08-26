@@ -9,6 +9,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import java.util.Collection;
+import com.google.appengine.api.datastore.*;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Bucket;
@@ -76,7 +78,7 @@ public class DiscoverServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("EditComments");
+    Query query = new Query("EditComment");
     PreparedQuery results = datastore.prepare(query);              
     String ids = request.getParameter("id");
     String type = request.getParameter("type");
@@ -165,7 +167,7 @@ public class DiscoverServlet extends HttpServlet {
         Entity entity = pq.asSingleEntity();
         if (entity == null) {
           addIdToDatastore(id, datastore);
-          query = new Query("EditComments").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+          query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
           pq = datastore.prepare(query);
           entity = pq.asSingleEntity();
         }
@@ -243,6 +245,38 @@ public class DiscoverServlet extends HttpServlet {
     return json;
   }
   
+    /**
+   * Stores the author of the editComment in Datastore.
+   * Adds the editComment's revision id to the list of revision ids of the author's editComments
+   * @param EditComment editComment
+   */
+  private void loadUserToDatastore(EditComment editComment,DatastoreService datastore) {
+    // Filter query by the Key
+    Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
+    Query query = 
+      new Query("UserProfile")
+        .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+            
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+
+    // Get revision ids for the existing comments by the user
+    Collection<String> listEditCommentsRevids = new ArrayList<String>();
+    if (entity != null){
+        listEditCommentsRevids = (Collection<String>) entity.getProperty("listEditComments");
+        datastore.delete(entity.getKey());
+    }
+    if (!listEditCommentsRevids.contains(editComment.getRevisionId())){
+        listEditCommentsRevids.add(editComment.getRevisionId());
+    }
+
+    Entity userProfileEntity = new Entity("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
+
+    userProfileEntity.setProperty("userName", editComment.getUserName());
+    userProfileEntity.setProperty("listEditComments", listEditCommentsRevids);
+    datastore.put(userProfileEntity);
+  }
+
   /**
    * Given EditComment object and Datastore service, stores the edit comment into 
    * the datastore
@@ -265,7 +299,7 @@ public class DiscoverServlet extends HttpServlet {
       Attribute attribute = new Perspective(editComment.comment, true).computedAttribute;
       editComment.toxicityObject = new Gson().toJson(attribute);
 
-      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
       editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
       editCommentEntity.setProperty("userName", editComment.getUserName());
       editCommentEntity.setProperty("comment", editComment.getComment());
@@ -274,5 +308,9 @@ public class DiscoverServlet extends HttpServlet {
       editCommentEntity.setProperty("date", editComment.getDate());
       editCommentEntity.setProperty("status", editComment.getStatus());
       datastore.put(editCommentEntity);
+
+      loadUserToDatastore(editComment, datastore);
+
+
    }
 }
