@@ -54,28 +54,23 @@ import java.io.FileReader;
 public class LoadDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //response.setContentType("application/json");
-   // first check id number with data
+    response.setContentType("application/json");
+    // first check id number with data
 
-   //Get data from Media API using the WikiMedia class
-   WikiMedia wikiMedia = new WikiMedia();
-   String json = wikiMedia.getByRecentChanges();
-   Collection<EditComment> listMockComments = wikiMedia.readWikiMediaResponse(json) ;
-   
-    // this boolean variable determines whether we update the Datastore or not
-    boolean updateDatastore = true;
+    //Get data from Media API using the WikiMedia class
+    WikiMedia wikiMedia = new WikiMedia();
+    String json = wikiMedia.getByRecentChanges();
+    Collection<EditComment> listMockComments = wikiMedia.readWikiMediaResponse(json) ;
 
     // Add toxicity attributes to the comments
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments = addToxicityBreakDown(listMockComments);
 
     // store the new data in Datastore
-    if (updateDatastore){
-      loadToDatastore(listEditComments); 
-    }
+    loadToDatastore(listEditComments); 
     
     // Send the JSON as the response
-    //response.getWriter().println(json);
+    response.getWriter().println(json);
   }
 
   /**
@@ -161,6 +156,26 @@ public class LoadDataServlet extends HttpServlet {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
     
     for (EditComment comment : listMockComments){
+      // Check first if comment is in the Datastore
+      // Skip the comment if it is in the Datastore
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      // Filter query by the Key
+      Key key = KeyFactory.createKey("EditComment", comment.getRevisionId() + "en");
+      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+      PreparedQuery results = datastore.prepare(query);
+      Entity entity = results.asSingleEntity();
+      if (entity != null) continue;
+
+      // Check if comment is empty
+      // if the comment is empty, set the toxicityObject to 0, skip the call to the Perspective API,
+      // and add to the list to be stored in Datastore
+      if (comment.getComment().trim().isEmpty()) {
+          comment.setToxicityObject("0");
+          listEditComments.add(comment);
+          continue;
+      }
+
+
       Attribute attribute = new Perspective(comment.getComment(), true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);

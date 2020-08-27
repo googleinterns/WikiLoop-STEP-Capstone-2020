@@ -164,7 +164,7 @@ public final class WikiMedia {
       return response.body().string();
     }
     catch(IOException e) {
-        System.out.println("55555" + "\t" + e);
+        System.out.println(e);
         e.printStackTrace();
     }
     return "Error";

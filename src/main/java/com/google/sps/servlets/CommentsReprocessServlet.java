@@ -103,6 +103,7 @@ public class CommentsReprocessServlet extends HttpServlet {
     editCommentEntity.setProperty("userName", editComment.getUserName());
     editCommentEntity.setProperty("comment", editComment.getComment());
     editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+    editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
     editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
     editCommentEntity.setProperty("date", editComment.getDate());
     editCommentEntity.setProperty("status", editComment.getStatus());
@@ -120,20 +121,37 @@ public class CommentsReprocessServlet extends HttpServlet {
    */
   private Collection<EditComment> addToxicityBreakDown(Collection<EditComment> listMockComments) {
     Collection<EditComment> listEditComments = new ArrayList<EditComment>();
-    int i = 0;
+    
     for (EditComment comment : listMockComments){
-      /*if (i % 10 == 0) {
-          try {
-            Thread.sleep(10000);
-         } catch (Exception e) {
-            System.out.println(e);
-         }
-      }*/
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      // Filter query by the Key
+      Key key = KeyFactory.createKey("EditComment", comment.getRevisionId() + "en");
+      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+      PreparedQuery results = datastore.prepare(query);
+      Entity entity = results.asSingleEntity();
+
+      // Check if comment is empty
+      // if the comment is empty, set the toxicityObject to 0, skip the call to the Perspective API,
+      // and add to the list to be stored in Datastore
+      if (comment.getComment().trim().isEmpty()) {
+          comment.setToxicityObject("0");
+          listEditComments.add(comment);
+          continue;
+      }
+
+
       Attribute attribute = new Perspective(comment.getComment(), true).computedAttribute;
       Gson gson = new Gson();
       String attributeString = gson.toJson(attribute);
       comment.setToxicityObject(attributeString);
       listEditComments.add(comment);
+      try{
+        Thread.sleep(1000);
+      }
+      catch(InterruptedException ex)
+      {
+        Thread.currentThread().interrupt();
+      }
     }
     return listEditComments;
   }
@@ -141,7 +159,7 @@ public class CommentsReprocessServlet extends HttpServlet {
   private Collection<EditComment> getProblematicEditComments () {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = 
-        new Query("EditComments")
+        new Query("EditComment")
             .setFilter(new Query.FilterPredicate("computedAttribute", Query.FilterOperator.EQUAL, "null"));
     PreparedQuery results = datastore.prepare(query); 
     Collection<EditComment> editComments = new ArrayList<EditComment>();
@@ -158,6 +176,7 @@ public class CommentsReprocessServlet extends HttpServlet {
       String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
       String notSureCounter = (String) entity.getProperty("notSureCounter");
 
+      if (comment == null || comment.trim().isEmpty() || comment == "null") continue;
       editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
     }
     return editComments;

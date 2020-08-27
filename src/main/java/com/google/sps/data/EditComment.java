@@ -46,7 +46,10 @@ public final class EditComment {
     this.shouldReportCounter = shouldReportCounter;
     this.notSureCounter = notSureCounter;
 
-    if ((toxicityObject == null) || (toxicityObject == "") || (toxicityObject == "0")) this.toxicityScore = "0.0";
+    if ((toxicityObject == null) || (toxicityObject.trim().isEmpty()) || (toxicityObject == "0")) {
+      this.toxicityScore = "0.0";
+      this.toxicityObject = "0";
+      }
     else {
       try {
           JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
