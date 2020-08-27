@@ -137,6 +137,7 @@ async function getComments(ids, type, num) {
     window.location.href = `/?id=${ids}&type=${type}&num=${num}`;
     return;
   }
+ 
   let response = await fetch(`/comments?id=${ids}&type=${type}&num=${num}`); 
   let listEditComments = await response.json();
   console.log(response);
