@@ -44,7 +44,7 @@ public class OnDemandProcessing {
       JobDetail jobDetail = JobBuilder.newJob(WikiMediaRequestQueue.class).build();
 
       Trigger trigger = TriggerBuilder.newTrigger().withIdentity("CroneTrigger")
-      .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(600)
+      .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(5)
       .repeatForever()).build();
 
       Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

@@ -55,7 +55,21 @@ public class RetrieveEditServlet extends HttpServlet {
       //update EditComments counters
       EditComment ec = retrieveEdit(revisionId);
 
-      Entity edit = new Entity("EditComment");
+      if (action.equals("g")) {
+          System.out.println("g");
+        ec.incrementLooksGoodCounter();
+      } else if (action.equals("ns")) {
+          System.out.println("ns");
+        ec.incrementNotSureCounter();  
+      } else if (action.equals("r")) {
+          System.out.println("r");
+        ec.incrementShouldReportCounter();
+      }
+
+
+
+      Entity edit = new Entity("EditComment", ec.getRevisionId() + "en");
+      
       edit.setProperty("userName", ec.getUserName());
       edit.setProperty("comment", ec.getComment());
       edit.setProperty("date", ec.getDate());
@@ -63,14 +77,7 @@ public class RetrieveEditServlet extends HttpServlet {
       edit.setProperty("status", ec.getStatus());
       edit.setProperty("computedAttribute", ec.getToxicityObject());
       edit.setProperty("revisionId", ec.getRevisionId());
-      
-      if (action == "g") {
-        ec.incrementLooksGoodCounter();
-      } else if (action == "ns") {
-        ec.incrementNotSureCounter();  
-      } else if (action == "r") {
-        ec.incrementShouldReportCounter();
-      }
+      edit.setProperty("toxicityScore", ec.getToxicityScore());
       edit.setProperty("looksGoodCounter", ec.getLooksGoodCounter());
       edit.setProperty("notSureCounter", ec.getNotSureCounter());
       edit.setProperty("shouldReportCounter", ec.getShouldReportCounter());
@@ -82,9 +89,9 @@ public class RetrieveEditServlet extends HttpServlet {
     /* TO DO: Use Datastore */
     private EditComment retrieveEdit(String id) {
       // Filter query by the Key
-      // Key key = KeyFactory.createKey("EditComment", id + "en");
-      // Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
-      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+      Key key = KeyFactory.createKey("EditComment", id + "en");
+      Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+      //Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
       PreparedQuery results = datastore.prepare(query);
       Entity entity = results.asSingleEntity();
 

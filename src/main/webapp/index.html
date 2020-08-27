@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
     <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,11 +75,12 @@
               <input type="submit">
               </form>
               </form> -->
-              <form action="#" id="userForm" onsubmit="getComments('user'); return false">
+              <form action="#" id="userForm"  method="GET" action="/userprofile.html">
                 Query by Username(s)
               <input type="text" name="user" id="userNames" ></input> 
               Number of Revisions Comments (5000 Max): <input type="text"id="numComments"></input>
               <input type="submit">
+              </form>
               </div>
               <br/>
             <table class="table table-fluid " id="my-table">

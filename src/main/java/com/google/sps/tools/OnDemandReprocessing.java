@@ -44,7 +44,7 @@ public class OnDemandReprocessing {
       JobDetail jobDetail = JobBuilder.newJob(PerspectiveReprocessing.class).build();
 
       Trigger trigger = TriggerBuilder.newTrigger().withIdentity("CroneTrigger")
-      .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(120)
+      .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(5)
       .repeatForever()).build();
 
       Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

@@ -152,10 +152,10 @@ async function getComments(ids, type, num) {
   listEditComments.forEach(editComment => {
     let toxicityPercentage;
     if (!alreadySeen.has(editComment.revisionId)) {
-      if (editComment.toxicityObject !== null && editComment.toxicityObject !== "" && editComment.toxicityObject !== "null") {
+      if (editComment.toxicityObject !== null && editComment.toxicityObject !== "" && editComment.toxicityObject !== "null" && editComment.toxicityObject !== "0") {
         toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
       } else {
-        toxicityPercentage = '0';
+        toxicityPercentage = '0' + "%";
       }
       
       createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 

@@ -66,7 +66,7 @@ public final class WikiMedia {
                                     //.put("rcnamespace","1|2|3|4|5|11|9|7|12|13|15|101|109")
                                     .put("rcnamespace","2%7C3%7C4%7C5%7C7%7C9%7C11%7C13%7C15%7C101%7C109%7C119%7C447%7C711%7C829%7C2301%7C2302")
                                     .put("rcprop","title%7Ctimestamp%7Cids%7Ccomment%7Cuser%7Cuserid")
-                                    .put("rclimit","max")
+                                    .put("rclimit","5")
                                     .build();
     return getWikiMediaResponse(params);
   }
@@ -229,8 +229,16 @@ public final class WikiMedia {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("/\\*.*\\*/", ""), "0", date, article, "NEW", "0", "0", "0"));
-        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
        }
       }
 
@@ -263,8 +271,16 @@ public final class WikiMedia {
             String user = (String) comment.get("user");
             String mockComment = (String) comment.get("comment");
             String date = (String) comment.get("timestamp");
-            editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("/\\*.*\\*/", ""), "0", date, article, "NEW", "0", "0", "0"));
-        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
+            
+            // comment cleaning
+            String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+            cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+            cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+            cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+            cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+
+
+            editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
           }
        }
 
@@ -294,8 +310,16 @@ public final class WikiMedia {
           String user = (String) object.get("user");
           String mockComment = (String) object.get("comment");
           String date = (String) object.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("/\\*.*\\*/", ""), "0", date, article, "NEW", "0", "0", "0"));
-        //editComments.add(new EditComment(revisionId, user, (mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "")).replaceAll("(\\/\\)(.)(\\*\\/)", ""), "0", date, article, "NEW", "0", "0", "0"));
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
       }
 
     } catch (Exception e) {
@@ -332,12 +356,21 @@ public final class WikiMedia {
           String user = (String) comment.get("user");
           String mockComment = (String) comment.get("comment");
           String date = (String) comment.get("timestamp");
-          editComments.add(new EditComment(revisionId, user, mockComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", ""), "0", date, article, "NEW"," "," "," "));
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
         }
       }
 
     } catch (Exception e) {
-      System.out.println("43" + e);
+      System.out.println(e);
     }
     return editComments;
   }

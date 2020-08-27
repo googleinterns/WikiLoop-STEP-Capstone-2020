@@ -311,10 +311,7 @@ public class DiscoverServlet extends HttpServlet {
       editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
       editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
       editCommentEntity.setProperty("date", editComment.getDate());
-      editCommentEntity.setProperty("status", editComment.getStatus());
-      editCommentEntity.setProperty("status", editComment.getStatus());
-      editCommentEntity.setProperty("status", editComment.getStatus());
-      editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
        editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
       editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
       editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());

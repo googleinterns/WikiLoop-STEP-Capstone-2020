@@ -33,6 +33,8 @@
 $(document).ready( function () {
     $('#my-table').DataTable({
       "order": [[ 0, "desc" ]],
+      "search": "Filter:",
+      "deferRender": true
     });
 } );
 
@@ -44,8 +46,6 @@ function getUser() {
   var timeFrame = timeFrameSection.value;
   fetch('/user?timeFrame='+timeFrame).then(response => response.json()).then((user) => {
     timeFrameSection.value = timeFrame;
-    const userNameSection = document.getElementById('user-name-section');
-    userNameSection.innerHTML = user.userName;
     const userPersonalInformationSection = document.getElementById('personal-information');
     userPersonalInformationSection.innerHTML = "User name: "+ user.userName;
     const avgToxicityScore = document.getElementById('incivility');
@@ -57,10 +57,7 @@ function getUser() {
     // Build the list of edits
     console.log(user.listEditComments);
     user.listEditComments.forEach((edit) => {
-        console.log(timeFrame == 0 || isInTimeFrame(edit.date, timeFrame));
-      if (timeFrame == 0 || isInTimeFrame(edit.date, timeFrame)) {
-         createEditElement(edit, user.userName, user.avgToxicityScore);
-      }
+      createEditElement(edit, user.userName, user.avgToxicityScore);
     });
   });
 }
@@ -71,13 +68,14 @@ function getUser() {
 function createEditElement(edit, userName, avgToxicityScore) {
   var table = $('#my-table').DataTable();
  
-  table.row.add( ["<span style=\"color:red;\">" + edit.toxicityScore + "%" + "</span>",
+  var rowNode = table.row.add( ["<span style=\"color:red;\">" + edit.toxicityScore + "%" + "</span>",
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + edit.revisionId + "\"> "+ edit.revisionId + "</a>", 
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + edit.userName + "\"> "+ edit.userName + "</a>", 
                   edit.comment,
                   "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + edit.parentArticle + "\"> "+ edit.parentArticle + "</a>", 
                   edit.date,
-                  "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">open_in_new</a>"]).draw();
+                  "<a target=\"_blank\" href=\"/edit-comment.html?id=" + edit.revisionId + "\" class=\"material-icons md-36\">input</a>  <a onClick=seenComment('"+ edit.revisionId + "') class=\"material-icons\"> remove_circle</a>"]).draw();
+  rowNode.nodes().to$().attr('id', `revid${edit.revisionId}`);
 }
 
 

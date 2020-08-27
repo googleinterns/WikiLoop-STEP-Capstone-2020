@@ -101,9 +101,9 @@ public class CommentsReprocessServlet extends HttpServlet {
     Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
     editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
     editCommentEntity.setProperty("userName", editComment.getUserName());
-    editCommentEntity.setProperty("comment", editComment.getComment());
+    editCommentEntity.setProperty("comment", editComment.getComment()); 
     editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
-    editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
+    editCommentEntity.setProperty("toxicityScore", Double.parseDouble(editComment.getToxicityScore()));
     editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
     editCommentEntity.setProperty("date", editComment.getDate());
     editCommentEntity.setProperty("status", editComment.getStatus());
