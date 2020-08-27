@@ -133,7 +133,7 @@ async function getComments(ids, type, num) {
     type = ids;
     ids = document.getElementById("userNames").value;
     num = document.getElementById("numComments").value;
-    ids = ids.replace("%20","-");
+    ids = ids.replace(" ","%20");
     window.location.href = `/?id=${ids}&type=${type}&num=${num}`;
     return;
   }
@@ -155,7 +155,7 @@ async function getComments(ids, type, num) {
       
       createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                           "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
-                          "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
+                          "<a target=\"_blank\" href=\"/userprofile.html?User=" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
                           editComment.comment, 
                           "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                           editComment.date,

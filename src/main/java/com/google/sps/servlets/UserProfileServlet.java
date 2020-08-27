@@ -43,21 +43,23 @@ public class UserProfileServlet extends HttpServlet {
     response.setContentType("application/json");
 
     String timeFrameString = request.getParameter("timeFrame");
+    String userNameString = request.getParameter("User");
+    String userName = "Giano II";
+
+    if (userNameString != null && !(userNameString.equals("")) && !(userNameString.equals("null")) && !(userNameString.equals("undefined"))) {
+      userName = userNameString;
+    }
     int timeFrame = 0;
     if (timeFrameString != null && timeFrameString != "") timeFrame = Integer.parseInt(timeFrameString);
 
     
     // Get User's instance from Datastore
-    List<String> listOfUsers = new ArrayList<String>();
-    listOfUsers.add("Giano II");
-    //listOfUsers.add("ZI Jony");
-    Collections.shuffle(listOfUsers);
-    String userToRetrieve = listOfUsers.get(0);
-    User user = retrieveUser(userToRetrieve, timeFrame);
+    User user = retrieveUser(userName, timeFrame);
 
     // Jasonify the User (Convert the userprofile to JSON)
     Gson gson = new Gson();
     String json = gson.toJson(user);
+    System.out.println(userName);
     System.out.println(json);
     
     // Send the JSON as the response

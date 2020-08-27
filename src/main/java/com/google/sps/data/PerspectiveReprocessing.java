@@ -36,11 +36,7 @@ public class PerspectiveReprocessing implements Job{
       try {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         String postUrl = buildUrl;
-        OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.MINUTES) // connect timeout
-            .writeTimeout(10, TimeUnit.MINUTES) // write timeout
-            .readTimeout(10, TimeUnit.MINUTES) // read timeout
-            .build();
+        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
             .url(postUrl)
             .build();
