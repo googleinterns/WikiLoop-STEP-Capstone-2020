@@ -41,7 +41,8 @@ public class RetrieveEditServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String revisionId = request.getParameter("revid");
-      String user = request.getParameter("user");
+      String user = request.getParameter("userIP");
+      System.out.println("RES IP: " + user);
       String action = request.getParameter("btn");
       long time = System.currentTimeMillis();
       
@@ -65,8 +66,6 @@ public class RetrieveEditServlet extends HttpServlet {
           System.out.println("r");
         ec.incrementShouldReportCounter();
       }
-
-
 
       Entity edit = new Entity("EditComment", ec.getRevisionId() + "en");
       

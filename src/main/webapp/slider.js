@@ -10,7 +10,7 @@ let incivilityReason = document.getElementById("discover-edit-comment-reason");
 let notice = document.getElementById("slider-notice");
 
 let hiddenId = document.getElementById("hidden-id");
-let hiddenUser = document.getElementById("hidden-user");
+let hiddenUser = document.getElementById("userIP");
 
 function setCookie(name, value, days) {
   var expires = "";
@@ -107,6 +107,33 @@ async function getComments(id) {
 }
 
 /**
+ * Loads comments on the page if user is logged in
+ */
+window.onload = function() {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "https://api.ipify.org?format=jsonp&callback=DisplayIP";
+  document.getElementsByTagName("head")[0].appendChild(script);
+  if (window.location.href.indexOf('id') != -1) {
+    console.log("Hello");
+    var url_string = window.location.href 
+    var url = new URL(url_string);
+    var id = url.searchParams.get("id");
+    getComments(id);
+  } else {
+    console.log("sdfsdf");
+    getComments();
+  }
+}
+
+/**
+* Loads IP adress of user
+*/
+function DisplayIP(response) {
+  document.getElementById("userIP").setAttribute('value', response.ip);
+}
+
+/**
  * This function sets the content of the slider page
  */
  function setContent(editComment) {
@@ -117,6 +144,7 @@ async function getComments(id) {
    scoreHeader.innerHTML = "<span style=\"color:red;\">" + toxicityObject.toxicityScore + "% </span>";
    textHeader.innerText = editComment.comment;
    revisionHeader.innerHTML = "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>";
+   hiddenId.setAttribute("value", editComment.revisionId);
    if (toxicityObject.experimental) {
      incivilityReason.innerHTML = `TOXICITIY: ${toxicityObject.toxicityReason} <br></br> <h3> Experimental Label </h3> ${toxicityObject.label}: ${toxicityObject.reason} <br></br> <i>This label is experimental, meaning it hasn't been thoroughly tested. Learn more about experimental labels <a style="color: blue;" target=\"_blank\" href="https://support.perspectiveapi.com/s/about-the-api-attributes-and-languages">here</a>. <br></br></i>`;
    } else {
@@ -126,24 +154,5 @@ async function getComments(id) {
    notice.innerHTML = `
    <i> The incivility percentage and label comes from Jigsaw and Google's Counter Abuse Technology team's Perspective API, a machine learning model to detect abuse and harassment. You can learn more about the API <a target="_blank" style="color: blue;" href="https://support.perspectiveapi.com/s/about-the-api/">here</a>.
    Since this API utilizes a machine learning model to detect incivility, the percentages and labels are not guaranteed to be accurate and might contain false positives.</i>`;
-   hiddenId.setAttribute("value", editComment.revisionId);
-   hiddenUser.setAttribute("value", editComment.userName);
  }
-
-
-/**
- * Loads comments on the page if user is logged in
- */
-window.onload = function() {
-  if (window.location.href.indexOf('id') != -1) {
-    console.log("Hello");
-    var url_string = window.location.href 
-    var url = new URL(url_string);
-    var id = url.searchParams.get("id");
-    getComments(id);
-  } else {
-    console.log("sdfsdf");
-    getComments();
-}
-  }
 
