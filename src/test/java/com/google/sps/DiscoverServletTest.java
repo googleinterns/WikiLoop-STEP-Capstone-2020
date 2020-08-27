@@ -25,6 +25,19 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 import org.junit.Assert;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.sps.tests.MockData;
+import com.google.sps.data.EditComment;
+import com.google.sps.data.Perspective;
+import com.google.sps.data.Attribute;
+
 
 /**
  * This class tests the functionality of the DiscoverServlet which is 
