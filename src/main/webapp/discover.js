@@ -49,6 +49,23 @@ function testData(){
   
 }
 
+var startTime, endTime;
+
+function start() {
+  startTime = new Date();
+};
+
+function end() {
+  endTime = new Date();
+  var timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+
+  // get seconds 
+  var seconds = Math.round(timeDiff);
+  console.log(seconds + " seconds");
+}
+
 /**
  * Load some comments from the Media API
  */
@@ -123,15 +140,24 @@ async function getComments(ids, type, num) {
     return;
   }
 
+  
  console.log(`/comments?id=${ids}&type=${type}&num=${num}`);
   let response = await fetch(`/comments?id=${ids}&type=${type}&num=${num}`); 
   let listEditComments = await response.json();
   console.log(response);
+  console.log("Response returned")
+  end();
   // Create a set to look for a given id
   let alreadySeen = new Set(seenRevisions);
   listEditComments.forEach(editComment => {
+    let toxicityPercentage;
     if (!alreadySeen.has(editComment.revisionId)) {
-      let toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
+      if (editComment.toxicityObject !== null && editComment.toxicityObject !== "" && editComment.toxicityObject !== "null") {
+        toxicityPercentage = JSON.parse(editComment.toxicityObject).toxicityScore + "%";
+      } else {
+        toxicityPercentage = '0';
+      }
+      
       createTableElement(["<span style=\"color:red;\">" + toxicityPercentage + "</span>", 
                           "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?&oldid=" + editComment.revisionId + "\"> "+ editComment.revisionId + "</a>", 
                           "<a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/User:" + editComment.userName + "\"> "+ editComment.userName + "</a>", 
@@ -147,7 +173,8 @@ async function getComments(ids, type, num) {
   document.getElementById('discover-loader').remove();
   //View table 
   document.getElementById("table-container").style.display = "block";
-
+  console.log("Table Loaded")
+  end();
 }
 
 /**
@@ -191,6 +218,7 @@ function createTableElement(text, id) {
  * Loads comments on the page if user is logged in
  */
 window.onload = function() {
+  start();
   let url_string = window.location.href 
   let url = new URL(url_string);
   let ids = url.searchParams.get("id");
@@ -206,7 +234,8 @@ window.onload = function() {
 $(document).ready( function () {
     $('#my-table').DataTable({
       "order": [[ 0, "desc" ]],
-      "search": "Filter:"
+      "search": "Filter:",
+      "deferRender": true
     });
 } );
 

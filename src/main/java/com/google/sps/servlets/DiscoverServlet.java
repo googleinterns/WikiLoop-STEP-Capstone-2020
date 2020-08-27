@@ -3,7 +3,7 @@ import java.lang.Math;
 import java.lang.Double;
 import java.io.IOException;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-
+import java.util.concurrent.TimeUnit;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -86,12 +86,13 @@ public class DiscoverServlet extends HttpServlet {
     if (num == null || num.equals("") || num.equals("null")) {
       num = "1";
     }
+    long start = System.nanoTime();
+    System.out.println(System.nanoTime());
     ArrayList editComments = new ArrayList<EditComment>();
     // Check if any ids were passed through, if not return all edit comments in datastore
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
     } else {
-      System.out.println(type);
       List<String> idList = createListIds(ids);
       /* Get specific ids for the type of query */
       if (type.equals("user")) {
@@ -100,6 +101,15 @@ public class DiscoverServlet extends HttpServlet {
       loadSpecificRevisions(idList, datastore, editComments);
     }
     response.setContentType("application/json;"); 
+    System.out.println("End" + System.nanoTime());
+    long end = System.nanoTime();
+
+        long elapsedTime = end - start;
+          // 1 second = 1_000_000_000 nano seconds
+        double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond);
+
+      
     response.getWriter().println(convertToJsonUsingGson(editComments));
   }
 
@@ -110,6 +120,7 @@ public class DiscoverServlet extends HttpServlet {
    */
   private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
     for (Entity entity : results.asIterable()) {  
+      try {
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -120,23 +131,12 @@ public class DiscoverServlet extends HttpServlet {
       String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
       String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
       String notSureCounter = (String) entity.getProperty("notSureCounter");
-
-      try {
-        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-        Entity editCommentEntity = new Entity("TestEditComments", revisionId + "en");
-        editCommentEntity.setProperty("revisionId", revisionId);
-        editCommentEntity.setProperty("userName", user);
-        editCommentEntity.setProperty("comment", comment);
-        editCommentEntity.setProperty("computedAttribute", computedAttributeString);
-        editCommentEntity.setProperty("parentArticle", article);
-        editCommentEntity.setProperty("date", date);
-        editCommentEntity.setProperty("status", status);
-        datastore.put(editCommentEntity);
-
-        editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
-      } catch(Exception e) {
-        System.out.println(e);
-      }
+      
+     
+      editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
+       } catch (Exception e ){
+         System.out.println(e + " " + entity);
+       }
     }
   }
 
@@ -166,10 +166,15 @@ public class DiscoverServlet extends HttpServlet {
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
         if (entity == null) {
+          try {
+          TimeUnit.SECONDS.sleep(1);
           addIdToDatastore(id, datastore);
           query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
           pq = datastore.prepare(query);
           entity = pq.asSingleEntity();
+          } catch (Exception e) {
+            System.out.println("Sleep Error " +  e);
+          }
         }
         // If comment still isn't added to database don't load
         if (entity != null) {
@@ -182,9 +187,9 @@ public class DiscoverServlet extends HttpServlet {
           String status = (String) entity.getProperty("status");
           try {
             JSONObject computedAttribute = (JSONObject) new JSONParser().parse(computedAttributeString); 
-            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, "", "", ""));
+            editComments.add(new EditComment(revisionId, user, comment, computedAttribute.toString(), date, article, status, "0", "0", "0"));
           } catch(Exception e) {
-            System.out.println(entity);
+            System.out.println(" Error: " + entity);
           }
         }
       }
@@ -228,7 +233,7 @@ public class DiscoverServlet extends HttpServlet {
         
         }
       } catch (Exception e) {
-        System.out.println(e);
+        System.out.println("getUserIds " +e);
       }
     }
     System.out.println(idList);
@@ -307,8 +312,14 @@ public class DiscoverServlet extends HttpServlet {
       editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
       editCommentEntity.setProperty("date", editComment.getDate());
       editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("status", editComment.getStatus());
+       editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
+      editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
+      editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
       datastore.put(editCommentEntity);
-
+     
       loadUserToDatastore(editComment, datastore);
 
 

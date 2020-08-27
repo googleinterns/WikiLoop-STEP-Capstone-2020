@@ -28,7 +28,7 @@ import com.squareup.okhttp.Call;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class WikiMediaRequestQueue implements Job{ 
+public class WikiMediaRequestQueue implements Job { 
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
       /*ArrayList<String> al = new ArrayList<String>();
