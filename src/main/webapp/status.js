@@ -18,7 +18,9 @@ function createActionListElem(a) {
     var actionLabel = document.createElement('span');
     var time = document.createElement('span');
 
-    user.innerHTML = a.user + " reviewed ";
+    //TODO: IMPLEMENT ANON USER BASED ON IP ADDRESS
+    //user.innerHTML = a.user + " reviewed ";
+    user.innerHTML = "Giano II" + " reviewed ";
 
     id.innerHTML = "edit:" + a.id;
     id.setAttribute('href', '/slider.html?id=' + a.id);
