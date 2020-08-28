@@ -236,7 +236,7 @@ public final class WikiMedia {
           cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
           cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
           cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
-
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
 
           editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
        }
@@ -278,7 +278,7 @@ public final class WikiMedia {
             cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
             cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
             cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
-
+            cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
 
             editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
           }
@@ -317,7 +317,7 @@ public final class WikiMedia {
           cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
           cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
           cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
-
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
 
           editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
       }
@@ -363,6 +363,7 @@ public final class WikiMedia {
           cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
           cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
           cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
 
 
           editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));

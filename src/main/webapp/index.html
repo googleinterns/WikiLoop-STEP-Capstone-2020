@@ -61,8 +61,8 @@
             <div>
               <form action="#" id="revidsF" onsubmit="getComments('revid'); return false">
                 Query by Revision ID(s)
-              <input type="text" name="revid" id="revids" name="ids"></input>
-              <input type="submit">
+                <input type="text" name="revid" id="revids" name="ids"></input>
+                <input type="submit">
               </form>
               <!-- Expansion for querying different revision by article and user. Don't know perspective API limits to allow user to query
               <form action="#" id="articleForm" onsubmit="getComments('article'); return false">
@@ -75,11 +75,11 @@
               <input type="submit">
               </form>
               </form> -->
-              <form action="#" id="userForm"  method="GET" action="/userprofile.html">
+              <form action="#" id="userForm" onsubmit="getComments('user'); return false">
                 Query by Username(s)
-              <input type="text" name="user" id="userNames" ></input> 
-              Number of Revisions Comments (5000 Max): <input type="text"id="numComments"></input>
-              <input type="submit">
+                <input type="text" name="user" id="userNames" ></input> 
+                Number of Revisions Comments (5000 Max): <input type="text"id="numComments"></input>
+                <input type="submit">
               </form>
               </div>
               <br/>

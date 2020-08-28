@@ -70,8 +70,7 @@ function end() {
  * Load some comments from the Media API
  */
 function loadData() {
-  var ids = document.getElementById("revids").value;
-  console.log(ids);
+  let ids = document.getElementById("revids").value;
   ids = ids.replace(" ","|");
   console.log("ids"); /*
   // Build request url
@@ -121,7 +120,6 @@ async function getComments(ids, type, num) {
   if (num == null) {
     num = "";
   }
-  console.log(ids);
   if (ids === null) {
     ids = "";
   }
@@ -139,9 +137,7 @@ async function getComments(ids, type, num) {
     window.location.href = `/?id=${ids}&type=${type}&num=${num}`;
     return;
   }
-
-  
- console.log(`/comments?id=${ids}&type=${type}&num=${num}`);
+ 
   let response = await fetch(`/comments?id=${ids}&type=${type}&num=${num}`); 
   let listEditComments = await response.json();
   console.log(response);
@@ -164,7 +160,7 @@ async function getComments(ids, type, num) {
                           editComment.comment, 
                           "<a target=\"_blank\" href=\"https://en.wikipedia.org/w/index.php?title=" + editComment.parentArticle + "\"> "+ editComment.parentArticle + "</a>", 
                           editComment.date,
-                          "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>  <a onClick=seenComment('"+ editComment.revisionId + "') class=\"material-icons\"> remove_circle</a>"
+                          "<a target=\"_blank\" href=\"/slider.html?id=" + editComment.revisionId + "\" class=\"material-icons md-36\">input</a>  <a onClick=seenComment('"+ editComment.revisionId + "') class=\"material-icons\">remove_circle</a>"
                           ], editComment.revisionId);
    }
   });
@@ -185,9 +181,13 @@ async function getComments(ids, type, num) {
 function seenComment(id) {
   seenRevisions.push(id);
   setCookie("seenRevisions", JSON.stringify(seenRevisions));
-   var $datatable = $('#my-table').DataTable();
-    $datatable.row($`revid${id}`).remove().draw(false);
+  let $datatable = $('#my-table').DataTable();
+  $datatable.row(`#revid${id}`).remove().draw(false);
 }
+
+
+ 
+
 
 /**
  * Send user to see edit comment breakdown and take action
@@ -207,12 +207,10 @@ function seenComment(id) {
  * Create new table element for
  */
 function createTableElement(text, id) {
-  let rowId = `revid${id}`;
   var table = $('#my-table').DataTable();
   var rowNode = table.row.add(text).draw();
-  rowNode.nodes().to$().attr('id', rowId);
+  rowNode.nodes().to$().attr('id', `revid${id}`);
 }
-
 
 /**
  * Loads comments on the page if user is logged in
