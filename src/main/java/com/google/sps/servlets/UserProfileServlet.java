@@ -59,8 +59,6 @@ public class UserProfileServlet extends HttpServlet {
     // Jasonify the User (Convert the userprofile to JSON)
     Gson gson = new Gson();
     String json = gson.toJson(user);
-    System.out.println(userName);
-    System.out.println(json);
     
     // Send the JSON as the response
     response.getWriter().println(json);
@@ -78,19 +76,15 @@ public class UserProfileServlet extends HttpServlet {
    * @return User
    */
   private User retrieveUser(String userToRetrieve, int timeFrame) {
-      //System.out.println(userToRetrieve);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //System.out.println(datastore);
     // Filter query by the Key
     Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + userToRetrieve);
-    //System.out.println("key:\t"+key);
     Query query = 
         new Query("UserProfile")
             .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
             
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    //System.out.println("results:\t"+results);
     if (entity == null){
         return null;
     }
@@ -141,7 +135,14 @@ public class UserProfileServlet extends HttpServlet {
     return listEditComments;
   }
 
+  /** 
+   * Retrieve a boolean for whether a date is in a certain time frame from the current date
+   * @param String editCommentDate
+   * @param in timeFrameInDays
+   * @return boolean
+   */
   private boolean isInTimeFrame (String editCommentDate, int timeFrameInDays) {
+
     long timeFrameInMilliSeconds = (long) timeFrameInDays * 86400000;
     long currentTimeMilliSeconds = System.currentTimeMillis();
     long editCommentDateInMilliSeconds = 0;

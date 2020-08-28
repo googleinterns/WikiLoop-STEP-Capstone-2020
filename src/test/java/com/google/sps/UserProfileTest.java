@@ -15,26 +15,29 @@ import org.junit.runners.JUnit4;
 
 /**
  * Class tests the UserProfileServlet logic
- */
+ */ 
 @RunWith(JUnit4.class)
 public final class UserProfileTest {
   // Tolerable error on the average toxicity score.
- // private static final double ACCEPTABLE_ERROR = 0.00001;
+  private static final double ACCEPTABLE_ERROR = 0.00001;
 
-//  private static final EditComment ec1 = new EditComment("283416010", "Giano II", "/* Comments */ what the fuck use is that?",
- //   "91", "2009-04-12T19:57:15Z", "Wikipedia:Administrators' noticeboard/Incidents", "pending");
- // private static final EditComment ec2 = new EditComment("283242467", "Giano II", "/* Please... */ Oh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apology on my behalf, a",
- //   "68", "2009-04-11T20:58:39Z", "User talk:Giano II", "pending");
- /// private static final EditComment ec3 = new EditComment("290490251", "Giano II", "/* Discussion */ If she wants to chat on IRC - fine, but don't come here wanting to be an admin on the strength of it.", "32", "2009-05-17T11:41:52Z", "Wikipedia:Requests for adminship/FlyingToaster 2",
- //   "pending");
- // private static final EditComment ec4 = new EditComment("290692859", "Giano II", "/* Oppose */ accept it and stop badgering! ~~~~",
- //   "32", "2009-05-18T11:13:20Z", "Wikipedia:Requests for adminship/FlyingToaster 2", "pending");
- // private static final EditComment ec5 = new EditComment("290547577", "Giano II", "/* Time now for 2groups of editors each with their own Admins. */ That the chanel is for the banal is not in dispute, the problem is when the banal decide they are bored there, and having done little",
-//    "12", "2009-05-17T17:46:35Z", "User talk:Giano II", "pending");
+  private static final EditComment ec1 = new EditComment("283242467", "Giano II", " Oh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apology on my behalf, a",
+    "{\"toxicityScore\":\"69\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"TOXICITY\",\"score\":\"69\",\"reason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":false}",
+     "2009-04-11T20:58:39Z", "User talk:Giano II", "NEW", "0", "0", "0");
 
- // private static final String USER_KEY = "/wikipedia/en/User:Giano II";
+  private static final EditComment ec2 = new EditComment("283242467", "Giano II", " what the fuck use is that?",
+    "{\"toxicityScore\":\"84\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"PROFANITY\",\"score\":\"91\",\"reason\":\"Swear words, curse words, or other obscene or profane language\",\"experimental\":false}",
+     "2009-04-12T19:57:15Z", "User talk:Giano II", "NEW", "0", "0", "0");
 
- // private static final String USER_NAME = "Giano II";
+  private static final EditComment ec3 = new EditComment("283242467", "Giano II", "accept it and stop badgering! ~~~~",
+    "{\"toxicityScore\":\"37\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"FLIRTATION\",\"score\":\"41\",\"reason\":\"Pickup lines, complimenting appearance, subtle sexual innuendos, etc\",\"experimental\":true}",
+     "2009-05-18T11:13:20Z", "User talk:Giano II", "NEW", "0", "0", "0");
+
+
+
+  private static final String USER_KEY = "/wikipedia/en/User:Giano II";
+
+  private static final String USER_NAME = "Giano II";
 
   
   @Test
@@ -42,19 +45,17 @@ public final class UserProfileTest {
     // Test that the User class correctly initializes the list of comments
     ArrayList<EditComment> expected = new ArrayList<EditComment>();
     
-    //expected.add(ec1);
-    //expected.add(ec2);
-   // expected.add(ec3);
-   // expected.add(ec4);
-   // expected.add(ec5);
+    expected.add(ec1);
+    expected.add(ec2);
+    expected.add(ec3);
 
-    //User user = new User(USER_KEY, USER_NAME, expected);
+    User user = new User(USER_KEY, USER_NAME, expected);
 
-    //ArrayList<EditComment> actual = user.getListEditComments();
- //Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+    ArrayList<EditComment> actual = user.getListEditComments();
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
   }
-/*
+  
   @Test
   public void UpdateListOfEditComments() {
     // Test that the User class correctly updates the list of comments when one more comment in added manually
@@ -68,7 +69,7 @@ public final class UserProfileTest {
     expected.add(ec3);
 
     ArrayList<EditComment> actual = user.getListEditComments();
-    //Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
   }
 
@@ -80,8 +81,6 @@ public final class UserProfileTest {
     listEditComments.add(ec1);
     listEditComments.add(ec2);
     listEditComments.add(ec3);
-    listEditComments.add(ec4);
-    listEditComments.add(ec5);
 
     User user = new User(USER_KEY, USER_NAME, listEditComments);
 
@@ -90,11 +89,11 @@ public final class UserProfileTest {
 
     int size = listEditComments.size();
     for (int i = 0; i < size; i++) {
-        String toxicityObject = listEditComments.get(i).getToxicityObject();
+        String toxicityObject = listEditComments.get(i).getToxicityScore();
         expected += Double.parseDouble(toxicityObject);
     }
     expected /= size;
-   // Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
+    Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
   }
 
   @Test
@@ -104,23 +103,22 @@ public final class UserProfileTest {
 
     listEditComments.add(ec1);
     listEditComments.add(ec2);
-    listEditComments.add(ec3);
 
     User user = new User(USER_KEY, USER_NAME, listEditComments);
 
-    user.addEditComment(ec4);
-    listEditComments.add(ec4);
+    user.addEditComment(ec3);
+    listEditComments.add(ec3);
 
     double actual = Double.parseDouble(user.getAvgToxicityScore());
     double expected = 0;
 
     int size = listEditComments.size();
     for (int i = 0; i < size; i++) {
-        String toxicityObject = listEditComments.get(i).getToxicityObject();
+        String toxicityObject = listEditComments.get(i).getToxicityScore();
         expected += Double.parseDouble(toxicityObject);
     }
     expected /= size;
-    //Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
+    Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
   }
 
   @Test
@@ -132,6 +130,6 @@ public final class UserProfileTest {
     double actual = Double.parseDouble(user.getAvgToxicityScore());
     double expected = 0.0;
 
-    //Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
-  } */
+    Assert.assertEquals(expected, actual, ACCEPTABLE_ERROR);
+  } 
 }
