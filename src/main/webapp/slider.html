@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>Discover</title>
+	    <title>CivilityCheck: Discover</title>
 	    <link rel="stylesheet" type="text/css" href="discover-style.css">
 	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
@@ -22,7 +22,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
         crossorigin="anonymous"></script>
-        <script src="http://code.jquery.com/jquery-3.5.1.js" 
+        <script src="https://code.jquery.com/jquery-3.5.1.js" 
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
         crossorigin="anonymous"></script>
         <link rel="stylesheet"
@@ -98,10 +98,9 @@
           <div class="dashboard-subtitle-action w3-bar">
             <form method="post" action="/retrieve">
             <input id="hidden-id" name="revid" style="display: none">
-            <input id="hidden-user" name="user" style="display: none">
+            <input id="userIP" name="userIP" style="display: none">
              <div class="w3-center">
                 <div class="radio-toolbar">
-
                   <input type="radio" id="good" name="btn" value="g" checked>
                   <label for="good">Looks good (g)</label>
 

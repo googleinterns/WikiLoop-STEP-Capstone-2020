@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 import java.io.*;
 import javax.servlet.http.*;
 import org.apache.commons.io.FileUtils;
-
+ 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 
@@ -42,48 +42,51 @@ public class UserProfileServletTest {
   private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-  //private static final EditComment ec1 = new EditComment("283416010", "Giano II", "/* Comments */ what the fuck use is that?",
- //   "91", "2009-04-12T19:57:15Z", "Wikipedia:Administrators' noticeboard/Incidents", "pending");
- /// private static final EditComment ec2 = new EditComment("283242467", "Giano II", "/* Please... */ Oh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apology on my behalf, a",
- //   "68", "2009-04-11T20:58:39Z", "User talk:Giano II", "pending");
- // private static final EditComment ec3 = new EditComment("290490251", "Giano II", "/* Discussion */ If she wants to chat on IRC - fine, but don't come here wanting to be an admin on the strength of it.", "32", "2009-05-17T11:41:52Z", "Wikipedia:Requests for adminship/FlyingToaster 2",
-  //  "pending");
- // private static final EditComment ec4 = new EditComment("290692859", "Giano II", "/* Oppose */ accept it and stop badgering! ~~~~",
-  //  "32", "2009-05-18T11:13:20Z", "Wikipedia:Requests for adminship/FlyingToaster 2", "pending");
- /// private static final EditComment ec5 = new EditComment("290547577", "Giano II", "/* Time now for 2groups of editors each with their own Admins. */ That the chanel is for the banal is not in dispute, the problem is when the banal decide they are bored there, and having done little",
-  //  "12", "2009-05-17T17:46:35Z", "User talk:Giano II", "pending");
- // private static final EditComment ec6 = new EditComment("974409544", "WomenArtistUpdates", "* Continental Challenge Draft Barnstar */ ce",
- //   "28", "2020-08-22T21:20:37Z", "Wikipedia:WikiProject Women in Red/Ideas", "pending");
- // private static final EditComment ec7 = new EditComment("974409546", "ProcrastinatingReader", "Convert usage to Infobox event, per TfD	",
- //   "13", "2020-08-22T21:20:37Z", "User:Rocpuigmal/Murder of Helena Jubany", "pending");
- // private static final EditComment ec8 = new EditComment("974409548", "Omnipaedista", "/* Contributions */",
-  //  "4", "2020-08-22T21:20:38Z", "User:Omnipaedista", "pending");
-  //private static final EditComment ec9 = new EditComment("974409549", "Bmf 051", "Caution: Addition of unsourced or improperly cited material on [[:MTV Big F]]. ([[WP:TW|TW]])",
- //   "21", "2020-08-22T21:20:39Z", "User talk:2409:4042:218D:37B8:AFDA:4DE6:7FE7:B933", "pending");
- // private static final EditComment ec10 = new EditComment("974409555", "S0091", "* Draft:We Are Lebanon */ new section",
- //   "7", "2020-08-22T21:20:41Z", "User talk:Mirna Srour Srour", "pending");
+  private static final EditComment ec1 = new EditComment("283242467", "Giano II", " Oh do go away and take your nasty, little Admin habits with you. Be a man and do something useful with your time, have a chat with Neurolysis and accept another apology on my behalf, a",
+    "{\"toxicityScore\":\"69\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"TOXICITY\",\"score\":\"69\",\"reason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"experimental\":false}",
+     "2009-04-11T20:58:39Z", "User talk:Giano II", "NEW", "0", "0", "0");
+
+  private static final EditComment ec2 = new EditComment("283242467", "Giano II", " what the fuck use is that?",
+    "{\"toxicityScore\":\"84\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"PROFANITY\",\"score\":\"91\",\"reason\":\"Swear words, curse words, or other obscene or profane language\",\"experimental\":false}",
+     "2009-04-12T19:57:15Z", "User talk:Giano II", "NEW", "0", "0", "0");
+
+  private static final EditComment ec3 = new EditComment("283242467", "Giano II", "accept it and stop badgering! ~~~~",
+    "{\"toxicityScore\":\"37\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"FLIRTATION\",\"score\":\"41\",\"reason\":\"Pickup lines, complimenting appearance, subtle sexual innuendos, etc\",\"experimental\":true}",
+     "2009-05-18T11:13:20Z", "User talk:Giano II", "NEW", "0", "0", "0");
+
+  private static final EditComment ec4 = new EditComment("967664593", "Bastun", "WTF? Now you're overwriting my comments?!",
+    "{\"toxicityScore\":\"78\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"PROFANITY\",\"score\":\"85\",\"reason\":\"Swear words, curse words, or other obscene or profane language\",\"experimental\":false}",
+     "2020-07-14T15:05:13Z", "Wikipedia:Move review/Log/2020 July", "NEW", "0", "0", "0");
+
+  private static final EditComment ec5 = new EditComment("968857509", "Bastun", " Ok, I get reordering lists arbitrarily seems to be your thing, but stop now?",
+    "{\"toxicityScore\":\"12\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"THREAT\",\"score\":\"27\",\"reason\":\"Describes an intention to inflict pain, injury, or violence against an individual or group\",\"experimental\":false}",
+     "2020-07-21T23:02:43Z", "Social Democrats (Ireland)", "NEW", "0", "0", "0");
+
+  private static final EditComment ec6 = new EditComment("975316313", "Bastun", "redlink",
+    "{\"toxicityScore\":\"3\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"FLIRTATION\",\"score\":\"11\",\"reason\":\"Pickup lines, complimenting appearance, subtle sexual innuendos, etc\",\"experimental\":true}",
+     "2020-08-27T21:08:13Z", "Irish Freedom Party", "NEW", "0", "0", "0");
+
+  private static final EditComment ec7 = new EditComment("975336175", "Bastun", "r",
+    "{\"toxicityScore\":\"3\",\"toxicityReason\":\"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion\",\"label\":\"FLIRTATION\",\"score\":\"11\",\"reason\":\"Pickup lines, complimenting appearance, subtle sexual innuendos, etc\",\"experimental\":true}",
+     "2020-08-27T22:57:29Z", "Talk:Oireachtas Golf Society scandal", "NEW", "0", "0", "0");
 
   private static final String USER_KEY_1 = "/wikipedia/en/User:Giano II";
-  private static final String USER_KEY_2 = "/wikipedia/en/User:WomenArtistUpdates";
-  private static final String USER_KEY_3 = "/wikipedia/en/User:ProcrastinatingReader";
-  private static final String USER_KEY_4 = "/wikipedia/en/User:Omnipaedista";
-  private static final String USER_KEY_5 = "/wikipedia/en/User:Bmf 051";
-  private static final String USER_KEY_6 = "/wikipedia/en/User:S0091";
-  private static final String USER_KEY_7 = "/wikipedia/en/User:DeltaQuadBot";
+  private static final String USER_KEY_2 = "/wikipedia/en/User:Bastun";
 
   private static final String USER_NAME_1 = "Giano II";
-  private static final String USER_NAME_2 = "WomenArtistUpdates";
-  private static final String USER_NAME_3 = "ProcrastinatingReader";
-  private static final String USER_NAME_4 = "Omnipaedista";
-  private static final String USER_NAME_5 = "Bmf 051";
-  private static final String USER_NAME_6 = "S0091";
-  private static final String USER_NAME_7 = "DeltaQuadBot";
+  private static final String USER_NAME_2 = "Bastun";
+
+  private static final String ALL_TIME_RANGE_STRING = "0";
+  private static final String LAST_YEAR_RANGE_STRING = "365";
+  private static final String LAST_MONTH_RANGE_STRING = "30";
+  private static final String LAST_WEEK_RANGE_STRING = "7";
+  private static final String LAST_24_HOURS_RANGE_STRING = "1";
 
 
   @Before
   public void setUp() {
     helper.setUp();
-    //loadToDatastore();
+    loadToDatastore();
   }
 
   @After
@@ -92,29 +95,82 @@ public class UserProfileServletTest {
   }
 
   @Test
-  public void returnValidAndCorrectJSONString() throws IOException {
+  public void returnCorrectJSONString() throws IOException {
+    // Test whether the servlet retrieves the right user
+
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     HttpServletRequest request = mock(HttpServletRequest.class);       
     HttpServletResponse response = mock(HttpServletResponse.class);    
 
-    when(request.getParameter("timeFrame")).thenReturn("0");
+    when(request.getParameter("timeFrame")).thenReturn(ALL_TIME_RANGE_STRING);
+    when(request.getParameter("User")).thenReturn(USER_NAME_2);
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
     new UserProfileServlet().doGet(request, response);
-    verify(request, atLeast(1)).getParameter("timeFrame"); 
     writer.flush();
+
+
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+    listEditComments.add(ec4);
+    listEditComments.add(ec5);
+    listEditComments.add(ec6);
+    listEditComments.add(ec7);
+
+    Gson gson = new Gson();
+    User user = new User("0", USER_NAME_2, listEditComments);
+    String expected = gson.toJson(user);
+
+    String actual = stringWriter.toString();
     // Strip the last char which is a new line
-    System.out.println(stringWriter.toString());
+    actual = actual.substring(0, actual.length() - 1);
+
+    assertEquals(expected, actual);
+    }
+
+    @Test
+  public void returnCorrectTimeFrame() throws IOException {
+    // Test whether the servlet retrieves comments from the right timeFrame
+    // Should no comment as Bastun does not have a comment in the last 24 hours from 
+    // the current time
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    HttpServletRequest request = mock(HttpServletRequest.class);       
+    HttpServletResponse response = mock(HttpServletResponse.class);    
+
+    when(request.getParameter("timeFrame")).thenReturn(LAST_24_HOURS_RANGE_STRING);
+    when(request.getParameter("User")).thenReturn(USER_NAME_2);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+
+    new UserProfileServlet().doGet(request, response);
+    writer.flush();
+
+
+    ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
+
+    Gson gson = new Gson();
+    User user = new User("0", USER_NAME_2, listEditComments);
+    String expected = gson.toJson(user);
+
+    String actual = stringWriter.toString();
+    // Strip the last char which is a new line
+    actual = actual.substring(0, actual.length() - 1);
+
+    //System.out.println(actual);
+    assertEquals(expected, actual);
     }
 
     /**
    * Goes through all edit comments passed though in a collection, and stores both the author and the edit comment.
    * Calls loadEditCommentToDatastore() and loadUserToDatastore()
    * @param Collection<EditComment> listEditComments
-   */ /*
+   */
   private void loadToDatastore() {
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
     listEditComments.add(ec1);
@@ -124,45 +180,46 @@ public class UserProfileServletTest {
     listEditComments.add(ec5);
     listEditComments.add(ec6);
     listEditComments.add(ec7);
-    listEditComments.add(ec8);
-    listEditComments.add(ec9);
-    listEditComments.add(ec10);
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     for (EditComment editComment : listEditComments) {
       loadEditCommentToDatastore(editComment);
       loadUserToDatastore(editComment);      
     }
   }
-*/
   /**
    * Stores the edit comments passed though in the Datastore if it does not already exist
    * @param EditComment editComment
-   */ /*
+   */
   private void loadEditCommentToDatastore(EditComment editComment) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by the Key
-    Key key = KeyFactory.createKey("EditComments", editComment.getRevisionId() + "en");
-    Query query = new Query("EditComments").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+    Key key = KeyFactory.createKey("EditComment", editComment.getRevisionId() + "en");
+    Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
-      Entity editCommentEntity = new Entity("EditComments", editComment.getRevisionId() + "en");
+      Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
       editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
       editCommentEntity.setProperty("userName", editComment.getUserName());
       editCommentEntity.setProperty("comment", editComment.getComment());
       editCommentEntity.setProperty("computedAttribute", editComment.getToxicityObject());
+      editCommentEntity.setProperty("toxicityScore", Double.parseDouble(editComment.getToxicityScore()));
       editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
       editCommentEntity.setProperty("date", editComment.getDate());
       editCommentEntity.setProperty("status", editComment.getStatus());
+      editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
+      editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
+      editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
       datastore.put(editCommentEntity);
     }
-  } */
+  }
 
   /**
    * Stores the author of the editComment in Datastore.
    * Adds the editComment's revision id to the list of revision ids of the author's editComments
    * @param EditComment editComment
-   */ /*
+   */
   private void loadUserToDatastore(EditComment editComment) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by the Key
@@ -189,5 +246,5 @@ public class UserProfileServletTest {
     userProfileEntity.setProperty("userName", editComment.getUserName());
     userProfileEntity.setProperty("listEditComments", listEditCommentsRevids);
     datastore.put(userProfileEntity);
-  } */
+  } 
 }

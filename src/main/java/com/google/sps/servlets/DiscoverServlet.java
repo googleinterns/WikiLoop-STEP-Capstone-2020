@@ -309,7 +309,7 @@ public class DiscoverServlet extends HttpServlet {
       editCommentEntity.setProperty("parentArticle", editComment.getParentArticle());
       editCommentEntity.setProperty("date", editComment.getDate());
       editCommentEntity.setProperty("toxicityScore", editComment.getToxicityScore());
-       editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
+      editCommentEntity.setProperty("looksGoodCounter", editComment.getLooksGoodCounter());
       editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
       editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
       datastore.put(editCommentEntity);

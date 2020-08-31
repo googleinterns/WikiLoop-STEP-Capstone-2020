@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>Discover</title>
+	    <title>CivilityCheck: Discover</title>
 	    <link rel="stylesheet" type="text/css" href="style.css">
         <!-- Add bootstap, jQuery, and datatables -->
         <link rel="stylesheet" 
@@ -27,11 +27,6 @@
         <link rel="stylesheet"
         href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script> 
-          $(function(){
-          $("#template").load("template.html"); 
-          });
-        </script> 
     </head>
     <body>
       <div class="dashboard-header w3-card w3-#f8f9fa"> 
@@ -50,7 +45,7 @@
             </a>
           </div>
           <div class="user-loggedin ">
-            <a href="userprofile.html">Giano II</a>
+            <a href="userprofile.html?User=Giano%20II">Giano II</a>
           </div>
         </div>
       </div>
@@ -75,6 +70,7 @@
               <input type="submit">
               </form>
               </form> -->
+
               <form action="#" id="userForm" onsubmit="getComments('user'); return false">
                 Query by Username(s)
                 <input type="text" name="user" id="userNames" ></input> 
