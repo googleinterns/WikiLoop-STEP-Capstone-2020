@@ -1,37 +1,32 @@
 package com.google.sps.servlets;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import java.lang.Math;
 import java.lang.Double;
+import java.lang.Double;
 import java.io.IOException;
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import java.util.concurrent.TimeUnit;
+import java.util.Collection;
+import java.util.Date;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import java.util.Collection;
 import com.google.appengine.api.datastore.*;
-
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-
-import java.util.Date;
-
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.util.ArrayList;
@@ -40,15 +35,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
-import java.lang.Double;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-
 import com.google.sps.tests.MockData;
 import com.google.sps.data.EditComment;
 import com.google.sps.data.Perspective;
@@ -65,16 +57,20 @@ import java.io.FileReader;
 
 /** 
  * Servlet is responsible for sending a queried list of edit comments
- * from the datastore to the front end of the website, the ids to return
- * are passed through the url as parameters
+ * from the datastore to the front end of the website, the parameters 
+ * passed through url are id which can represent the list of revision ids 
+ * or user names delimited by dashes, type of request, and num of comments to
+ * return
  */
 @WebServlet("/comments")
 public class DiscoverServlet extends HttpServlet {
   /**
-   * Get the comments in the datastore that match the id pass through
+   * Get the comments in the datastore that match the id passed through,
+   * type parameter could be revid, meaning get revision id, and user, meaning get
+   * revision comments of a specific user. The last available  parameter is num which
+   * state how comments to return from WikiMedia API call
    * When no ids are given, doGet returns all edit comments in the database to review
    */
-   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -83,13 +79,14 @@ public class DiscoverServlet extends HttpServlet {
     String ids = request.getParameter("id");
     String type = request.getParameter("type");
     String num = request.getParameter("num");
+
+    // Number not specificed, just return 1 comment
     if (num == null || num.equals("") || num.equals("null")) {
       num = "1";
     }
-    long start = System.nanoTime();
-    System.out.println(System.nanoTime());
-    ArrayList editComments = new ArrayList<EditComment>();
+
     // Check if any ids were passed through, if not return all edit comments in datastore
+    ArrayList editComments = new ArrayList<EditComment>();
     if (ids == null || ids.equals("") || ids.equals("null")) {
       loadAllRevisions(editComments, results, datastore);
     } else {
