@@ -50,9 +50,9 @@ public class PerspectiveTest extends Mockito {
     Gson gson = new Gson();
     String attributeString = gson.toJson(perspective.computedAttribute);
     try {
-    JSONParser parser = new JSONParser();
-    JSONObject json = (JSONObject) parser.parse(attributeString);
-    //assertEquals(json, mock.readMockPerspective("mockDataAttributeResponse.json"));
+      JSONParser parser = new JSONParser();
+      JSONObject json = (JSONObject) parser.parse(attributeString);
+      assertEquals(json, mock.readMockPerspective("mockDataAttributeResponse.json"));
     } catch (Exception e) {
       System.out.println(e);
     }

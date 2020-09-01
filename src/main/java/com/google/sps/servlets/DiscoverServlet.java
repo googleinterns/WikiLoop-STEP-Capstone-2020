@@ -52,7 +52,6 @@ import com.google.sps.data.WikiMedia;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
-                                       
 import java.io.FileReader;
 
 /** 
@@ -67,7 +66,7 @@ public class DiscoverServlet extends HttpServlet {
   /**
    * Get the comments in the datastore that match the id passed through,
    * type parameter could be revid, meaning get revision id, and user, meaning get
-   * revision comments of a specific user. The last available  parameter is num which
+   * revision comments of a specific user. The last available parameter is num which
    * state how comments to return from WikiMedia API call
    * When no ids are given, doGet returns all edit comments in the database to review
    */
@@ -91,22 +90,13 @@ public class DiscoverServlet extends HttpServlet {
       loadAllRevisions(editComments, results, datastore);
     } else {
       List<String> idList = createListIds(ids);
-      /* Get specific ids for the type of query */
+      // Get specific ids for the type of query 
       if (type.equals("user")) {
         idList = getUserIds(idList, num);
       }
       loadSpecificRevisions(idList, datastore, editComments);
     }
     response.setContentType("application/json;"); 
-    System.out.println("End" + System.nanoTime());
-    long end = System.nanoTime();
-
-        long elapsedTime = end - start;
-          // 1 second = 1_000_000_000 nano seconds
-        double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
-        System.out.println(elapsedTimeInSecond);
-
-      
     response.getWriter().println(convertToJsonUsingGson(editComments));
   }
 
@@ -117,7 +107,6 @@ public class DiscoverServlet extends HttpServlet {
    */
   private void loadAllRevisions(ArrayList<EditComment> editComments, PreparedQuery results, DatastoreService datastore) {
     for (Entity entity : results.asIterable()) {  
-      try {
       String revisionId = (String) entity.getProperty("revisionId");
       String user = (String) entity.getProperty("userName");
       String comment = (String) entity.getProperty("comment");
@@ -128,17 +117,12 @@ public class DiscoverServlet extends HttpServlet {
       String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
       String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
       String notSureCounter = (String) entity.getProperty("notSureCounter");
-      
-     
       editComments.add(new EditComment(revisionId, user, comment, computedAttributeString, date, article, status, looksGoodCounter, shouldReportCounter, notSureCounter));
-       } catch (Exception e ){
-         System.out.println(e + " " + entity);
-       }
     }
   }
 
   /**
-   * Takes in a string which has a list of ids seperated with
+   * Takes in a string which has a list of ids delimited with
    * - lines and adds each individual string into a list
    * @param ids String of multiple ids
    * @return List of individual ids
@@ -156,23 +140,28 @@ public class DiscoverServlet extends HttpServlet {
    * Given a list of specific ids, retrieve ids from the database
    * @param idList List of ids to find in database
    * @param datastore Location of database
+   * @param editComments List to store comments in database
    */ 
   private void loadSpecificRevisions(List<String> idList, DatastoreService datastore, ArrayList<EditComment> editComments) {
     for (String id : idList) {
         Query query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
         PreparedQuery pq = datastore.prepare(query);
         Entity entity = pq.asSingleEntity();
+
+        // If the comment id isn't in the database, Get the comment from WikiMedia and add to database
         if (entity == null) {
           try {
-          TimeUnit.SECONDS.sleep(1);
-          addIdToDatastore(id, datastore);
-          query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
-          pq = datastore.prepare(query);
-          entity = pq.asSingleEntity();
+            // Query limit to perspective API, avg 1 call per second
+            TimeUnit.SECONDS.sleep(1);
+            addIdToDatastore(id, datastore);
+            query = new Query("EditComment").setFilter(new Query.FilterPredicate("revisionId", Query.FilterOperator.EQUAL, id));
+            pq = datastore.prepare(query);
+            entity = pq.asSingleEntity();
           } catch (Exception e) {
-            System.out.println("Sleep Error " +  e);
+            System.out.println("Error " +  e);
           }
         }
+
         // If comment still isn't added to database don't load
         if (entity != null) {
           String revisionId = (String) entity.getProperty("revisionId");
@@ -193,8 +182,7 @@ public class DiscoverServlet extends HttpServlet {
   }
 
   /**
-   * Converts a comments instance into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
+   * Converts a comments instance into a JSON string using the Gson library. 
    */
   private String convertToJsonUsingGson(List comments) {
     Gson gson = new Gson();
@@ -203,9 +191,10 @@ public class DiscoverServlet extends HttpServlet {
   }
 
   /**
-   * Given a list of users, gets the revision ids of all the 
-   * revision each user has made
+   * Given a list of users, gets the revision ids of the 
+   * lastest x amount of revisions each user has made
    * @param users List of user to get their revision ids
+   * @param num Requested amount of revisions from each user
    * @return the list of all revision ids of a specific user
    */
   public List<String> getUserIds(List<String> users, String num) {
@@ -213,10 +202,10 @@ public class DiscoverServlet extends HttpServlet {
     WikiMedia call = new WikiMedia();
     for (String user: users) {
       String response = call.getByUser(user, num);
-      System.out.println(response);
+
+      // Parse WikiMedia call to get revision ids of specific user
       try {
         Object jsonObj = new JSONParser().parse(response); 
-        /* Parse mockDataJSON */
         JSONObject userRevisionsObject = (JSONObject) jsonObj;
         JSONObject query = (JSONObject) userRevisionsObject.get("query");
         JSONArray revision = (JSONArray) query.get("allrevisions");
@@ -233,13 +222,14 @@ public class DiscoverServlet extends HttpServlet {
         System.out.println("getUserIds " +e);
       }
     }
-    System.out.println(idList);
     return idList;
   }
 
   /**
-   * Converts a comments instance into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
+   * Converts a comments instance into a JSON string using the Gson library.
+   * @param label Attribute object the contains perspective API report of a 
+   * specific comment
+   * @return the attribute object convert to string
    */
   private String convertAttributeToString(Attribute label) {
     Gson gson = new Gson();
@@ -247,10 +237,11 @@ public class DiscoverServlet extends HttpServlet {
     return json;
   }
   
-    /**
+  /**
    * Stores the author of the editComment in Datastore.
    * Adds the editComment's revision id to the list of revision ids of the author's editComments
-   * @param EditComment editComment
+   * @param EditComment editComment object
+   * @param datastore Reference to Google datastore
    */
   private void loadUserToDatastore(EditComment editComment,DatastoreService datastore) {
     // Filter query by the Key
@@ -273,7 +264,6 @@ public class DiscoverServlet extends HttpServlet {
     }
 
     Entity userProfileEntity = new Entity("UserProfile", "/wikipedia/en/User:" + editComment.getUserName());
-
     userProfileEntity.setProperty("userName", editComment.getUserName());
     userProfileEntity.setProperty("listEditComments", listEditCommentsRevids);
     datastore.put(userProfileEntity);
@@ -300,7 +290,6 @@ public class DiscoverServlet extends HttpServlet {
       // Create attribute containing comment perspective api label
       Attribute attribute = new Perspective(editComment.comment, true).computedAttribute;
       editComment.toxicityObject = new Gson().toJson(attribute);
-
       Entity editCommentEntity = new Entity("EditComment", editComment.getRevisionId() + "en");
       editCommentEntity.setProperty("revisionId", editComment.getRevisionId());
       editCommentEntity.setProperty("userName", editComment.getUserName());
@@ -313,9 +302,8 @@ public class DiscoverServlet extends HttpServlet {
       editCommentEntity.setProperty("shouldReportCounter", editComment.getShouldReportCounter());
       editCommentEntity.setProperty("notSureCounter", editComment.getNotSureCounter());
       datastore.put(editCommentEntity);
-     
+      
+      // Stores the revid under the user 
       loadUserToDatastore(editComment, datastore);
-
-
    }
 }
