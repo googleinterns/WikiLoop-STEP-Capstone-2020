@@ -75,6 +75,8 @@ public class DiscoverServletTest extends Mockito {
     HttpServletRequest request = mock(HttpServletRequest.class);       
     HttpServletResponse response = mock(HttpServletResponse.class);    
     when(request.getParameter("id")).thenReturn("");
+    when(request.getParameter("type")).thenReturn("");
+    when(request.getParameter("num")).thenReturn("");
 
     mock.storeLocalData(mock.readMockTestJson("mockDataAllComments.json"), datastore);
     StringWriter stringWriter = new StringWriter();
@@ -88,7 +90,7 @@ public class DiscoverServletTest extends Mockito {
     try {
       JSONParser parser = new JSONParser();
       JSONArray arrayResponse = (JSONArray)parser.parse(stringWriter.toString());
-      //assertEquals(arrayResponse, mock.readMockTestJson("mockDataAllComments.json"));
+      assertEquals(mock.readMockTestJson("mockDataAllComments.json"), arrayResponse);
     } catch (Exception e) {
       System.out.println(e);
     }
@@ -103,11 +105,11 @@ public class DiscoverServletTest extends Mockito {
    */
   @Test
   public void getSpecificEditComment() throws IOException {
-    /*
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     HttpServletRequest request = mock(HttpServletRequest.class);       
     HttpServletResponse response = mock(HttpServletResponse.class);    
     when(request.getParameter("id")).thenReturn("283242467");
+    when(request.getParameter("type")).thenReturn("revid");
 
     mock.storeLocalData(mock.readMockTestJson("mockDataAllComments.json"), datastore);
     StringWriter stringWriter = new StringWriter();
@@ -122,10 +124,108 @@ public class DiscoverServletTest extends Mockito {
       JSONParser parser = new JSONParser();
       JSONArray arrayResponse = (JSONArray) parser.parse(stringWriter.toString());
       JSONArray testResponse = (JSONArray) parser.parse("["+mock.readMockTestJson("mockDataAllComments.json").get(0).toString() +"]");
-      assertEquals(arrayResponse, testResponse);
+      assertEquals(testResponse, arrayResponse);
     } catch (Exception e) {
       System.out.println(e);
     }
-    */
+  }
+
+  /**
+   * Mocks the process of Querying two of a user's most
+   * recent edit comments, specific
+   */
+  @Test
+  public void getUserEditComment() throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    HttpServletRequest request = mock(HttpServletRequest.class);       
+    HttpServletResponse response = mock(HttpServletResponse.class);    
+    when(request.getParameter("id")).thenReturn("download");
+    when(request.getParameter("type")).thenReturn("user");
+    when(request.getParameter("num")).thenReturn("2");
+
+    mock.storeLocalData(mock.readMockTestJson("mockDataAllComments.json"), datastore);
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+    
+    new DiscoverServlet().doGet(request, response);
+    verify(request, atLeast(1)).getParameter("id"); 
+    writer.flush();
+
+    try {
+      JSONParser parser = new JSONParser();
+      JSONArray arrayResponse = (JSONArray) parser.parse(stringWriter.toString());
+      JSONArray testResponse = (JSONArray) parser.parse(mock.readMockTestJson("mockDataTwoUserComments.json").get(0).toString());
+      assertEquals(testResponse, arrayResponse);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  /**
+   * If revision id is not found, return no comments
+   * id 23453245325 is invalid. However, if a revision id
+   * of 23453245325 becomes valid, this test will fail. 
+   * Thus a new invalid id must be used
+   */
+  @Test
+  public void revidNotFound() throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    HttpServletRequest request = mock(HttpServletRequest.class);       
+    HttpServletResponse response = mock(HttpServletResponse.class);    
+    when(request.getParameter("id")).thenReturn("23453245325");
+    when(request.getParameter("type")).thenReturn("revid");
+
+    mock.storeLocalData(mock.readMockTestJson("mockDataAllComments.json"), datastore);
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+    
+    new DiscoverServlet().doGet(request, response);
+    verify(request, atLeast(1)).getParameter("id"); 
+    writer.flush();
+
+    try {
+      JSONParser parser = new JSONParser();
+      JSONArray arrayResponse = (JSONArray) parser.parse(stringWriter.toString());
+      JSONArray testResponse = (JSONArray) parser.parse(mock.readMockTestJson("mockDataTwoUserComments.json").get(0).toString());
+      assertEquals(new ArrayList<String>(), arrayResponse);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  /**
+   * If user is not found, return all comments from datastore
+   * id zcxz is some random string that shouldn't be a valid Wikipedia
+   * user. If it becomes a valid user, this test will fail. Thus, a new
+   * invalid user needs to be added
+   */
+  @Test
+  public void userNotFound() throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    HttpServletRequest request = mock(HttpServletRequest.class);       
+    HttpServletResponse response = mock(HttpServletResponse.class);    
+    when(request.getParameter("id")).thenReturn("zcxz");
+    when(request.getParameter("type")).thenReturn("user");
+
+    mock.storeLocalData(mock.readMockTestJson("mockDataAllComments.json"), datastore);
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+    
+    new DiscoverServlet().doGet(request, response);
+    verify(request, atLeast(1)).getParameter("id"); 
+    writer.flush();
+
+    try {
+      JSONParser parser = new JSONParser();
+      JSONArray arrayResponse = (JSONArray) parser.parse(stringWriter.toString());
+      JSONArray testResponse = (JSONArray) parser.parse(mock.readMockTestJson("mockDataTwoUserComments.json").get(0).toString());
+      System.out.println(arrayResponse);
+      assertEquals(new ArrayList<String>(), arrayResponse);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
   }
 }
