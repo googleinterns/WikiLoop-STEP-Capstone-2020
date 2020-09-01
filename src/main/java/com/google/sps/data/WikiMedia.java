@@ -52,6 +52,25 @@ public final class WikiMedia {
      return formattedIds;
    }
 
+   /**
+   * Given revision id(s) this function return the WikiMedia response for finding
+   * certain revisions by id.
+   * @param ids List of revision ids 
+   * @return WikiMedia API Response
+   */
+  public String getByRecentChanges() {
+    Map<String, String> params = ImmutableMap.<String, String>builder()
+                                    .put("action", "query")
+                                    .put("format", "json")
+                                    .put("list","recentchanges")
+                                    //.put("rcnamespace","1|2|3|4|5|11|9|7|12|13|15|101|109")
+                                    .put("rcnamespace","2%7C3%7C4%7C5%7C7%7C9%7C11%7C13%7C15%7C101%7C109%7C119%7C447%7C711%7C829%7C2301%7C2302")
+                                    .put("rcprop","title%7Ctimestamp%7Cids%7Ccomment%7Cuser%7Cuserid")
+                                    .put("rclimit","5")
+                                    .build();
+    return getWikiMediaResponse(params);
+  }
+
   /**
    * Given revision id(s) this function return the WikiMedia response for finding
    * certain revisions by id.
@@ -138,14 +157,223 @@ public final class WikiMedia {
       RequestBody body = RequestBody.create(JSON, getApiHeader());
       Request request = new Request.Builder()
                 .url(postUrl)
+                .header("User-agent", "WikiLoop DoubleCheck Team")
                 .post(body)
                 .build();
       Response response = client.newCall(request).execute();
       return response.body().string();
     }
     catch(IOException e) {
+        System.out.println(e);
         e.printStackTrace();
     }
     return "Error";
   }
+
+  /**
+   * Function gets a response from the MediaAPI in a string json format,
+   * parses the string, and returns a list of EditComments
+   * @param  String json response from the WikiMedia API
+   * @return List<EditComment> A list of EditComments 
+   */
+   public List<EditComment> readWikiMediaResponse(String json) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      Object jsonObj = new JSONParser().parse(json); 
+
+      /* Parse mockDataJSON */
+      JSONObject mockDataObject = (JSONObject) jsonObj;
+      JSONObject query = (JSONObject) mockDataObject.get("query");
+
+      for (Object key : query.keySet()) {
+        String queryType = String.valueOf(key);
+        if (queryType.equals("pages")) {
+          editComments.addAll(readByRevisionID((JSONObject) query.get(queryType)));
+        }
+        else if (queryType.equals("allrevisions")) {
+          editComments.addAll(readByAllRevisions((JSONArray) query.get(queryType)));
+        }
+        else if (queryType.equals("recentchanges")) {
+          editComments.addAll(readByRecentChanges((JSONArray) query.get(queryType)));
+        }
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONObject and returns a list of EditComments.
+   * @param  JSONObject pages
+   * @return List<EditComment> A list of EditComments 
+   */
+  private List<EditComment> readByRevisionID(JSONObject pages) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object key : pages.keySet()) {
+          String pageId = String.valueOf(key);
+          JSONObject jsonKey = (JSONObject) pages.get(pageId);
+          String article = (String) jsonKey.get("title");
+          JSONArray revisions = (JSONArray) jsonKey.get("revisions");
+          
+        for (Object o: revisions) {
+          JSONObject comment = (JSONObject) o;
+          String revisionId = String.valueOf(comment.get("revid"));
+          String user = (String) comment.get("user");
+          String mockComment = (String) comment.get("comment");
+          String date = (String) comment.get("timestamp");
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
+       }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONArray and returns a list of EditComments.
+   * @param  JSONArray allrevisions
+   * @return List<EditComment> A list of EditComments 
+   */
+  private List<EditComment> readByAllRevisions(JSONArray allrevisions) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : allrevisions) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          JSONArray revisions = (JSONArray) object.get("revisions");
+          
+          for (Object o: revisions) {
+            JSONObject comment = (JSONObject) o;
+            String revisionId = String.valueOf(comment.get("revid"));
+            String user = (String) comment.get("user");
+            String mockComment = (String) comment.get("comment");
+            String date = (String) comment.get("timestamp");
+            
+            // comment cleaning
+            String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+            cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+            cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+            cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+            cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+            cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
+
+            editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
+          }
+       }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Function is a helper function for the readWikiMediaResponse function,.
+   * parses a JSONArray and returns a list of EditComments.
+   * @param  JSONArray recentchanges
+   * @return List<EditComment> A list of EditComments 
+   */
+   private List<EditComment> readByRecentChanges(JSONArray recentchanges) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      for (Object obj : recentchanges) {
+          JSONObject object = (JSONObject) obj;
+          String pageId = String.valueOf(object.get("pageid"));
+          String article = (String) object.get("title");
+          
+          String revisionId = String.valueOf(object.get("revid"));
+          String user = (String) object.get("user");
+          String mockComment = (String) object.get("comment");
+          String date = (String) object.get("timestamp");
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
+  /**
+   * Read a string response from Wikimedia API response and convert it to edit comment
+   * @return List<MockComments>
+   */
+  public List<EditComment> readStringRevisionId(String json) {
+    ArrayList<EditComment> editComments = new ArrayList<EditComment>();
+
+    /* Reads JSON file & converts to edit comment */
+    try { 
+      Object jsonObj = new JSONParser().parse(json); 
+
+      /* Parse mockDataJSON */
+      JSONObject mockDataObject = (JSONObject) jsonObj;
+      JSONObject query = (JSONObject) mockDataObject.get("query");
+      JSONObject pages = (JSONObject) query.get("pages");
+
+      for (Object key : pages.keySet()) {
+          String pageId = String.valueOf(key);
+          JSONObject jsonKey = (JSONObject) pages.get(pageId);
+          String article = (String) jsonKey.get("title");
+          JSONArray revisions = (JSONArray) jsonKey.get("revisions");
+          
+        for (Object o: revisions) {
+          JSONObject comment = (JSONObject) o;
+          String revisionId = String.valueOf(comment.get("revid"));
+          String user = (String) comment.get("user");
+          String mockComment = (String) comment.get("comment");
+          String date = (String) comment.get("timestamp");
+
+          // comment cleaning
+          String cleanComment = mockComment.replaceAll("Reverted to revision \\d+ by \\[\\[Special:Contributions\\/.+?\\|.+?\\]\\] \\(\\[\\[User talk:.+?\\|talk\\]\\]\\):", "");
+          cleanComment = cleanComment.replaceAll("\\/\\* .+? \\*\\/", "");
+          cleanComment = cleanComment.replaceAll("/\\*.*\\*/", "");
+          cleanComment = cleanComment.replaceAll("\\(\\[\\[WP:TW\\|TW\\]\\]\\)", "");
+          cleanComment = cleanComment.replaceAll("\\[\\[WP:AES\\|\\?\\]\\]", "");
+          cleanComment = cleanComment.replaceAll("Undid revision (\\d)* by \\[\\[(.)*\\]\\] \\(\\[\\[(.)*\\]\\]\\)", "");
+
+
+          editComments.add(new EditComment(revisionId, user, cleanComment, "0", date, article, "NEW", "0", "0", "0"));
+        }
+      }
+
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return editComments;
+  }
+
 }

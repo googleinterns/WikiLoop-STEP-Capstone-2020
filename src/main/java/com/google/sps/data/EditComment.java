@@ -2,6 +2,9 @@ package com.google.sps.data;
 import java.util.Date;
 import java.util.Objects;
 
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*; 
+
 /**
  * Class that implements the template for an edit comment. This is the 
  * main class used to store information of Wikipedia edit comments such 
@@ -9,13 +12,17 @@ import java.util.Objects;
  * toxicity label (perspective api attribute : label, reason, score
  */
 public final class EditComment {
-  public final String userName;
-  public final String comment;
-  public final String date;
-  public final String parentArticle;
-  public final String status;
-  public final String revisionId;
+  private final String userName;
+  public String comment;
+  private final String date;
+  private final String parentArticle;
+  private final String status;
+  private final String revisionId;
   public String toxicityObject;
+  private String toxicityScore;
+  private String looksGoodCounter;
+  private String shouldReportCounter;
+  private String notSureCounter;
 
   /**
    * Stores information regarding a Wikipedia edit comment
@@ -27,7 +34,7 @@ public final class EditComment {
    * @param parentArticle Aritcle the comment was made in
    * @param status Status of the comment, was action taken upon the comoent
    */
-  public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status) {
+  public EditComment(String revisionId, String userName, String comment, String toxicityObject, String date, String parentArticle, String status, String looksGoodCounter, String shouldReportCounter, String notSureCounter) {
     this.revisionId = revisionId;
     this.userName = userName;
     this.comment = comment;
@@ -35,34 +42,94 @@ public final class EditComment {
     this.parentArticle = parentArticle;
     this.status = status;
     this.toxicityObject = toxicityObject;
+    this.looksGoodCounter = looksGoodCounter;
+    this.shouldReportCounter = shouldReportCounter;
+    this.notSureCounter = notSureCounter;
+
+    if ((toxicityObject == null) || (toxicityObject.trim().isEmpty()) || (toxicityObject == "0")) {
+      this.toxicityScore = "0.0";
+      this.toxicityObject = "0";
+      }
+    else {
+      try {
+          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
+          //check if comment is in the timeFrame
+          this.toxicityScore = computedAttribute.get("toxicityScore").toString();
+
+        } catch(Exception e) {
+        System.out.println(e);
+        }
+    }
+  }
+
+  public void setToxicityObject(String toxicityObject) {
+    this.toxicityObject = toxicityObject;
+    if ((toxicityObject != null) && (toxicityObject != "")) {
+      try {
+          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
+          //check if comment is in the timeFrame
+          this.toxicityScore = computedAttribute.get("toxicityScore").toString();
+
+        } catch(Exception e) {
+        System.out.println(e);
+        }
+    }
   }
 
   public String getUserName() {
-    return userName;
+    return this.userName;
   }
 
   public String getRevisionId() {
-      return revisionId;
+      return this.revisionId;
   }
 
   public String getDate() {
-    return date;
+    return this.date;
   }
 
   public String getComment() {
-    return comment;
+    return this.comment;
   }
 
   public String getStatus() {
-    return status;
+    return this.status;
   }
 
   public String getParentArticle() {
-    return parentArticle;
+    return this.parentArticle;
   } 
 
   public String getToxicityObject() {
-    return toxicityObject;
+    return this.toxicityObject;
+  }
+
+  public String getToxicityScore() {
+    return this.toxicityScore;
+  }
+
+  public String getLooksGoodCounter() {
+    return this.looksGoodCounter;
+  }
+
+  public String getShouldReportCounter() {
+    return this.shouldReportCounter;
+  }
+
+  public String getNotSureCounter() {
+    return this.notSureCounter;
+  }
+
+  public void incrementLooksGoodCounter() {
+      this.looksGoodCounter = String.valueOf(Integer.parseInt(this.looksGoodCounter) + 1);
+  }
+
+  public void incrementShouldReportCounter() {
+    this.shouldReportCounter = String.valueOf(Integer.parseInt(this.shouldReportCounter) + 1);
+  }
+
+  public void incrementNotSureCounter() {
+    this.notSureCounter = String.valueOf(Integer.parseInt(this.notSureCounter) + 1);
   }
 
   @Override
@@ -84,5 +151,4 @@ public final class EditComment {
   public int hashCode() {
     return Objects.hash(this.userName, this.comment, this.date);
   }
-
 }

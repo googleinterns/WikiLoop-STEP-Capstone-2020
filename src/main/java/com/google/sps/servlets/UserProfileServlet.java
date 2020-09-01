@@ -1,17 +1,7 @@
-// Copyright 2019 Google LLC
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
 package com.google.sps.servlets;
+
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,20 +30,31 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject; 
 import org.json.simple.parser.*; 
 
+import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException; 
+
 /** Servlet that returns UserProfile information */
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
+
+    String timeFrameString = request.getParameter("timeFrame");
+    String userNameString = request.getParameter("User");
+    String userName = "Giano II";
+
+    if (userNameString != null && !(userNameString.equals("")) && !(userNameString.equals("null")) && !(userNameString.equals("undefined"))) {
+      userName = userNameString;
+    }
+    int timeFrame = 0;
+    if (timeFrameString != null && timeFrameString != "") timeFrame = Integer.parseInt(timeFrameString);
+
     
     // Get User's instance from Datastore
-    List<String> listOfUsers = new ArrayList<String>();
-    listOfUsers.add("Giano II");
-    //listOfUsers.add("Bastun");
-    Collections.shuffle(listOfUsers);
-    String userToRetrieve = listOfUsers.get(0);
-    User user = retrieveUser(userToRetrieve);
+    User user = retrieveUser(userName, timeFrame);
 
     // Jasonify the User (Convert the userprofile to JSON)
     Gson gson = new Gson();
@@ -74,7 +75,7 @@ public class UserProfileServlet extends HttpServlet {
    * @param String userToRetrieve
    * @return User
    */
-  private User retrieveUser(String userToRetrieve) {
+  private User retrieveUser(String userToRetrieve, int timeFrame) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Filter query by the Key
     Key key = KeyFactory.createKey("UserProfile", "/wikipedia/en/User:" + userToRetrieve);
@@ -94,7 +95,7 @@ public class UserProfileServlet extends HttpServlet {
     Collection<String> listEditCommentsRevids = new ArrayList<String>();
     listEditCommentsRevids = (Collection<String>) entity.getProperty("listEditComments");
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
-    listEditComments = retrieveUserEditComments(listEditCommentsRevids);
+    listEditComments = retrieveUserEditComments(listEditCommentsRevids, timeFrame);
     User user = new User(id, userName, listEditComments);
     return user;
   }
@@ -105,32 +106,54 @@ public class UserProfileServlet extends HttpServlet {
    * @param Collection<String> listEditCommentsRevids
    * @return ArrayList<EditComment> of EditComments
    */
-  private ArrayList<EditComment> retrieveUserEditComments(Collection<String> listEditCommentsRevids) {
+  private ArrayList<EditComment> retrieveUserEditComments(Collection<String> listEditCommentsRevids, int timeFrame) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ArrayList<EditComment> listEditComments = new ArrayList<EditComment>();
     for (String revid : listEditCommentsRevids) {
         // Filter query by the Key
         Key key = KeyFactory.createKey("EditComment", revid + "en");
-        Query query = new Query("EditComment").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+        Query query = new Query("EditComment")
+            .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
 
         String userName = (String) entity.getProperty("userName");
         String comment = (String) entity.getProperty("comment");
-        String date = (String) entity.getProperty("date");
+        String dateString = (String) entity.getProperty("date");
         String parentArticle = (String) entity.getProperty("parentArticle");
         String status = (String) entity.getProperty("status");
         String toxicityObject = (String) entity.getProperty("computedAttribute");
         String revisionId = (String) entity.getProperty("revisionId");
+        String looksGoodCounter = (String) entity.getProperty("looksGoodCounter");
+        String shouldReportCounter = (String) entity.getProperty("shouldReportCounter");
+        String notSureCounter = (String) entity.getProperty("notSureCounter");
 
-        try {
-        JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
-        listEditComments.add(new EditComment(revisionId, userName, comment, computedAttribute.get("score").toString(), date, parentArticle, status));
-
-        } catch(Exception e) {
-        System.out.println(e);
-        }
+        if (timeFrame == 0 || isInTimeFrame(dateString, timeFrame)) listEditComments.add(new EditComment(revisionId, userName, comment, toxicityObject, dateString, parentArticle, status, looksGoodCounter, shouldReportCounter, notSureCounter));
     }
+        
     return listEditComments;
+  }
+
+  /** 
+   * Retrieve a boolean for whether a date is in a certain time frame from the current date
+   * @param String editCommentDate
+   * @param in timeFrameInDays
+   * @return boolean
+   */
+  private boolean isInTimeFrame (String editCommentDate, int timeFrameInDays) {
+
+    long timeFrameInMilliSeconds = (long) timeFrameInDays * 86400000;
+    long currentTimeMilliSeconds = System.currentTimeMillis();
+    long editCommentDateInMilliSeconds = 0;
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    try {
+      Date dateTime = sdf.parse(editCommentDate);
+      editCommentDateInMilliSeconds = dateTime.getTime();
+      return editCommentDateInMilliSeconds > (currentTimeMilliSeconds - timeFrameInMilliSeconds);
+    } catch (Exception e){System.out.println(e);}
+      return false;
   }
 }
