@@ -45,8 +45,9 @@ public class ActionLoadServlet extends HttpServlet {
         String user = (String) e.getProperty("user");
         long time = (long) e.getProperty("time");
         String action = (String) e.getProperty("action");
+        String randName = (String) e.getProperty("randName");
 
-        Action a = new Action(id, user, action, time);
+        Action a = new Action(id, user, action, time, randName);
         actions.add(a);
       }
       
