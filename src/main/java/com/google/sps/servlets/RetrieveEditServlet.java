@@ -45,12 +45,14 @@ public class RetrieveEditServlet extends HttpServlet {
       System.out.println("RES IP: " + user);
       String action = request.getParameter("btn");
       long time = System.currentTimeMillis();
-      
+      String randName = giveRandName(user);
+
       Entity statusEntity = new Entity("Actions");
       statusEntity.setProperty("revisionId", revisionId);
       statusEntity.setProperty("user", user);
       statusEntity.setProperty("time", time);
       statusEntity.setProperty("action", action);
+      statusEntity.setProperty("randName", randName);
       datastore.put(statusEntity);
 
       //update EditComments counters
@@ -110,4 +112,34 @@ public class RetrieveEditServlet extends HttpServlet {
 
       return ec;
     } 
+
+    private String giveRandName(String user) {
+      Key key = KeyFactory.createKey("Actions", user);
+      Query query = new Query("Actions").setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, key));
+      PreparedQuery results = datastore.prepare(query);
+
+      int i = 1;
+      boolean ipExists = false;
+      String name;
+      //no for loop
+      for (Entity e : results.asIterable()) {
+        name = (String) e.getProperty("randName");
+        if (i == 1) { 
+            i++;
+            continue;
+        } else if (i > 1) {
+            i++;
+            ipExists = true;
+        }
+      }
+
+      String newName;
+      if (ipExists == false) {
+        int randNums = ((int)(Math.random() * 100000)) % 1000;
+        newName = "User" + randNums;
+      } else {
+        newName = name;
+      }
+      return newName;
+    }
 }

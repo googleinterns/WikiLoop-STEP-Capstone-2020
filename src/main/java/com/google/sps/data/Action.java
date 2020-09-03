@@ -14,10 +14,12 @@ public class Action {
   public String user;
   public String action;
   public long time;
-  public Action(String id, String user, String action, long time) {
+  public String randName;
+  public Action(String id, String user, String action, long time, String randName) {
       this.id = id;
       this.user = user;
       this.action = action;
       this.time = time;
+      this.randName = randName;
   }
 }
