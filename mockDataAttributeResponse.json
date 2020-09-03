@@ -1,0 +1,8 @@
+{
+   "toxicityScore":"80",
+   "toxicityReason":"Rude, disrespectful, or unreasonable comment that is likely to make people leave a discussion",
+   "label":"PROFANITY",
+   "score":"91",
+   "reason":"Swear words, curse words, or other obscene or profane language",
+   "experimental":false
+}

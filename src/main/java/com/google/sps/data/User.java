@@ -34,16 +34,17 @@ public final class User{
   public User(String id, String userName, ArrayList<EditComment> listEditComments) {
     this.id = id;
     this.userName = userName;
-    this.listEditComments= listEditComments;
+    this.listEditComments=  (ArrayList<EditComment>) listEditComments.clone();
 
     double average = 0;
     int size = listEditComments.size();
     for (int i = 0; i < size; i++) {
-        String toxicityObject = this.listEditComments.get(i).getToxicityObject();
-        average += Double.parseDouble(toxicityObject);
+        String toxicityScore = this.listEditComments.get(i).getToxicityScore();
+        average += Double.parseDouble(toxicityScore);
     }
 
     this.avgToxicityScore = String.valueOf(average/size);
+    if (size == 0) this.avgToxicityScore = "0.0";
   }
 
   public String getId() {
@@ -64,16 +65,11 @@ public final class User{
 
   public void addEditComment(EditComment newEditComment) {
       int size = this.listEditComments.size();
-      String toxicityObject = newEditComment.getToxicityObject();
-        try {
-          JSONObject computedAttribute = (JSONObject) new JSONParser().parse(toxicityObject); 
-          double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
-          tempVar += Double.parseDouble(computedAttribute.get("score").toString());
-          this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
-          this.listEditComments.add(newEditComment);
-        } catch(Exception e) {
-        System.out.println(e);
-      }
+      String toxicityScore = newEditComment.getToxicityScore();
+      double tempVar = Double.parseDouble(this.avgToxicityScore) * size;
+      tempVar += Double.parseDouble(toxicityScore);
+      this.avgToxicityScore = String.valueOf(tempVar/(size + 1));
+      this.listEditComments.add(newEditComment);
   }
 
   @Override
